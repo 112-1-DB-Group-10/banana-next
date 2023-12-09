@@ -1,15 +1,22 @@
 'use server';
 
-import { FormEvent } from 'react';
+import { revalidatePath } from 'next/cache';
 import { db } from '@/db';
-import { messages } from '@/db/schema';
+import { messagesTable } from './db/schema';
 
-export const newStory = async (e: FormEvent<HTMLFormElement>) => {};
+export const getMessages = async () => {
+  const messages = await db
+    .select({ id: messagesTable.id, content: messagesTable.content })
+    .from(messagesTable);
+  console.log(messages);
+  return messages;
+};
 
-export const sendMessage = async (data: {
-  senderUid: string;
-  recipientUid: string;
-  content: string;
-}) => {
-  await db.insert(messages).values({ ...data, sendTime: new Date() });
+export const addMessage = async (message: string) => {
+  const messages = await db.select({}).from(messagesTable);
+  const addedMessage = await db
+    .insert(messagesTable)
+    .values({ id: (messages.length + 1).toString(), content: message });
+  revalidatePath('/');
+  return messages;
 };

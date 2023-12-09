@@ -1,7 +1,18 @@
-import { auth } from '@/lib/auth';
+'use server';
+
+import { getMessages } from '@/actions';
+import MessageForm from './MessageForm';
 
 export default async function HomePage() {
-  const session = await auth();
-  console.log('session', session);
-  return <>Next App</>;
+  const messages = await getMessages();
+  return (
+    <div>
+      <div>
+        {messages.map((message, index) => (
+          <div key={index}>{message.content}</div>
+        ))}
+      </div>
+      <MessageForm />
+    </div>
+  );
 }
