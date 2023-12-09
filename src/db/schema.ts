@@ -1,6 +1,5 @@
 import {
   boolean,
-  bytea,
   integer,
   pgEnum,
   pgTable,
@@ -21,7 +20,7 @@ export const verificationEnum = pgEnum('verification', [
 export const usersTable = pgTable('users', {
   user_id: text('user_id').notNull().unique().primaryKey(),
   username: text('username').notNull().unique(),
-  avatar: bytea('avatar').notNull(),
+  avatar: text('avatar').notNull(),
   age: integer('age').notNull(),
   role: roleEnum('role').notNull().default('default'),
   sex: sexEnum('sex').notNull(),
@@ -64,7 +63,7 @@ export const applicationsTable = pgTable('applications', {
     .notNull()
     .references(() => usersTable.user_id),
   englishname: text('englishname').notNull(),
-  document_url: bytea('document_url').notNull(),
+  document_url: text('document_url').notNull(),
   enroll_year: integer('enroll_year').notNull(),
   verification: verificationEnum('verification').notNull().default('pending'),
   institute: text('institute').notNull(),
