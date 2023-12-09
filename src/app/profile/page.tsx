@@ -49,7 +49,7 @@ const Profile = () => {
                   <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
                   National Taiwan University
                 </div>
-                <div className="mb-2 text-blueGray-600 mt-10">
+                <div className="mb-2 text-blueGray-600 mt-5">
                   <i className="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
                   spruce7777@gmail.com
                 </div>
@@ -62,11 +62,10 @@ const Profile = () => {
                 <div className="flex flex-wrap justify-center">
                   <div className="w-full lg:w-9/12 px-4 max-w-4xl mx-auto">
                     <p className="mb-4 text-lg leading-relaxed text-blueGray-700">
-                      An artist of considerable range, Jenna the name taken
-                      by Melbourne-raised, Brooklyn-based Nick Murphy
-                      writes, performs and records all of his own music,
-                      giving it a warm, intimate feel with a solid groove
-                      structure. An artist of considerable range.
+                      發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片
+                      發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片 發過的卡片
+                      發過的卡片 發過的卡片
+                      欸我真的不知道為什麼是隨文字長度改方塊大小 有人知道怎麼辦嗎
                     </p>
                   </div>
                 </div>
