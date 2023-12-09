@@ -6,6 +6,7 @@ import {
   text,
   time,
   timestamp,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 
 export const roleEnum = pgEnum('role', ['admin', 'default']);
@@ -50,12 +51,10 @@ export const messagesTable = pgTable('messages', {
     .references(() => usersTable.user_id),
   time_stamp: time('time_stamp').notNull(),
   contents: text('contents').notNull(),
-  usera_id: text('usera_id')
-    .notNull()
-    .references(() => usersTable.user_id),
-  userb_id: text('userb_id')
-    .notNull()
-    .references(() => usersTable.user_id),
+}, (table) => {
+  return {
+    pkWithCustomName: primaryKey({ name: 'message_pk', columns: [table.sender_id, table.receiver_id, table.time_stamp]}),
+  };
 });
 
 export const applicationsTable = pgTable('applications', {
@@ -69,156 +68,129 @@ export const applicationsTable = pgTable('applications', {
   institute: text('institute').notNull(),
 });
 
-// export const deletesTable = pgTable(
-//   'deletes',
-//   {
-//     user_id: text('user_id')
-//       .notNull()
-//       .references(() => usersTable.user_id),
-//     card_id: text('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//     time_stamp: time('time_stamp').notNull(),
-//   },
-//   {
-//     triggers: {
-//       user_id: 'CASCADE',
-//       card_id: 'CASCADE',
-//     },
-//   },
-// );
+export const deletesTable = pgTable(
+  'deletes',
+  {
+    user_id: text('user_id')
+      .notNull()
+      .references(() => usersTable.user_id),
+    card_id: text('card_id')
+      .notNull()
+      .references(() => cardsTable.card_id),
+    time_stamp: time('time_stamp').notNull(),
+  },(table) => {
+    return {
+      pkWithCustomName: primaryKey({ name: 'deletes_pk', columns: [table.user_id, table.card_id]}),
+    };
+  });
 
-// export const likesTable = pgTable(
-//   'likes',
-//   {
-//     user_id: text('user_id')
-//       .notNull()
-//       .references(() => usersTable.user_id),
-//     card_id: text('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//     time_stamp: time('time_stamp').notNull(),
-//   },
-//   {
-//     triggers: {
-//       user_id: 'CASCADE',
-//       card_id: 'CASCADE',
-//     },
-//   },
-// );
+export const likesTable = pgTable(
+  'likes',
+  {
+    user_id: text('user_id')
+      .notNull()
+      .references(() => usersTable.user_id),
+    card_id: text('card_id')
+      .notNull()
+      .references(() => cardsTable.card_id),
+    time_stamp: time('time_stamp').notNull(),
+  },(table) => {
+    return {
+      pkWithCustomName: primaryKey({ name: 'likes_pk', columns: [table.user_id, table.card_id, table.time_stamp]}),
+    };
+  });
 
-// export const commentsTable = pgTable(
-//   'comments',
-//   {
-//     user_id: text('user_id')
-//       .notNull()
-//       .references(() => usersTable.user_id),
-//     card_id: text('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//     time_stamp: time('time_stamp').notNull(),
-//     contents: text('contents').notNull(),
-//   },
-//   {
-//     triggers: {
-//       user_id: 'CASCADE',
-//       card_id: 'CASCADE',
-//     },
-//   },
-// );
+export const commentsTable = pgTable(
+  'comments',
+  {
+    user_id: text('user_id')
+      .notNull()
+      .references(() => usersTable.user_id),
+    card_id: text('card_id')
+      .notNull()
+      .references(() => cardsTable.card_id),
+    time_stamp: time('time_stamp').notNull(),
+    contents: text('contents').notNull(),
+  },(table) => {
+    return {
+      pkWithCustomName: primaryKey({ name: 'comments_pk', columns: [table.user_id, table.card_id, table.time_stamp]}),
+    };
+  });
 
-// export const locationsTable = pgTable('locations', {
-//   location_name: text('location_name').notNull().primaryKey(),
-// });
+export const locationsTable = pgTable('locations', {
+  location_name: text('location_name').notNull().primaryKey(),
+});
 
-// export const locatedAtTable = pgTable(
-//   'located_at',
-//   {
-//     location_name: text('location_name')
-//       .notNull()
-//       .references(() => locationsTable.location_name),
-//     card_id: text('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//   },
-//   {
-//     triggers: {
-//       location_name: 'CASCADE',
-//       card_id: 'CASCADE',
-//     },
-//   },
-// );
+export const locatedAtTable = pgTable(
+  'located_at',
+  {
+    location_name: text('location_name')
+      .notNull()
+      .references(() => locationsTable.location_name),
+    card_id: text('card_id')
+      .notNull()
+      .primaryKey()
+      .references(() => cardsTable.card_id),
+  },
+);
 
-// export const labelsTable = pgTable(
-//   'labels',
-//   {
-//     label_name: text('label_name').notNull().primaryKey(),
-//     created_user: text('created_user')
-//       .notNull()
-//       .references(() => usersTable.user_id),
-//   },
-//   {
-//     triggers: {
-//       created_user: 'CASCADE',
-//     },
-//   },
-// );
+export const labelsTable = pgTable(
+  'labels',
+  {
+    label_name: text('label_name').notNull().primaryKey(),
+    created_user: text('created_user')
+      .notNull()
+      .references(() => usersTable.user_id),
+  },
+);
 
-// export const topicsTable = pgTable('topics', {
-//   topic_name: text('topic_name').notNull().primaryKey(),
-// });
+export const topicsTable = pgTable('topics', {
+  topic_name: text('topic_name').notNull().primaryKey(),
+});
 
-// export const belongsToTable = pgTable(
-//   'belongs_to',
-//   {
-//     label_name: text('label_name')
-//       .notNull()
-//       .references(() => labelsTable.label_name),
-//     topic_name: text('topic_name')
-//       .notNull()
-//       .references(() => topicsTable.topic_name),
-//   },
-//   {
-//     triggers: {
-//       label_name: 'CASCADE',
+export const belongsToTable = pgTable(
+  'belongs_to',
+  {
+    label_name: text('label_name')
+      .notNull()
+      .references(() => labelsTable.label_name),
+    topic_name: text('topic_name')
+      .notNull()
+      .references(() => topicsTable.topic_name),
+  },(table) => {
+    return {
+      pkWithCustomName: primaryKey({ name: 'belongsto_pk', columns: [table.label_name, table.topic_name]}),
+    };
+  });
 
-//       topic_name: 'CASCADE',
-//     },
-//   },
-// );
+export const goodAtTable = pgTable(
+  'good_at',
+  {
+    card_id: text('card_id')
+      .notNull()
+      .references(() => cardsTable.card_id),
+    label_name: text('label_name')
+      .notNull()
+      .references(() => labelsTable.label_name),
+  },
+  (table) => {
+    return {
+      pkWithCustomName: primaryKey({ name: 'goodAt_pk', columns: [table.card_id, table.label_name]}),
+    };
+  });
 
-// export const goodAtTable = pgTable(
-//   'good_at',
-//   {
-//     card_id: text('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//     label_name: text('label_name')
-//       .notNull()
-//       .references(() => labelsTable.label_name),
-//   },
-//   {
-//     triggers: {
-//       card_id: 'CASCADE',
-//       label_name: 'CASCADE',
-//     },
-//   },
-// );
-
-// export const wantToLearnTable = pgTable(
-//   'want_to_learn',
-//   {
-//     card_id: text('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//     label_name: text('label_name')
-//       .notNull()
-//       .references(() => labelsTable.label_name),
-//   },
-//   {
-//     triggers: {
-//       card_id: 'CASCADE',
-//       label_name: 'CASCADE',
-//     },
-//   },
-// );
+export const wantToLearnTable = pgTable(
+  'want_to_learn',
+  {
+    card_id: text('card_id')
+      .notNull()
+      .references(() => cardsTable.card_id),
+    label_name: text('label_name')
+      .notNull()
+      .references(() => labelsTable.label_name),
+  },
+  (table) => {
+    return {
+      pkWithCustomName: primaryKey({ name: 'wantToLearn_pk', columns: [table.card_id, table.label_name]}),
+    };
+  });
