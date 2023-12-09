@@ -1,21 +1,12 @@
 "use client";
 
-// const Chat = () => {
-//     return (
-//         <div>
-//             Chat page
-//         </div>
-//     );
-// };
-
-
-// export default Chat;
-
-export default async function Chat() {
-    // const messages = await getMessages();
+const Chat = () => {
     return (
         <div>
-        Home component
+            Chat page
         </div>
     );
-}
+};
+
+
+export default Chat;

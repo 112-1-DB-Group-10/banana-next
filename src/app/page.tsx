@@ -6,7 +6,7 @@ export default async function HomePage() {
   // const messages = await getMessages();
   return (
     <div>
-      Home component
+      Home page
     </div>
   );
 }
