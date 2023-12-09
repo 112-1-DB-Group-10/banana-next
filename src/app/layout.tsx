@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="flex min-h-[100dvh] flex-col items-center justify-around">
+        <main className="flex h-screen w-screen flex-col items-center justify-around">
           <NavBar />
           <SessionProvider>{children}</SessionProvider>
         </main>
