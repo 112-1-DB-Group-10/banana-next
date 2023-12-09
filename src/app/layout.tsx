@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
-import { Card } from '@/components/ui/card';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -20,11 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main className="flex min-h-[100dvh] flex-col items-center justify-around">
-          <SessionProvider>
-            <Card className="flex h-[42rem] w-[23.625rem] flex-col overflow-hidden text-center">
-              {children}
-            </Card>
-          </SessionProvider>
+          <SessionProvider>{children}</SessionProvider>
         </main>
       </body>
     </html>
