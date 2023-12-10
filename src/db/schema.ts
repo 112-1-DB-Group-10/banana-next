@@ -1,3 +1,5 @@
+import { timeStamp } from 'console';
+import { varbinary } from 'drizzle-orm/mysql-core';
 import {
   boolean,
   integer,
@@ -7,6 +9,7 @@ import {
   text,
   time,
   timestamp,
+  uuid,
 } from 'drizzle-orm/pg-core';
 
 export const roleEnum = pgEnum('role', ['admin', 'default']);
@@ -19,39 +22,40 @@ export const verificationEnum = pgEnum('verification', [
 ]);
 
 export const usersTable = pgTable('users', {
-  user_id: text('user_id').notNull().unique().primaryKey(),
-  username: text('username').notNull().unique(),
-  avatar: text('avatar').notNull(),
-  age: integer('age').notNull(),
-  role: roleEnum('role').notNull().default('default'),
+  username: text('username').notNull(),
   sex: sexEnum('sex').notNull(),
+  age: integer('age').notNull(),
   email: text('email').notNull().unique(),
+  role: roleEnum('role').notNull().default('default'),
   suspended: boolean('suspended').notNull().default(false),
+  user_id: uuid('user_id').notNull().primaryKey(),
+  avatar: text('avatar').notNull(),
 });
 
+
 export const cardsTable = pgTable('cards', {
-  card_id: text('card_id').notNull().unique().primaryKey(),
+  card_id: uuid('card_id').notNull().primaryKey(),
   deleted: boolean('deleted').notNull().default(false),
-  visibility: visibilityEnum('visibility').notNull().default('public'),
-  suspended: boolean('suspended').notNull().default(false),
   contents: text('contents').notNull(),
-  updated_time: timestamp('updated_time').notNull(),
   created_time: timestamp('created_time').notNull(),
-  user_id: text('user_id')
+  user_id: uuid('user_id')
     .notNull()
     .references(() => usersTable.user_id),
+  updated_time: timestamp('updated_time').notNull(),
+  visibility: visibilityEnum('visibility').notNull().default('public'),
+  suspended: boolean('suspended').notNull().default(false),
 });
 
 export const messagesTable = pgTable(
   'messages',
   {
-    sender_id: text('sender_id')
+    sender_id: uuid('sender_id')
       .notNull()
       .references(() => usersTable.user_id),
-    receiver_id: text('receiver_id')
+    receiver_id: uuid('receiver_id')
       .notNull()
       .references(() => usersTable.user_id),
-    time_stamp: time('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull(),
     contents: text('contents').notNull(),
   },
   (table) => {
@@ -65,26 +69,26 @@ export const messagesTable = pgTable(
 );
 
 export const applicationsTable = pgTable('applications', {
-  user_id: text('user_id')
+  user_id: uuid('user_id')
     .notNull()
     .references(() => usersTable.user_id),
   englishname: text('englishname').notNull(),
-  document_url: text('document_url').notNull(),
   enroll_year: integer('enroll_year').notNull(),
   verification: verificationEnum('verification').notNull().default('pending'),
   institute: text('institute').notNull(),
+  document_url: text('document_url'),
 });
 
 export const deletesTable = pgTable(
   'deletes',
   {
-    user_id: text('user_id')
+    user_id: uuid('user_id')
       .notNull()
       .references(() => usersTable.user_id),
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
-    time_stamp: time('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull(),
   },
   (table) => {
     return {
@@ -99,13 +103,13 @@ export const deletesTable = pgTable(
 export const likesTable = pgTable(
   'likes',
   {
-    user_id: text('user_id')
+    user_id: uuid('user_id')
       .notNull()
       .references(() => usersTable.user_id),
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
-    time_stamp: time('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull(),
   },
   (table) => {
     return {
@@ -120,13 +124,13 @@ export const likesTable = pgTable(
 export const commentsTable = pgTable(
   'comments',
   {
-    user_id: text('user_id')
+    user_id: uuid('user_id')
       .notNull()
       .references(() => usersTable.user_id),
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
-    time_stamp: time('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull(),
     contents: text('contents').notNull(),
   },
   (table) => {
@@ -144,18 +148,18 @@ export const locationsTable = pgTable('locations', {
 });
 
 export const locatedAtTable = pgTable('located_at', {
-  location_name: text('location_name')
-    .notNull()
-    .references(() => locationsTable.location_name),
-  card_id: text('card_id')
+  card_id: uuid('card_id')
     .notNull()
     .primaryKey()
     .references(() => cardsTable.card_id),
+    location_name: text('location_name')
+    .notNull()
+    .references(() => locationsTable.location_name),
 });
 
 export const labelsTable = pgTable('labels', {
   label_name: text('label_name').notNull().primaryKey(),
-  created_user: text('created_user')
+  created_user: uuid('created_user')
     .notNull()
     .references(() => usersTable.user_id),
 });
@@ -187,7 +191,7 @@ export const belongsToTable = pgTable(
 export const goodAtTable = pgTable(
   'good_at',
   {
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     label_name: text('label_name')
@@ -207,7 +211,7 @@ export const goodAtTable = pgTable(
 export const wantToLearnTable = pgTable(
   'want_to_learn',
   {
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     label_name: text('label_name')
