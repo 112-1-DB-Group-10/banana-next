@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@/components/ui/button'
+
 // components/NavBar.tsx
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -56,28 +58,29 @@ function NavBar() {
       </div>
       {isLogin ? (
         <div className="relative space-x-4">
-          <button
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          <Button
+            // className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            className="rounded-md px-4 py-2 bg-white text-black hover:bg-gray-200"
             onClick={handleClickPost}
           >
             發布卡片
-          </button>
-          <button
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          </Button>
+          <Button
+            className="rounded-md px-4 py-2 bg-white text-black hover:bg-gray-200"
             onClick={handleClickMessage}
           >
             <Link href="/chat">訊息</Link>
-          </button>
-          <button
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          </Button>
+          <Button
+            className="rounded-md px-4 py-2 bg-white text-black hover:bg-gray-200"
             onClick={toggleMenu}
           >
             頭貼
-          </button>
+          </Button>
           {showMenu && (
             <div
               ref={menuRef}
-              className="absolute right-0 top-full mt-2 rounded border bg-white shadow-md"
+              className="absolute right-0 top-full mt-3 rounded border bg-white shadow-md"
             >
               <div className="px-4 py-2 text-black">
                 <Link href="/profile">個人資訊</Link>
