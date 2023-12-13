@@ -55,7 +55,7 @@ export default function MainPage() {
   };
 
   return (
-    <div className="flex w-full justify-between p-4">
+    <div className="flex w-full justify-between">
       <div className="">
         <Input></Input>
         <div className="py-2 text-xl font-bold">Topic</div>

@@ -23,7 +23,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <main className="flex h-screen w-screen flex-col items-center justify-around">
           <NavBar />
-          <div className="flex w-screen flex-1 items-center justify-around">
+          <div className="flex w-screen flex-1 justify-around pt-24">
             {children}
           </div>
         </main>

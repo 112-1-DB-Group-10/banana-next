@@ -35,8 +35,7 @@ const labels = ['zz', 'yy', 'xx', 'ww', 'vv', 'uu', 'tt'];
 
 export default async function HomePage() {
   return (
-    // <div className="w-full h-full bg-blue-500"></div>
-    <div className="flex w-full flex-1 justify-between p-4">
+    <div className="flex w-full flex-1 justify-between pl-4 pr-4">
       <MainPage />
     </div>
   );

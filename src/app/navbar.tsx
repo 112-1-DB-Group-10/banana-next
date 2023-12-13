@@ -47,7 +47,7 @@ function NavBar() {
   };
 
   return (
-    <div className="top-0 flex w-full items-center justify-between bg-yellow-400 p-4 text-white">
+    <div className="fixed top-0 flex h-16 w-full items-center justify-between bg-yellow-400 p-4 text-white">
       <div className="flex items-center">
         {/* Logo (Replace with your logo/icon component) */}
         <Link href="/">
