@@ -21,7 +21,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <main className="flex h-screen w-screen flex-col items-center justify-around">
           <NavBar />
-          <SessionProvider>{children}</SessionProvider>
+          <div className='flex-1 w-screen'>
+            <SessionProvider>{children}</SessionProvider>
+          </div>
+          
         </main>
       </body>
     </html>
