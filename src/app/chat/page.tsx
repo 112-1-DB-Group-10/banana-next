@@ -92,7 +92,7 @@ const Chat = () => {
   }
 
   return (
-    <div className="mx-auto shadow-lg rounded-lg w-full">
+    <div className="mx-auto shadow-lg rounded-lg w-full px-1">
       {/* Chatting */}
       <div className="flex flex-row justify-between bg-white">
         {/* chat list */}
