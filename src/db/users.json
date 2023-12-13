@@ -1,0 +1,32 @@
+[
+    {
+        "user_id": "def456",
+        "username": "陳禹翰 Morris Chen",
+        "avatar": "https://source.unsplash.com/_7LbC5J-jw4/600x600",
+        "sex": "male",
+        "age": 20,
+        "email": "fake@gmail.com",
+        "role": "default",
+        "suspended": false
+    },
+    {
+        "user_id": "ghi789",
+        "username": "張禾家 Joanna Chang",
+        "avatar": "https://source.unsplash.com/otT2199XwI8/600x600",
+        "sex": "male",
+        "age": 20,
+        "email": "fake@gmail.com",
+        "role": "default",
+        "suspended": false
+    },
+    {
+        "user_id": "ggg999",
+        "username": "賴旻 Min Lai",
+        "avatar": "https://source.unsplash.com/L2cxSuKWbpo/600x600",
+        "sex": "male",
+        "age": 20,
+        "email": "fake@gmail.com",
+        "role": "default",
+        "suspended": false
+    }
+]

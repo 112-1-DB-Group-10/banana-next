@@ -1,33 +1,25 @@
+'use client';
+
 import React from 'react';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
-import users from './data/users.json';
+import { useSearchParams } from 'next/navigation';
+import { UserSelect } from '@/db/types';
+import users from '@/db/users.json';
+import User from './user';
 
 const UserList: React.FC = () => {
+  const searchParms = useSearchParams();
+  const query: string = searchParms.get('q') || '';
+  const filteredUser = users.filter(
+    (user) => user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1,
+  );
   return (
     <div className="w-full">
-      {users.map((user, index) => (
-        <div
-          key={index}
-          className={cn(
-            'cursor-pointer border-b-2 border-gray-200 px-2 py-4',
-            // selectedUserId === user.user_id && 'bg-gray-200',
-          )}
-        >
-          <div className="w-full">
-            <Image
-              width={25}
-              height={25}
-              src={user.avatar}
-              className="h-12 w-12 rounded-full object-cover"
-              alt=""
-            />
-          </div>
-          <div className="w-full">
-            <div className="text-lg font-semibold">{user.username}</div>
-            <span className="text-gray-500">TODO: Last Message</span>
-          </div>
-        </div>
+      {filteredUser.map((user, index) => (
+        <User
+          key={`userlist-item-${user.user_id}`}
+          user={user as UserSelect}
+          isLast={index === users.length - 1}
+        />
       ))}
     </div>
   );

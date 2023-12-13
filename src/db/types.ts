@@ -4,7 +4,6 @@ import {
   belongsToTable,
   cardsTable,
   commentsTable,
-  deletesTable,
   goodAtTable,
   labelsTable,
   likesTable,
@@ -24,9 +23,6 @@ export type CardInsert = InferInsertModel<typeof cardsTable>;
 
 export type MessageSelect = InferSelectModel<typeof messagesTable>;
 export type MessageInsert = InferInsertModel<typeof messagesTable>;
-
-export type DeleteSelect = InferSelectModel<typeof deletesTable>;
-export type DeleteInsert = InferInsertModel<typeof deletesTable>;
 
 export type LikeSelect = InferSelectModel<typeof likesTable>;
 export type LikeInsert = InferInsertModel<typeof likesTable>;

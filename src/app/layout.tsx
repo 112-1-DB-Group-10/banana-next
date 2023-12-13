@@ -17,13 +17,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getUserSession();
-  console.log(session);
+  console.log(
+    `Session of user '${session.username}' (${session.user_id}) is obtained.`,
+  );
   return (
     <html lang="en">
       <body className={inter.className}>
         <main className="flex h-screen w-screen flex-col items-center justify-around">
           <NavBar />
-          <div className="flex w-screen flex-1 justify-around pt-24">
+          <div className="flex w-screen flex-1 justify-around py-24">
             {children}
           </div>
         </main>

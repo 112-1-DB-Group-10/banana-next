@@ -12,15 +12,18 @@ interface OAuthProfile extends Profile {
 }
 
 const addNewUserWithProfile = async (profile: OAuthProfile) => {
-  const newUser = await db.insert(usersTable).values({
-    email: profile.email as string,
-    user_id: uuid(),
-    username: profile.name as string,
-    sex: 'unknown',
-    age: 0,
-    avatar: profile.picture as string,
-  });
-  return newUser;
+  const newUser = await db
+    .insert(usersTable)
+    .values({
+      email: profile.email as string,
+      user_id: uuid(),
+      username: profile.name as string,
+      sex: 'unknown',
+      age: 0,
+      avatar: profile.picture as string,
+    })
+    .returning();
+  return newUser[0];
 };
 
 const authOption: NextAuthOptions = {
@@ -36,17 +39,18 @@ const authOption: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (profile) {
-        console.log('profile', profile);
         const existingUser = await db
           .select({ username: usersTable.username })
           .from(usersTable)
           .where(eq(usersTable.email, profile.email as string));
 
         if (existingUser.length > 0) {
-          console.log('existingUser', existingUser);
+          console.log(
+            `User '${existingUser[0].username}' logged in with Google.`,
+          );
         } else {
           const newUser = await addNewUserWithProfile(profile);
-          console.log('newUser', newUser);
+          console.log(`Added new user '${newUser.username}' with Google.`);
         }
       } else {
         console.log('no profile');
@@ -58,13 +62,16 @@ const authOption: NextAuthOptions = {
     async jwt({ token, user, account, profile }) {
       if (profile) {
         const existingUser = await db
-          .select({})
+          .select()
           .from(usersTable)
           .where(eq(usersTable.email, profile.email as string));
         if (existingUser) {
-          console.log(existingUser);
+          console.log(
+            `User '${existingUser[0].username}' logged in with Google.`,
+          );
         } else {
-          await addNewUserWithProfile(profile);
+          const newUser = await addNewUserWithProfile(profile);
+          console.log(`Added new user '${newUser.username}' with Google.`);
         }
       }
       return token;

@@ -1,4 +1,7 @@
-import users from './data/users.json';
+'use server';
+
+import { Card } from '@/components/ui/card';
+import Search from './search';
 import UserList from './userlist';
 
 export default async function ChatLayout({
@@ -6,15 +9,12 @@ export default async function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log('users', users);
   return (
-    <div className="flex w-screen flex-1 justify-around pt-24">
-      <UserList
-        selectedUserId={null}
-        onSelectUser={function (userId: string): void {
-          throw new Error('Function not implemented.');
-        }}
-      />
+    <div className="flex items-center justify-around gap-8">
+      <Card className="h-[30rem] w-[20rem] overflow-y-scroll p-4">
+        <Search />
+        <UserList />
+      </Card>
       {children}
     </div>
   );
