@@ -162,7 +162,6 @@ export const labelsTable = pgTable('labels', {
 
 export const topicsTable = pgTable('topics', {
   topic_name: text('topic_name').notNull().primaryKey(),
-
 });
 
 export const belongsToTable = pgTable(

@@ -1,6 +1,7 @@
-'use client';
+'use server';
 
 import React from 'react';
+import { getChatBox } from '@/actions/chatQueries';
 import { cn } from '@/lib/utils';
 
 interface Messages {
@@ -17,23 +18,20 @@ interface ChatMessagesProps {
   selectedUserAvatar: string | null;
 }
 
-const ChatMessages: React.FC<ChatMessagesProps> = ({
+const ChatMessages: React.FC<ChatMessagesProps> = async ({
   messages,
   loggedInUserId,
   selectedUserId,
   selectedUserAvatar,
 }) => {
-  const userMessages = selectedUserId
-    ? messages.filter(
-        (message) =>
-          message.sender_id === selectedUserId ||
-          message.receiver_id === selectedUserId,
-      )
-    : [];
+  const chatBox = await getChatBox(
+    '0007970e-3ee4-4814-a886-0717399d1547',
+    'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c',
+  );
   return (
     <div className="flex w-full flex-col justify-between px-5">
       <div className="mt-5 flex flex-col">
-        {userMessages.map((message, index) => (
+        {chatBox.map((message, index) => (
           <div
             className={cn(
               'mb-4 flex',
