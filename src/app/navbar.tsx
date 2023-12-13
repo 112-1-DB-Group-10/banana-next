@@ -46,7 +46,7 @@ function NavBar() {
     };
 
     return (
-        <div className="w-full fixed top-0 flex items-center justify-between bg-yellow-400 text-white p-4">
+        <div className="w-full top-0 flex items-center justify-between bg-yellow-400 text-white p-4">
             <div className="flex items-center">
                 {/* Logo (Replace with your logo/icon component) */}
                 <div className="text-2xl font-bold">Logo</div>
