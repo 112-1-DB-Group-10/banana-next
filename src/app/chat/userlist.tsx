@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface User {
-  id: string; 
+  id: string;
   name: string;
   message: string;
   imageURL: string;
@@ -14,21 +14,27 @@ interface UserListProps {
   onSelectUser: (userId: string) => void;
 }
 
-const UserList: React.FC<UserListProps> = ({ users, selectedUserId, onSelectUser }) => {
+const UserList: React.FC<UserListProps> = ({
+  users,
+  selectedUserId,
+  onSelectUser,
+}) => {
   return (
-    <div className='w-full'>
+    <div className="w-full">
       {users.map((user, index) => (
         <div
           key={index}
-          className={`py-4 px-2 border-b-2 border-gray-200 cursor-pointer ${selectedUserId === user.id ? 'bg-gray-200' : ''}`}
+          className={`cursor-pointer border-b-2 border-gray-200 px-2 py-4 ${
+            selectedUserId === user.id ? 'bg-gray-200' : ''
+          }`}
           onClick={() => onSelectUser(user.id)}
         >
-        <div className="w-full">
-          <img
-            src={user.imageURL}
-            className="object-cover h-12 w-12 rounded-full"
-            alt=""
-          />
+          <div className="w-full">
+            <img
+              src={user.imageURL}
+              className="h-12 w-12 rounded-full object-cover"
+              alt=""
+            />
           </div>
           <div className="w-full">
             <div className="text-lg font-semibold">{user.name}</div>

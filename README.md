@@ -12,7 +12,6 @@ yarn
 
 Create a `.env.local` file in the root of the project and add the variables in `.env.example`.
 
-
 ### Database
 
 1. Start database
