@@ -25,7 +25,6 @@ export const getUserSession = async () => {
       session,
     },
   });
-  if (!authUserSession || !authUserSession.user)
-    throw new Error('unauthorized');
+  if (!authUserSession || !authUserSession.user) return null;
   return authUserSession?.user;
 };
