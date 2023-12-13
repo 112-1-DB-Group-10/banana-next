@@ -6,6 +6,7 @@ import UserList from './userlist';
 
 const Chat = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // 假 user 資料
   const usersData = [
@@ -73,6 +74,10 @@ const Chat = () => {
     },
   ];
 
+  const filteredUsers = usersData.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   usersData.forEach((user) => {
     const lastMessage = messageData
       .filter(
@@ -94,6 +99,15 @@ const Chat = () => {
     }
   }
 
+  let selectedUserName = '';
+
+  if (selectedUserId) {
+    const selectedUser = usersData.find((user) => user.id === selectedUserId);
+    if (selectedUser) {
+      selectedUserName = selectedUser.name; 
+    }
+  }
+
   return (
     <div className="mx-auto w-full rounded-lg px-1 shadow-lg">
       {/* Chatting */}
@@ -106,12 +120,14 @@ const Chat = () => {
               type="text"
               placeholder="search chatting"
               className="w-full rounded-2xl border-2 border-gray-200 px-2 py-2"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           {/* end search compt */}
           <div className="flex flex-col items-center justify-center border-b-2">
             <UserList
-              users={usersData}
+              users={filteredUsers}
               selectedUserId={selectedUserId}
               onSelectUser={(userId: string) => setSelectedUserId(userId)}
             />
