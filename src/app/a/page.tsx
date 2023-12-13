@@ -12,7 +12,7 @@ import {
   commentOnCard,
   deleteCard,
   updateCard,
- } from "@/db/cardActions";
+ } from "@/actions/cardActions";
 
 
 import {v4 as uuidv4} from 'uuid';

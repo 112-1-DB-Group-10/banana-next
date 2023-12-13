@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from '@/db';
-import { usersTable, cardsTable, messagesTable, applicationsTable, deletesTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "./schema";
+import { usersTable, cardsTable, messagesTable, applicationsTable, deletesTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "../db/schema";
 import { asc, desc, count, sql, eq, and, like, isNull, inArray } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/pg-core';
 import { any } from 'zod';
