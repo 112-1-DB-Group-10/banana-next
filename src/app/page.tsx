@@ -11,6 +11,7 @@ export default async function HomePage() {
         {messages.map((message, index) => (
           <div key={index}>{message.content}</div>
         ))}
+        AAAA
       </div>
       <MessageForm />
     </div>
