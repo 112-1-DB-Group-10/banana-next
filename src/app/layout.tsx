@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
@@ -20,7 +19,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <main className="flex min-h-[100dvh] flex-col items-center justify-around">
           <nav>Nav Bar</nav>
-          <SessionProvider>{children}</SessionProvider>
+          {children}
         </main>
       </body>
     </html>
