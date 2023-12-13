@@ -2,6 +2,7 @@ import { NextAuthOptions, Profile } from 'next-auth';
 import NextAuth from 'next-auth/next';
 import GoogleProvider from 'next-auth/providers/google';
 import { eq } from 'drizzle-orm';
+import { v4 as uuid } from 'uuid';
 import { db } from '@/db';
 import { usersTable } from '@/db/schema';
 import { session } from '@/lib/session';
@@ -13,7 +14,7 @@ interface OAuthProfile extends Profile {
 const addNewUserWithProfile = async (profile: OAuthProfile) => {
   const newUser = await db.insert(usersTable).values({
     email: profile.email as string,
-    user_id: profile.sub as string,
+    user_id: uuid(),
     username: profile.name as string,
     sex: 'unknown',
     age: 0,
@@ -35,16 +36,17 @@ const authOption: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (profile) {
-        console.log(profile);
+        console.log('profile', profile);
         const existingUser = await db
-          .select({})
+          .select({ username: usersTable.username })
           .from(usersTable)
           .where(eq(usersTable.email, profile.email as string));
 
         if (existingUser.length > 0) {
-          console.log(existingUser);
+          console.log('existingUser', existingUser);
         } else {
-          await addNewUserWithProfile(profile);
+          const newUser = await addNewUserWithProfile(profile);
+          console.log('newUser', newUser);
         }
       } else {
         console.log('no profile');

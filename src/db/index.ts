@@ -11,5 +11,4 @@ const client = new Client({
 });
 
 await client.connect();
-// console.log('Successfully connected to postgres database');
 export const db = drizzle(client, { schema });

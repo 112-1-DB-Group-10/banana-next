@@ -6,6 +6,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uuid,
 } from 'drizzle-orm/pg-core';
 
 export const roleEnum = pgEnum('role', ['admin', 'default']);
@@ -24,16 +25,16 @@ export const usersTable = pgTable('users', {
   email: text('email').notNull().unique(),
   role: roleEnum('role').notNull().default('default'),
   suspended: boolean('suspended').notNull().default(false),
-  user_id: text('user_id').notNull().primaryKey(),
+  user_id: uuid('user_id').notNull().primaryKey(),
   avatar: text('avatar').notNull(),
 });
 
 export const cardsTable = pgTable('cards', {
-  card_id: text('card_id').notNull().primaryKey(),
+  card_id: uuid('card_id').notNull().primaryKey(),
   deleted: boolean('deleted').notNull().default(false),
   contents: text('contents').notNull(),
   created_time: timestamp('created_time').notNull(),
-  user_id: text('user_id')
+  user_id: uuid('user_id')
     .notNull()
     .references(() => usersTable.user_id),
   updated_time: timestamp('updated_time').notNull(),
@@ -44,10 +45,10 @@ export const cardsTable = pgTable('cards', {
 export const messagesTable = pgTable(
   'messages',
   {
-    sender_id: text('sender_id')
+    sender_id: uuid('sender_id')
       .notNull()
       .references(() => usersTable.user_id),
-    receiver_id: text('receiver_id')
+    receiver_id: uuid('receiver_id')
       .notNull()
       .references(() => usersTable.user_id),
     time_stamp: timestamp('time_stamp').notNull(),
@@ -64,7 +65,7 @@ export const messagesTable = pgTable(
 );
 
 export const applicationsTable = pgTable('applications', {
-  user_id: text('user_id')
+  user_id: uuid('user_id')
     .notNull()
     .references(() => usersTable.user_id),
   englishname: text('englishname').notNull(),
@@ -77,10 +78,10 @@ export const applicationsTable = pgTable('applications', {
 export const deletesTable = pgTable(
   'deletes',
   {
-    user_id: text('user_id')
+    user_id: uuid('user_id')
       .notNull()
       .references(() => usersTable.user_id),
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     time_stamp: timestamp('time_stamp').notNull(),
@@ -98,10 +99,10 @@ export const deletesTable = pgTable(
 export const likesTable = pgTable(
   'likes',
   {
-    user_id: text('user_id')
+    user_id: uuid('user_id')
       .notNull()
       .references(() => usersTable.user_id),
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     time_stamp: timestamp('time_stamp').notNull(),
@@ -119,10 +120,10 @@ export const likesTable = pgTable(
 export const commentsTable = pgTable(
   'comments',
   {
-    user_id: text('user_id')
+    user_id: uuid('user_id')
       .notNull()
       .references(() => usersTable.user_id),
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     time_stamp: timestamp('time_stamp').notNull(),
@@ -143,7 +144,7 @@ export const locationsTable = pgTable('locations', {
 });
 
 export const locatedAtTable = pgTable('located_at', {
-  card_id: text('card_id')
+  card_id: uuid('card_id')
     .notNull()
     .primaryKey()
     .references(() => cardsTable.card_id),
@@ -154,7 +155,7 @@ export const locatedAtTable = pgTable('located_at', {
 
 export const labelsTable = pgTable('labels', {
   label_name: text('label_name').notNull().primaryKey(),
-  created_user: text('created_user')
+  created_user: uuid('created_user')
     .notNull()
     .references(() => usersTable.user_id),
 });
@@ -186,7 +187,7 @@ export const belongsToTable = pgTable(
 export const goodAtTable = pgTable(
   'good_at',
   {
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     label_name: text('label_name')
@@ -206,7 +207,7 @@ export const goodAtTable = pgTable(
 export const wantToLearnTable = pgTable(
   'want_to_learn',
   {
-    card_id: text('card_id')
+    card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
     label_name: text('label_name')

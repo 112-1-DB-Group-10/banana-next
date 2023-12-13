@@ -1,6 +1,5 @@
 'use server';
 
-import { getUserSession } from '@/lib/session';
 import MainPage from './mainpage';
 
 const topics = [
@@ -35,8 +34,6 @@ const locations = [
 const labels = ['zz', 'yy', 'xx', 'ww', 'vv', 'uu', 'tt'];
 
 export default async function HomePage() {
-  const session = await getUserSession();
-  console.log(session);
   return (
     // <div className="w-full h-full bg-blue-500"></div>
     <div className="flex w-full flex-1 justify-between p-4">
