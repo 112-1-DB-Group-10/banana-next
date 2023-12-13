@@ -1,16 +1,30 @@
-import { User, getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
+import { eq } from 'drizzle-orm';
+import { db } from '@/db';
+import { usersTable } from '@/db/schema';
 
 export const session = async ({ session, token }: any) => {
-  session.user.id = token.id;
+  // console.log(token);
+  if (token.email) {
+    const existingUser = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, token.email as string));
+    if (existingUser.length > 0) {
+      session.user = existingUser[0];
+    }
+  } else {
+    session.user = null;
+  }
   return session;
 };
 
-export const getUserSession = async (): Promise<User> => {
+export const getUserSession = async () => {
   const authUserSession = await getServerSession({
     callbacks: {
       session,
     },
   });
-  // if (!authUserSession) throw new Error('unauthorized')
+  if (!authUserSession || !authUserSession.user) return null;
   return authUserSession?.user;
 };

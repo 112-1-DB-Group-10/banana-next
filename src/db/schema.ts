@@ -1,5 +1,3 @@
-import { timeStamp } from 'console';
-import { varbinary } from 'drizzle-orm/mysql-core';
 import {
   boolean,
   integer,
@@ -7,13 +5,12 @@ import {
   pgTable,
   primaryKey,
   text,
-  time,
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
 
 export const roleEnum = pgEnum('role', ['admin', 'default']);
-export const sexEnum = pgEnum('sex', ['female', 'male']);
+export const sexEnum = pgEnum('sex', ['female', 'male', 'unknown']);
 export const visibilityEnum = pgEnum('visibility', ['public', 'verified']);
 export const verificationEnum = pgEnum('verification', [
   'pass',
