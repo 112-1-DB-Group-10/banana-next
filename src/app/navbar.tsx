@@ -1,23 +1,24 @@
-'use client'
+'use client';
+
 // components/NavBar.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 
 function handleClickLogin() {
-    console.log("click login button")
+  console.log('click login button');
 }
 
 function handleClickPost() {
-    console.log("click post button");
+  console.log('click post button');
 }
 
 function handleClickMessage() {
-    console.log("click message button");
+  console.log('click message button');
 }
 
 function handleClickAvatar() {
-    console.log("click avatar button");
+  console.log('click avatar button');
 }
-
 
 // interface NavBarProps {
 //     isLogin: boolean;
@@ -25,58 +26,77 @@ function handleClickAvatar() {
 var isLogin = true;
 
 function NavBar() {
-    const [showMenu, setShowMenu] = useState(false);
-    const menuRef = useRef<HTMLDivElement>(null);
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-    const handleClickOutside = (event: MouseEvent) => {
-        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-            setShowMenu(false);
-        }
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setShowMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
 
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
 
-    const toggleMenu = () => {
-        setShowMenu(!showMenu);
-    };
-
-    return (
-        <div className="w-full top-0 flex items-center justify-between bg-yellow-400 text-white p-4">
-            <div className="flex items-center">
-                {/* Logo (Replace with your logo/icon component) */}
-                <div className="text-2xl font-bold">Logo</div>
+  return (
+    <div className="top-0 flex w-full items-center justify-between bg-yellow-400 p-4 text-white">
+      <div className="flex items-center">
+        {/* Logo (Replace with your logo/icon component) */}
+        <Link href="/">
+          <div className="text-2xl font-bold">Logo</div>
+        </Link>
+      </div>
+      {isLogin ? (
+        <div className="relative space-x-4">
+          <button
+            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            onClick={handleClickPost}
+          >
+            發布卡片
+          </button>
+          <button
+            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            onClick={handleClickMessage}
+          >
+            <Link href="/chat">訊息</Link>
+          </button>
+          <button
+            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            onClick={toggleMenu}
+          >
+            頭貼
+          </button>
+          {showMenu && (
+            <div
+              ref={menuRef}
+              className="absolute right-0 top-full mt-2 rounded border bg-white shadow-md"
+            >
+              <div className="px-4 py-2 text-black">
+                <Link href="/profile">個人資訊</Link>
+              </div>
+              <div className="px-4 py-2 text-black">申請驗證</div>
+              <div className="px-4 py-2 text-black">登出</div>
             </div>
-            {isLogin ? (
-                <div className="relative space-x-4">
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleClickPost}>
-                        發布卡片
-                    </button>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleClickMessage}>
-                        訊息
-                    </button>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={toggleMenu}>
-                        頭貼
-                    </button>
-                    {showMenu && (
-                        <div ref={menuRef} className="absolute top-full right-0 mt-2 bg-white border rounded shadow-md">
-                            <div className="py-2 px-4 text-black">個人資訊</div>
-                            <div className="py-2 px-4 text-black">申請驗證</div>
-                            <div className="py-2 px-4 text-black">登出</div>
-                        </div>
-                    )}
-                </div>
-            ) : (
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleClickLogin}>
-                        登入
-                    </button>
-                )}
+          )}
         </div>
-    );
+      ) : (
+        <button
+          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          onClick={handleClickLogin}
+        >
+          登入
+        </button>
+      )}
+    </div>
+  );
 }
 
 export default NavBar;
