@@ -8,11 +8,11 @@ export default async function HomePage() {
   return (
     <div>
       <div>
-        {messages.map((message, index) => (
-          <div key={index}>{message.content}</div>
+        {messages.map((messages, index) => (
+          <div key={index}>{messages.content}</div>
         ))}
       </div>
-      <MessageForm />
+      {/* <MessageForm /> */}
     </div>
   );
 }

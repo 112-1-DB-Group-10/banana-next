@@ -32,7 +32,6 @@ export const usersTable = pgTable('users', {
   avatar: text('avatar').notNull(),
 });
 
-
 export const cardsTable = pgTable('cards', {
   card_id: uuid('card_id').notNull().primaryKey(),
   deleted: boolean('deleted').notNull().default(false),
@@ -79,26 +78,26 @@ export const applicationsTable = pgTable('applications', {
   document_url: text('document_url'),
 });
 
-export const deletesTable = pgTable(
-  'deletes',
-  {
-    user_id: uuid('user_id')
-      .notNull()
-      .references(() => usersTable.user_id),
-    card_id: uuid('card_id')
-      .notNull()
-      .references(() => cardsTable.card_id),
-    time_stamp: timestamp('time_stamp').notNull(),
-  },
-  (table) => {
-    return {
-      deletes_pk: primaryKey({
-        name: 'deletes_pk',
-        columns: [table.user_id, table.card_id],
-      }),
-    };
-  },
-);
+// export const deletesTable = pgTable(
+//   'deletes',
+//   {
+//     user_id: uuid('user_id')
+//       .notNull()
+//       .references(() => usersTable.user_id),
+//     card_id: uuid('card_id')
+//       .notNull()
+//       .references(() => cardsTable.card_id),
+//     time_stamp: timestamp('time_stamp').notNull(),
+//   },
+//   (table) => {
+//     return {
+//       deletes_pk: primaryKey({
+//         name: 'deletes_pk',
+//         columns: [table.user_id, table.card_id],
+//       }),
+//     };
+//   },
+// );
 
 export const likesTable = pgTable(
   'likes',
@@ -115,7 +114,7 @@ export const likesTable = pgTable(
     return {
       likes_pk: primaryKey({
         name: 'likes_pk',
-        columns: [table.user_id, table.card_id, table.time_stamp],
+        columns: [table.user_id, table.card_id],
       }),
     };
   },
@@ -152,7 +151,7 @@ export const locatedAtTable = pgTable('located_at', {
     .notNull()
     .primaryKey()
     .references(() => cardsTable.card_id),
-    location_name: text('location_name')
+  location_name: text('location_name')
     .notNull()
     .references(() => locationsTable.location_name),
 });
@@ -166,6 +165,7 @@ export const labelsTable = pgTable('labels', {
 
 export const topicsTable = pgTable('topics', {
   topic_name: text('topic_name').notNull().primaryKey(),
+
 });
 
 export const belongsToTable = pgTable(
