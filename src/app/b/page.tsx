@@ -1,9 +1,9 @@
 'use server';
 
 import Link from 'next/link';
-import { getChatBox, getConversations } from '@/actions/chatQueries';
-import { changeBelongsTo, insertApplication, insertBelongsTo, NewApplications, NewLabels } from '@/actions/adminQueries';
-import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminQueries';
+import { getChatBox, getConversations } from '@/actions/chatActions';
+import { changeBelongsTo, insertApplication, insertBelongsTo, NewApplications, NewLabels } from '@/actions/adminActions';
+import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
 
 export default async function HomePage() {
 
