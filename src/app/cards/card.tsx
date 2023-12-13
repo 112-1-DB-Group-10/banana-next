@@ -1,12 +1,7 @@
-"use client";
+'use client';
 
 const Card = () => {
-    return (
-        <div>
-            Card component
-        </div>
-    )
+  return <div>Card component</div>;
 };
-
 
 export default Card;

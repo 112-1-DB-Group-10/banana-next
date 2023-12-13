@@ -1,7 +1,13 @@
-"use client";
+'use client';
+
 import { useState } from 'react';
 
-const colleges = ['國立台灣大學', '國立政治大學', '私立大葉大學', '私立文化大學'];
+const colleges = [
+  '國立台灣大學',
+  '國立政治大學',
+  '私立大葉大學',
+  '私立文化大學',
+];
 
 const Application = () => {
   const [name, setName] = useState('');
@@ -34,31 +40,31 @@ const Application = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 flex justify-between gap-10">
-      <div className="w-3/5 space-y-4 relative">
-        <div className="border rounded-md shadow-md p-4 space-y-4">
-          <h1 className="text-3xl font-bold mb-4">香蕉認證</h1>
+    <div className="container mx-auto flex justify-between gap-10 p-4">
+      <div className="relative w-3/5 space-y-4">
+        <div className="space-y-4 rounded-md border p-4 shadow-md">
+          <h1 className="mb-4 text-3xl font-bold">香蕉認證</h1>
 
           <div className="mb-4">
-            <label htmlFor="name" className="block mb-1">
+            <label htmlFor="name" className="mb-1 block">
               Name:
             </label>
             <input
               type="text"
               id="name"
-              className="border border-gray-300 p-2 rounded-md w-2/3" 
+              className="w-2/3 rounded-md border border-gray-300 p-2"
               value={name}
               onChange={handleNameChange}
             />
           </div>
 
           <div className="mb-4 flex items-center">
-            <label htmlFor="college" className="block mb-1 mr-4">
+            <label htmlFor="college" className="mb-1 mr-4 block">
               學校：
             </label>
             <select
               id="college"
-              className="border border-gray-300 p-2 rounded-md w-1/3"
+              className="w-1/3 rounded-md border border-gray-300 p-2"
               value={selectedCollege}
               onChange={handleCollegeChange}
             >
@@ -72,47 +78,47 @@ const Application = () => {
           </div>
 
           <div className="mb-4 flex items-center">
-            <label htmlFor="year" className="block mb-1 mr-4">
+            <label htmlFor="year" className="mb-1 mr-4 block">
               入學年份：
             </label>
             <input
               type="text"
               id="year"
-              className="border border-gray-300 p-2 rounded-md w-1/4"
+              className="w-1/4 rounded-md border border-gray-300 p-2"
               value={collegeYear}
               onChange={handleYearChange}
             />
           </div>
 
           <div className="mb-4">
-            <label htmlFor="profilePicture" className="block mb-1">
+            <label htmlFor="profilePicture" className="mb-1 block">
               上傳認證文件
             </label>
             <input
               type="file"
               id="profilePicture"
-              className="border border-gray-300 p-2 rounded-md w-1/3"
+              className="w-1/3 rounded-md border border-gray-300 p-2"
               onChange={handlePictureUpload}
             />
           </div>
 
           <div className="absolute bottom-4 right-4">
             <button
-                className="bg-blue-500 text-white py-3 px-5 rounded-md"
-                onClick={handleSubmit}
+              className="rounded-md bg-blue-500 px-5 py-3 text-white"
+              onClick={handleSubmit}
             >
-                送出認證
+              送出認證
             </button>
-        </div>
+          </div>
         </div>
       </div>
 
-      <div className="w-1/3 pl-5 mt-20">
+      <div className="mt-20 w-1/3 pl-5">
         <div className="flex flex-col justify-center">
-          <h2 className="text-lg font-bold mb-2">審核進度</h2>
+          <h2 className="mb-2 text-lg font-bold">審核進度</h2>
           <div className="flex items-center">
             <progress
-              className="w-full border border-gray-300 rounded-md mr-2"
+              className="mr-2 w-full rounded-md border border-gray-300"
               value={verificationProgress}
               max="100"
             >

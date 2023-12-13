@@ -82,7 +82,9 @@ function NavBar() {
               <div className="px-4 py-2 text-black">
                 <Link href="/profile">個人資訊</Link>
               </div>
-              <div className="px-4 py-2 text-black">申請驗證</div>
+              <div className="px-4 py-2 text-black">
+                <Link href="/application">申請驗證</Link>
+              </div>
               <div className="px-4 py-2 text-black">登出</div>
             </div>
           )}
