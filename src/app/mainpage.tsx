@@ -59,8 +59,8 @@ export default function MainPage() {
     <div className="flex w-full justify-center">
       <div className="">
         <Input></Input>
-        <div className="py-2 text-xl font-bold">Topic</div>
-        <div className="no-scrollbar flex max-h-[38vh] w-[180px] items-start overflow-y-auto">
+        <div className="py-2 text-xl font-bold">主題</div>
+        <div className="no-scrollbar flex max-h-[45vh] w-[180px] items-start overflow-y-auto">
           <Accordion type="single" collapsible className="w-full">
             {topics.map((topic, index) => (
               <AccordionItem key={index} value={`item-${index + 1}`}>
@@ -88,8 +88,8 @@ export default function MainPage() {
           </Accordion>
         </div>
 
-        <div className="py-2 text-xl font-bold">Location</div>
-        <div className="no-scrollbar flex max-h-[30vh] w-[180px] items-start overflow-y-auto">
+        <div className="py-2 text-xl font-bold">地點</div>
+        <div className="no-scrollbar flex max-h-[25vh] w-[180px] items-start overflow-y-auto">
           <Accordion type="single" collapsible className="w-full">
             {locations.map((location, index) => (
               <AccordionItem key={index} value={`item-${index + 1}`}>
