@@ -4,6 +4,7 @@ import { messagesTable } from '../db/schema';
 import { eq, gt, lt, gte, ne, or, sql, max, desc, and } from 'drizzle-orm';
 import { db } from '@/db';
 import { UUID } from 'crypto';
+import { time } from 'console';
 
 //找出與自己有聊過天的使用者
 //依據他們最後一則訊息進行時間排序並且顯示最後一則訊息
@@ -50,7 +51,7 @@ const conversations = await db
   .innerJoin(getSender, eq(getSender.sender_id, messagesTable.sender_id))
   .innerJoin(getReceiver, eq(getReceiver.sender_id, messagesTable.receiver_id))
   .orderBy(desc(max(messagesTable.time_stamp)));
-    console.log(conversations);
+    //console.log(conversations);
 
     return conversations;
 }
@@ -79,6 +80,31 @@ export const getChatBox = async (selfId: UUID, targetId: UUID) => {
         )
     )
     .orderBy(messagesTable.time_stamp)
-    console.log(chatBox);
+    //console.log(chatBox);
+    return chatBox;
 }
+
+// 聊天增加紀錄
+export const insertMessages = async (
+  sender_id: UUID, 
+  receiver_id: UUID, 
+  contents: string, 
+  time_stamp: any
+) => {
+  try {
+    const messages = await db
+  .insert(messagesTable)
+  .values({
+    sender_id: sender_id,
+    receiver_id: receiver_id,
+    contents: contents,
+    time_stamp: time_stamp
+  });
+    console.log('messages insert successfully!');
+    return messages;
+  } catch (error) {
+    console.error('Error inserting messages:', error);
+    throw error;
+  }
+};
 
