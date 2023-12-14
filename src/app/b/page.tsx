@@ -9,7 +9,7 @@ import {
   NewLabels,
 } from '@/actions/adminActions';
 import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
-import { getChatBox, getConversations } from '@/actions/chatQueries';
+import { getChatBox, getConversations } from '@/actions/chatActions';
 
 export default async function HomePage() {
   // const conversations = await getConversations('0007970e-3ee4-4814-a886-0717399d1547');

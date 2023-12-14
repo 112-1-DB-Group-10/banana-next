@@ -1,19 +1,13 @@
 'use server';
 
-import {
-  applicationsTable,
-  belongsToTable,
-  cardsTable,
-  labelsTable,
-  locatedAtTable,
-  locationsTable,
-  topicsTable,
-} from '../db/schema';
-import exp from 'constants';
-import { UUID } from 'crypto';
+import { applicationsTable, belongsToTable, cardsTable, labelsTable, topicsTable, locationsTable, locatedAtTable } from '../db/schema';
 import { eq, gt, lt, gte, ne, or, sql, max, desc, and } from 'drizzle-orm';
 import { db } from '@/db';
+import { UUID } from 'crypto';
+import exp from 'constants';
 
+//新增一筆 Applications
+//user_id, englishname, enroll_year, verification, institute, document_url
 export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
 export type NewCards = typeof cardsTable.$inferInsert;
