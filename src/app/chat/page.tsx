@@ -75,7 +75,7 @@ const Chat = () => {
   ];
 
   const filteredUsers = usersData.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   usersData.forEach((user) => {
@@ -104,7 +104,7 @@ const Chat = () => {
   if (selectedUserId) {
     const selectedUser = usersData.find((user) => user.id === selectedUserId);
     if (selectedUser) {
-      selectedUserName = selectedUser.name; 
+      selectedUserName = selectedUser.name;
     }
   }
 
