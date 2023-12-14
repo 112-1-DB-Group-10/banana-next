@@ -1,10 +1,10 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import Avatar from '@/components/avatar';
 import messages from '@/db/messages.json';
-import { UserSelect } from '@/db/types';
+import { User } from '@/db/types';
 import { cn } from '@/lib/utils';
 
-const User = ({ user, isLast }: { user: UserSelect; isLast: boolean }) => {
+const UserItem = ({ user, isLast }: { user: User; isLast: boolean }) => {
   const userId: string = 'abc123';
   const chat = messages.filter(
     (message) =>
@@ -22,13 +22,7 @@ const User = ({ user, isLast }: { user: UserSelect; isLast: boolean }) => {
           !isLast && 'border-b-2',
         )}
       >
-        <Image
-          width={100}
-          height={100}
-          src={user.avatar}
-          className="h-12 w-12 rounded-full object-cover"
-          alt={`Avatar of user ${user.username}`}
-        />
+        <Avatar user={user} />
         <div className="... w-full overflow-hidden">
           <div className=" text-lg font-semibold">{user.username}</div>
           <p className="truncate text-gray-500">
@@ -43,4 +37,4 @@ const User = ({ user, isLast }: { user: UserSelect; isLast: boolean }) => {
   );
 };
 
-export default User;
+export default UserItem;

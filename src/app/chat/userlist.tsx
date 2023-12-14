@@ -2,22 +2,24 @@
 
 import React, { useState } from 'react';
 import { MdMinimize } from 'react-icons/md';
-import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
+import Avatar from '@/components/avatar';
 import { Card } from '@/components/ui/card';
-import { UserSelect } from '@/db/types';
+import { User } from '@/db/types';
 import users from '@/db/users.json';
 import Search from './search';
-import User from './user';
+import UserItem from './useritem';
 
 const UserList: React.FC = () => {
   const searchParms = useSearchParams();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const query: string = searchParms.get('q') || '';
-  const filteredUsers = users.filter(
-    (user) => user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1,
-  );
+  const filteredUsers = users
+    .filter((user) => user.user_id !== 'xdd877')
+    .filter(
+      (user) => user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1,
+    );
   if (pathname.split('/').length >= 3 && collapsed) {
     return (
       <Card
@@ -28,14 +30,7 @@ const UserList: React.FC = () => {
           {users
             .filter((user) => user.user_id === pathname.split('/')[2])
             .map((user, index) => (
-              <Image
-                key={`user-avatar-${index}`}
-                width={100}
-                height={100}
-                src={user.avatar}
-                className="h-12 w-12 rounded-full object-cover"
-                alt={`Avatar of user ${user.username}`}
-              />
+              <Avatar key={`user-avatar-${index}`} user={user as User} />
             ))}
         </div>
       </Card>
@@ -54,9 +49,9 @@ const UserList: React.FC = () => {
       </div>
       <div className="w-full">
         {filteredUsers.map((user, index) => (
-          <User
+          <UserItem
             key={`userlist-item-${user.user_id}`}
-            user={user as UserSelect}
+            user={user as User}
             isLast={index === users.length - 1}
           />
         ))}
