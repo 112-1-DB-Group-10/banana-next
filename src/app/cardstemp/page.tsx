@@ -113,7 +113,7 @@ const cardstemp = () => {
             <div className="flex h-5 items-center space-x-4">
             <div className="font-bold">擅長的技能</div>
             <Separator orientation="vertical" />
-            <Badge variant="outline">耍廢</Badge>
+            <Badge variant="outline">FLOLAC</Badge>
             </div>
 
             <div className="flex flex-col space-y-1.5 font-bold">
