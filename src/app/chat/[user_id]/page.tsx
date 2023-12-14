@@ -20,10 +20,10 @@ const ChatBox = async ({ params }: { params: { user_id: string } }) => {
   )[0];
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="mb-4 flex w-full justify-between border-b-2 p-1 pb-2">
+      <div className="mb-4 flex w-full items-center justify-between border-b-2 p-1 pb-2">
         <p>{chattingUser.username}</p>
         <Link href="/chat">
-          <MdClose />
+          <MdClose className="h-6 w-6" />
         </Link>
       </div>
       <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">

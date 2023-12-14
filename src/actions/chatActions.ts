@@ -3,7 +3,12 @@
 import { messagesTable } from '../db/schema';
 import { UUID } from 'crypto';
 import { and, desc, eq, max, or } from 'drizzle-orm';
-import { db } from '@/db';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { client } from '@/db';
+import * as schema from '@/db/schema';
+
+await client.connect();
+const db = drizzle(client, { schema });
 
 //找出與自己有聊過天的使用者
 //依據他們最後一則訊息進行時間排序並且顯示最後一則訊息

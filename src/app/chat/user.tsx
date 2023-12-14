@@ -18,7 +18,7 @@ const User = ({ user, isLast }: { user: UserSelect; isLast: boolean }) => {
     <Link href={`/chat/${user.user_id}`}>
       <div
         className={cn(
-          'flex w-full cursor-pointer items-center gap-4 border-gray-200 px-2 py-4 transition-all',
+          'flex w-full cursor-pointer items-center gap-4 border-gray-200 px-2 py-4',
           !isLast && 'border-b-2',
         )}
       >
@@ -29,7 +29,7 @@ const User = ({ user, isLast }: { user: UserSelect; isLast: boolean }) => {
           className="h-12 w-12 rounded-full object-cover"
           alt={`Avatar of user ${user.username}`}
         />
-        <div className="... w-full w-full overflow-hidden">
+        <div className="... w-full overflow-hidden">
           <div className=" text-lg font-semibold">{user.username}</div>
           <p className="truncate text-gray-500">
             {lastMessage &&

@@ -2,10 +2,15 @@ import { NextAuthOptions, Profile } from 'next-auth';
 import NextAuth from 'next-auth/next';
 import GoogleProvider from 'next-auth/providers/google';
 import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import { v4 as uuid } from 'uuid';
-import { db } from '@/db';
+import { client } from '@/db';
 import { usersTable } from '@/db/schema';
+import * as schema from '@/db/schema';
 import { session } from '@/lib/session';
+
+await client.connect();
+const db = drizzle(client, { schema });
 
 interface OAuthProfile extends Profile {
   picture?: string;
