@@ -30,7 +30,7 @@ const UserList: React.FC = () => {
           {users
             .filter((user) => user.user_id === pathname.split('/')[2])
             .map((user, index) => (
-              <Avatar key={`user-avatar-${index}`} user={user as User} />
+              <Avatar key={`user-avatar-${index}`} image={user.avatar} />
             ))}
         </div>
       </Card>

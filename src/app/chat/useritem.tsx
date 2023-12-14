@@ -22,7 +22,7 @@ const UserItem = ({ user, isLast }: { user: User; isLast: boolean }) => {
           !isLast && 'border-b-2',
         )}
       >
-        <Avatar user={user} />
+        <Avatar image={user.avatar} />
         <div className="... w-full overflow-hidden">
           <div className=" text-lg font-semibold">{user.username}</div>
           <p className="truncate text-gray-500">

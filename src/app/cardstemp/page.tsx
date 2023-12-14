@@ -1,10 +1,16 @@
 'use client';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+
+import Avatar from '@/components/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -16,42 +22,18 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
+import { Separator } from '@/components/ui/separator';
 
 const cardstemp = () => {
   return (
-    <Card className="w-[800px] h-[350px] flex-col space-around">
-      <CardHeader className="flex-row justify-between items-center">
-        <div className="flex items-center">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <CardTitle className="px-2">
-            {/* <div>User Name</div>
-            <CardDescription>Institute</CardDescription> */}
+    <Card className="space-around h-fit w-[40rem] flex-col">
+      <CardHeader className="flex-row items-center justify-between">
+        <div className="flex items-center gap-5">
+          <Avatar image="https://github.com/shadcn.png" />
+          <CardTitle className="">
             <div>Min Min</div>
             <CardDescription>國立台灣大學</CardDescription>
-            <div className="text-xs font-light">1分鐘前</div>
+            <div className="text-xs font-light">1 分鐘前</div>
           </CardTitle>
         </div>
 
@@ -63,7 +45,7 @@ const cardstemp = () => {
             <DialogHeader>
               <DialogTitle>Edit profile</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
+                Make changes to your profile here.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -89,52 +71,29 @@ const cardstemp = () => {
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
-            {/* <div>Location</div> */}
             <div className="flex h-5 items-center space-x-4">
-            <div className="font-bold">地點</div>
-            <Separator orientation="vertical" />
-            <Badge variant="outline">線上</Badge>
+              <div className="font-bold">地點</div>
+              <Separator orientation="vertical" />
+              <Badge variant="outline">線上</Badge>
             </div>
 
-            {/* <div className="flex flex-col space-y-1.5">
-              Want To Learn:
-            </div> */}
-
             <div className="flex h-5 items-center space-x-4">
-            <div className="font-bold">想學的技能</div>
-            <Separator orientation="vertical" />
-            <Badge variant="outline">寫前端</Badge>
+              <div className="font-bold">想學的技能</div>
+              <Separator orientation="vertical" />
+              <Badge variant="outline">寫前端</Badge>
             </div>
 
-            {/* <div className="flex flex-col space-y-1.5">
-              Good At:
-            </div> */}
-
             <div className="flex h-5 items-center space-x-4">
-            <div className="font-bold">擅長的技能</div>
-            <Separator orientation="vertical" />
-            <Badge variant="outline">FLOLAC</Badge>
+              <div className="font-bold">擅長的技能</div>
+              <Separator orientation="vertical" />
+              <Badge variant="outline">FLOLAC</Badge>
             </div>
 
             <div className="flex flex-col space-y-1.5 font-bold">
               其他想說的話
             </div>
             <div>我不會寫前端嗚嗚嗚嗚嗚</div>
-            {/* <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Framework</Label>
-              <Select>
-                <SelectTrigger id="framework">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
-      </div>
+          </div>
         </form>
       </CardContent>
       <CardFooter className="flex">
@@ -147,12 +106,8 @@ const cardstemp = () => {
         <Button variant="outline" className="mx-2">
           私訊
         </Button>
-          
       </CardFooter>
     </Card>
-
-    
-
   );
 };
 
