@@ -72,7 +72,7 @@ export const applicationsTable = pgTable('applications', {
   enroll_year: integer('enroll_year').notNull(),
   verification: verificationEnum('verification').notNull().default('pending'),
   institute: text('institute').notNull(),
-  document_url: text('document_url'),
+  document_url: text('document_url').notNull(),
 });
 
 // export const deletesTable = pgTable(

@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import {
-  changeBelongsTo,
+  updateBelongsTo,
   insertApplication,
   insertBelongsTo,
   NewApplications,
   NewLabels,
-} from '@/actions/adminQueries';
-import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminQueries';
+} from '@/actions/adminActions';
+import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
 import { getChatBox, getConversations } from '@/actions/chatQueries';
 
 export default async function HomePage() {
@@ -37,7 +37,7 @@ export default async function HomePage() {
   //   topic_name: '耍笨',
   // };
   // const label_name = '測試用標籤2'
-  // await changeBelongsTo(topic, label_name);
+  // await updateBelongsTo(topic, label_name);
   // const label: NewLabels = {
   //   label_name: '測試用標籤1',
   //   created_user: "002a91b7-6e79-48fc-a8ed-70de45ebfcd800005a81-6b0b-4829-9216-3797e122ecd8"
