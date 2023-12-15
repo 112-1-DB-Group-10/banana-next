@@ -1,7 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Cardstemp from '@/components/card';
+import cardData from '@/actions/cards.json';
+import locations from '@/actions/locations.json';
+import topics from '@/actions/topics.json';
+import { CardData } from '@/actions/types';
+import SkillCard from '@/components/skill-card';
 import {
   Accordion,
   AccordionContent,
@@ -11,87 +15,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-const topics = [
-  '運動',
-  '音樂',
-  '學科',
-  '生活',
-  'AA',
-  'BB',
-  'CC',
-  'DD',
-  'EE',
-  'FF',
-  'GG',
-  'HH',
-  'II',
-  'JJ',
-];
-const locations = [
-  '線上',
-  '台北',
-  '新北',
-  '桃園',
-  'aa',
-  'bb',
-  'cc',
-  'dd',
-  'ee',
-  'ff',
-  'gg',
-];
-const labels = ['zz', 'yy', 'xx', 'ww', 'vv', 'uu', 'tt'];
-
-const commentData = [
-  {
-    card_id: 'aaa',
-    user_id: 'bbb',
-    avatar: 'https://github.com/shadcn.png',
-    username: 'Min Min',
-    timestamp: '1分鐘前',
-    contents: '幫自己推',
-  },
-  {
-    card_id: 'aaa',
-    user_id: 'ccc',
-    avatar: 'https://github.com/shadcn.png',
-    username: 'Wen',
-    timestamp: '1分鐘前',
-    contents: '我是賴玟',
-  },
-];
-
-const manyCardData = [
-  {
-    card_id: 'abc',
-    user_id: 'ddd',
-    avatar: 'https://github.com/shadcn.png',
-    username: 'mm_9al',
-    institute: '國立台灣大學',
-    timestamp: '20分鐘前',
-    location: '台北',
-    want_to_learn: 'FLOLAC',
-    good_at: '寫前端',
-    contnets: '我好想學 FLOLAC 喔，有人想一起去今年的 FLOLAC 嗎？',
-    likes: 100,
-    comments: commentData,
-  },
-  {
-    card_id: 'aaa',
-    user_id: 'bbb',
-    avatar: 'https://github.com/shadcn.png',
-    username: 'Min Min',
-    institute: '國立台灣大學',
-    timestamp: '10分鐘前',
-    location: '線上',
-    want_to_learn: '寫前端',
-    good_at: 'FLOLAC',
-    contnets: '我不會寫前端嗚嗚嗚嗚嗚',
-    likes: 10,
-    comments: commentData,
-  },
-];
 
 export default function MainPage() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
@@ -106,6 +29,16 @@ export default function MainPage() {
     setSelectedLabel(label);
   };
 
+  // const cards: CardData[] = );
+  const cards: CardData[] = cardData.map((card) => ({
+    ...card,
+    time_stamp: new Date(card.time_stamp),
+    comments: card.comments.map((comment) => ({
+      ...comment,
+      time_stamp: new Date(comment.time_stamp),
+    })),
+  }));
+
   return (
     <div className="flex w-full justify-center">
       <div className="">
@@ -117,17 +50,17 @@ export default function MainPage() {
               <AccordionItem key={index} value={`item-${index + 1}`}>
                 <AccordionTrigger
                   className={`text-l ${
-                    selectedTopic === topic ? 'text-blue-500' : ''
+                    selectedTopic === topic.topic_name ? 'text-blue-500' : ''
                   }`}
-                  onClick={() => handleTopicSelect(topic)}
+                  onClick={() => handleTopicSelect(topic.topic_name)}
                 >
-                  {topic}
+                  {topic.topic_name}
                 </AccordionTrigger>
                 <AccordionContent>
-                  {labels.map((label, index) => (
+                  {topic.labels.map((label, index) => (
                     <Button
                       key={index}
-                      className={`w-[180px] bg-white py-2 text-black hover:bg-gray-200`}
+                      className="w-[180px] bg-white py-2 text-black hover:bg-gray-200"
                       onClick={() => handleLableSelect(label)}
                     >
                       {label}
@@ -145,7 +78,6 @@ export default function MainPage() {
             {locations.map((location, index) => (
               <AccordionItem key={index} value={`item-${index + 1}`}>
                 <AccordionTrigger>{location}</AccordionTrigger>
-                {/* <AccordionContent>Content for {location}.</AccordionContent> */}
               </AccordionItem>
             ))}
           </Accordion>
@@ -171,9 +103,9 @@ export default function MainPage() {
             </div>
           </div>
           <div className="no-scrollbar flex max-h-[600px] flex-col overflow-y-auto">
-            {manyCardData.map((cardData, index) => (
+            {cards.map((card, index) => (
               <div key={`card-${index}`} className="py-2">
-                <Cardstemp cardData={cardData}></Cardstemp>
+                <SkillCard cardData={card}></SkillCard>
               </div>
             ))}
           </div>
