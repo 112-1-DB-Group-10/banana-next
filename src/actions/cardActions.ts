@@ -1,15 +1,9 @@
 "use server";
 
 import { db } from '@/db';
-<<<<<<< HEAD
-import { usersTable, cardsTable, messagesTable, applicationsTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "../db/schema";
-import { asc, desc, count, sql, eq, and, like, isNull, inArray } from 'drizzle-orm';
-import { QueryBuilder } from 'drizzle-orm/pg-core';
-=======
 import { usersTable, cardsTable, messagesTable, applicationsTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "@/db/schema";
 import { asc, desc, count, sql, eq, and, like, isNull, inArray, SQL } from 'drizzle-orm';
 import { PgUUID, QueryBuilder } from 'drizzle-orm/pg-core';
->>>>>>> card_1214
 import { any } from 'zod';
 import { UUID } from 'crypto';
 import {v4 as uuidv4} from 'uuid';
@@ -38,31 +32,31 @@ const getLabelsByTopic = async (topic: string) => {
 
 const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, cardPerPage: number, page: number) => {
     try {
-        // let cardsInLocation;
-        // if (locations) {
-        //     const cardIdsInLocation = db
-        //     .select({
-        //         card_id: locatedAtTable.card_id,
-        //     })
-        //     .from(locatedAtTable)
-        //     .where(inArray(locatedAtTable.location_name, locations))
-        //     .as("cardIdsInLocations");
+        let cardsInLocation;
+        if (locations) {
+            const cardIdsInLocation = db
+            .select({
+                card_id: locatedAtTable.card_id,
+            })
+            .from(locatedAtTable)
+            .where(inArray(locatedAtTable.location_name, locations))
+            .as("cardIdsInLocations");
 
-        //     cardsInLocation = db
-        //     .$with('cardsInLocation')
-        //     .as(
-        //         db.select()
-        //         .from(cardsTable)
-        //         .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
-        //     );
-        // } else {
-        //     cardsInLocation = db
-        //     .$with('cardsInLocation')
-        //     .as(
-        //         db.select()
-        //         .from(cardsTable)
-        //     );
-        // }
+            cardsInLocation = db
+            .$with('cardsInLocation')
+            .as(
+                db.select()
+                .from(cardsTable)
+                .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
+            );
+        } else {
+            cardsInLocation = db
+            .$with('cardsInLocation')
+            .as(
+                db.select()
+                .from(cardsTable)
+            );
+        }
 
         // Subquery for likes
         const likesSubquery = db
@@ -85,7 +79,7 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
             .as("commentsSubquery");
     
         const cardsLikedAndCommented = await db
-            .with(likesSubquery, commentsSubquery)
+            .with(likesSubquery, commentsSubquery, cardsInLocation)
             .select({
                 card_id: cardsTable.card_id,
                 deleted: cardsTable.deleted,
@@ -98,7 +92,7 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
                 commentCount: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
                 likeCount: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             })
-            .from(cardsTable)
+            .from(cardsInLocation)
             .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsTable.card_id))
             .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsTable.card_id))
             .where(
@@ -247,7 +241,7 @@ const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: 
             visibility: cardsTable.visibility,
             suspended: cardsTable.suspended,
             // topic_name: belongsToTable.topic_name,
-            label_name: cardIdsInLabels.label_name,
+            // label_name: cardIdsInLabels.label_name,
         })
         .from(cardsTable)
         .innerJoin(cardIdsInLabels, eq(cardIdsInLabels.card_id, cardsTable.card_id))
@@ -307,7 +301,16 @@ const getCardsLikedOrCommentedByUser = async (userId: UUID, cardPerPage: number,
         .as("likedOrCommented");
 
         const cards = await db
-        .select()
+        .select({
+            card_id: cardsTable.card_id,
+            deleted: cardsTable.deleted,
+            contents: cardsTable.contents,
+            created_time: cardsTable.created_time,
+            user_id: cardsTable.user_id,
+            updated_time: cardsTable.updated_time,
+            visibility: cardsTable.visibility,
+            suspended: cardsTable.suspended,
+        })
         .from(cardsTable)
         .innerJoin(likedOrCommented, eq(likedOrCommented.card_id, cardsTable.card_id))
         .limit(cardPerPage)
@@ -377,18 +380,19 @@ const getCardById = async (cardId: UUID) => {
 export {
     getLabelsByTopic,
 
+    /* 這個區塊裡都需要 location filter 功能，但我還沒寫好 */
     getPopularCards,
     getNewestCards,
-
     getCardById,
     getCardsBySubstring,
-    getCardsByLabel,
-    getCardsByTopic,
+    getCardsByLabel, // Q1: 卡片是否回傳 label_name？ 還是前端弄就好？
+    getCardsByTopic, // Q2: 卡片是否回傳 label_name 與 topic_name？ 還是前端弄就好？
     getCardsPostedByUser,
-    getCardsLikedOrCommentedByUser,
+    getCardsLikedOrCommentedByUser, // Q3: 卡片是否回傳 「按讚時間」 與 「留言時間」 ？還是前端弄就好？
+    /* 這個區塊裡都需要 location filter 功能，但我還沒寫好 */
 
-    likeCard,
-    commentOnCard,
+    likeCard, // Q4: 是否需要「取消按讚」功能，要的話要多一個函式
+    commentOnCard, // Q5: 是否需要「刪除留言」功能，要的話要多一個函式
     deleteCard,
     updateCard,
 };
