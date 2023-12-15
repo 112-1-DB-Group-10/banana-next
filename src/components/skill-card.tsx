@@ -1,8 +1,11 @@
 'use client';
 
-import Avatar from '@/components/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { CardData } from '@/actions/types';
+import { getTimeSinceByDate } from '@/lib/utils';
+import Avatar from './avatar';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 import {
   Card,
   CardContent,
@@ -10,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from './ui/card';
 import {
   Dialog,
   DialogContent,
@@ -19,21 +22,36 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+} from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Separator } from './ui/separator';
 
-const cardstemp = () => {
+const SkillCard = ({ cardData }: { cardData: CardData }) => {
+  const [showComments, setShowComments] = useState(false);
+  const [newComment, setNewComment] = useState('');
+
+  const toggleComments = () => {
+    setShowComments(!showComments);
+  };
+
+  const handleCommentSubmit = () => {
+    console.log('User entered comment:', newComment);
+    // 將留言新增至資料庫
+    setNewComment('');
+  };
+
   return (
     <Card className="space-around h-fit w-[40rem] flex-col">
       <CardHeader className="flex-row items-center justify-between">
         <div className="flex items-center gap-5">
-          <Avatar image="https://github.com/shadcn.png" />
+          <Avatar image={cardData.avatar} />
           <CardTitle className="">
-            <div>Min Min</div>
-            <CardDescription>國立台灣大學</CardDescription>
-            <div className="text-xs font-light">1 分鐘前</div>
+            <div>{cardData.username}</div>
+            <CardDescription>{cardData.institute}</CardDescription>
+            <div className="text-xs font-light">
+              {getTimeSinceByDate(cardData.time_stamp)}
+            </div>
           </CardTitle>
         </div>
 
@@ -74,41 +92,76 @@ const cardstemp = () => {
             <div className="flex h-5 items-center space-x-4">
               <div className="font-bold">地點</div>
               <Separator orientation="vertical" />
-              <Badge variant="outline">線上</Badge>
+              <Badge variant="outline">{cardData.location}</Badge>
             </div>
 
             <div className="flex h-5 items-center space-x-4">
               <div className="font-bold">想學的技能</div>
               <Separator orientation="vertical" />
-              <Badge variant="outline">寫前端</Badge>
+              <Badge variant="outline">{cardData.want_to_learn}</Badge>
             </div>
 
             <div className="flex h-5 items-center space-x-4">
               <div className="font-bold">擅長的技能</div>
               <Separator orientation="vertical" />
-              <Badge variant="outline">FLOLAC</Badge>
+              <Badge variant="outline">{cardData.good_at}</Badge>
             </div>
 
             <div className="flex flex-col space-y-1.5 font-bold">
               其他想說的話
             </div>
-            <div>我不會寫前端嗚嗚嗚嗚嗚</div>
+            <div>{cardData.contents}</div>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex">
         <Button variant="outline" className="mx-2">
-          按讚
+          讚 {cardData.likes}
         </Button>
-        <Button variant="outline" className="mx-2">
+        <Button variant="outline" className="mx-2" onClick={toggleComments}>
           留言
         </Button>
         <Button variant="outline" className="mx-2">
           私訊
         </Button>
       </CardFooter>
+      <CardContent>
+        {showComments && (
+          <div>
+            {cardData.comments.map((comment, index) => (
+              <div
+                key={index}
+                className="my-2 flex items-start justify-between space-x-2"
+              >
+                <div className="flex flex-row">
+                  <Avatar image={comment.avatar} />
+                  <div className="mx-2 flex flex-col">
+                    <div className="font-bold">{comment.username}</div>
+                    <div>{comment.contents}</div>
+                  </div>
+                </div>
+
+                <div className="text-xs font-light">
+                  {getTimeSinceByDate(comment.time_stamp)}
+                </div>
+              </div>
+            ))}
+            <div className="my-4 flex items-center space-x-2">
+              <Input
+                className="flex-grow"
+                placeholder="留言......"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <Button variant="outline" onClick={handleCommentSubmit}>
+                發送留言
+              </Button>
+            </div>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };
 
-export default cardstemp;
+export default SkillCard;
