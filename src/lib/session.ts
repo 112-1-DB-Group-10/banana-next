@@ -1,12 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { eq } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { client } from '@/db';
-import * as schema from '@/db/schema';
+import { db } from '@/db';
 import { usersTable } from '@/db/schema';
-
-await client.connect();
-const db = drizzle(client, { schema });
 
 export const session = async ({ session, token }: any) => {
   // console.log(token);
