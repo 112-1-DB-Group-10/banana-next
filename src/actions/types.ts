@@ -37,7 +37,7 @@ export interface Conversation {
 }
 
 
-export interface User {
+export interface UserProfile {
   username: string;
   sex: string;
   age: number;
