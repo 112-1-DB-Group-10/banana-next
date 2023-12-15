@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Cardstemp from '@/components/card';
 import {
   Accordion,
   AccordionContent,
@@ -9,8 +10,7 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Cardstemp from '@/components/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const topics = [
   '運動',
@@ -50,7 +50,7 @@ const commentData = [
     avatar: 'https://github.com/shadcn.png',
     username: 'Min Min',
     timestamp: '1分鐘前',
-    contents: '幫自己推'
+    contents: '幫自己推',
   },
   {
     card_id: 'aaa',
@@ -58,36 +58,40 @@ const commentData = [
     avatar: 'https://github.com/shadcn.png',
     username: 'Wen',
     timestamp: '1分鐘前',
-    contents: '我是賴玟'
-  }]
+    contents: '我是賴玟',
+  },
+];
 
-const manyCardData = [{
-  card_id: 'abc',
-  user_id: 'ddd',
-  avatar: 'https://github.com/shadcn.png',
-  username: 'mm_9al',
-  institute: '國立台灣大學',
-  timestamp: '20分鐘前',
-  location: '台北',
-  want_to_learn: 'FLOLAC',
-  good_at: '寫前端',
-  contnets: '我好想學 FLOLAC 喔，有人想一起去今年的 FLOLAC 嗎？',
-  likes: 100,
-  comments: commentData
-},{
-  card_id: 'aaa',
-  user_id: 'bbb',
-  avatar: 'https://github.com/shadcn.png',
-  username: 'Min Min',
-  institute: '國立台灣大學',
-  timestamp: '10分鐘前',
-  location: '線上',
-  want_to_learn: '寫前端',
-  good_at: 'FLOLAC',
-  contnets: '我不會寫前端嗚嗚嗚嗚嗚',
-  likes: 10,
-  comments: commentData
-}]
+const manyCardData = [
+  {
+    card_id: 'abc',
+    user_id: 'ddd',
+    avatar: 'https://github.com/shadcn.png',
+    username: 'mm_9al',
+    institute: '國立台灣大學',
+    timestamp: '20分鐘前',
+    location: '台北',
+    want_to_learn: 'FLOLAC',
+    good_at: '寫前端',
+    contnets: '我好想學 FLOLAC 喔，有人想一起去今年的 FLOLAC 嗎？',
+    likes: 100,
+    comments: commentData,
+  },
+  {
+    card_id: 'aaa',
+    user_id: 'bbb',
+    avatar: 'https://github.com/shadcn.png',
+    username: 'Min Min',
+    institute: '國立台灣大學',
+    timestamp: '10分鐘前',
+    location: '線上',
+    want_to_learn: '寫前端',
+    good_at: 'FLOLAC',
+    contnets: '我不會寫前端嗚嗚嗚嗚嗚',
+    likes: 10,
+    comments: commentData,
+  },
+];
 
 export default function MainPage() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
@@ -123,7 +127,7 @@ export default function MainPage() {
                   {labels.map((label, index) => (
                     <Button
                       key={index}
-                      className={`w-[180px] bg-white text-black hover:bg-gray-200 py-2`}
+                      className={`w-[180px] bg-white py-2 text-black hover:bg-gray-200`}
                       onClick={() => handleLableSelect(label)}
                     >
                       {label}
@@ -147,43 +151,44 @@ export default function MainPage() {
           </Accordion>
         </div>
       </div>
-      
-      <Tabs defaultValue='popular' className="w-[42rem] px-4">
-      <TabsList>
-        <TabsTrigger value="popular" className='w-[20rem] h-[35px]'>熱門</TabsTrigger>
-        <TabsTrigger value="recent" className='w-[20rem] h-[35px]'>最新</TabsTrigger>
-      </TabsList>
-      <TabsContent value="popular">
-      <div className="flex flex-grow p-1">
-        <div className="mx-6 text-xl font-bold">
-          {selectedTopic ? `${selectedTopic}` : '熱門'}
-        </div>
-        <div className="mx-6 text-xl">
-          {selectedLabel ? `>${selectedLabel}` : ''}
-        </div>
-      </div>
-      {/* {cardstemp()} */}
-      <div className='no-scrollbar flex flex-col overflow-y-auto max-h-[600px]'>
-      {manyCardData.map((cardData, index) => (
-        <div className='py-2'>
-        <Cardstemp cardData={cardData}></Cardstemp>
-        </div>
-      ))}
-      </div>
-      
-      </TabsContent>
-      <TabsContent value="recent">
-      <div className="flex flex-grow p-1">
-        <div className="mx-6 text-xl font-bold">
-          {selectedTopic ? `${selectedTopic}` : '最新'}
-        </div>
-        <div className="mx-6 text-xl">
-          {selectedLabel ? `>${selectedLabel}` : ''}
-        </div>
-      </div>
-      </TabsContent>
+
+      <Tabs defaultValue="popular" className="w-[42rem] px-4">
+        <TabsList>
+          <TabsTrigger value="popular" className="h-[35px] w-[20rem]">
+            熱門
+          </TabsTrigger>
+          <TabsTrigger value="recent" className="h-[35px] w-[20rem]">
+            最新
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="popular">
+          <div className="flex flex-grow p-1">
+            <div className="mx-6 text-xl font-bold">
+              {selectedTopic ? `${selectedTopic}` : '熱門'}
+            </div>
+            <div className="mx-6 text-xl">
+              {selectedLabel ? `>${selectedLabel}` : ''}
+            </div>
+          </div>
+          <div className="no-scrollbar flex max-h-[600px] flex-col overflow-y-auto">
+            {manyCardData.map((cardData, index) => (
+              <div key={`card-${index}`} className="py-2">
+                <Cardstemp cardData={cardData}></Cardstemp>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="recent">
+          <div className="flex flex-grow p-1">
+            <div className="mx-6 text-xl font-bold">
+              {selectedTopic ? `${selectedTopic}` : '最新'}
+            </div>
+            <div className="mx-6 text-xl">
+              {selectedLabel ? `>${selectedLabel}` : ''}
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
-      
     </div>
   );
 }
