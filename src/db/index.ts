@@ -5,7 +5,7 @@ import * as schema from './schema';
 
 dotenv.config();
 
-const client = new Client({
+export const client = new Client({
   connectionString: process.env.POSTGRES_URL,
   connectionTimeoutMillis: 5000,
 });

@@ -1,10 +1,9 @@
-import { InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { InferSelectModel } from 'drizzle-orm';
 import {
   applicationsTable,
   belongsToTable,
   cardsTable,
   commentsTable,
-  deletesTable,
   goodAtTable,
   labelsTable,
   likesTable,
@@ -16,44 +15,28 @@ import {
   wantToLearnTable,
 } from '@/db/schema';
 
-export type UserSelect = InferSelectModel<typeof usersTable>;
-export type UserInsert = InferInsertModel<typeof usersTable>;
+export type User = InferSelectModel<typeof usersTable>;
 
-export type CardSelect = InferSelectModel<typeof cardsTable>;
-export type CardInsert = InferInsertModel<typeof cardsTable>;
+export type Card = InferSelectModel<typeof cardsTable>;
 
-export type MessageSelect = InferSelectModel<typeof messagesTable>;
-export type MessageInsert = InferInsertModel<typeof messagesTable>;
+export type Message = InferSelectModel<typeof messagesTable>;
 
-export type DeleteSelect = InferSelectModel<typeof deletesTable>;
-export type DeleteInsert = InferInsertModel<typeof deletesTable>;
+export type Like = InferSelectModel<typeof likesTable>;
 
-export type LikeSelect = InferSelectModel<typeof likesTable>;
-export type LikeInsert = InferInsertModel<typeof likesTable>;
+export type Comment = InferSelectModel<typeof commentsTable>;
 
-export type CommentSelect = InferSelectModel<typeof commentsTable>;
-export type CommentInsert = InferInsertModel<typeof commentsTable>;
+export type Label = InferSelectModel<typeof labelsTable>;
 
-export type LabelSelect = InferSelectModel<typeof labelsTable>;
-export type LabelInsert = InferInsertModel<typeof labelsTable>;
+export type BelongsTo = InferSelectModel<typeof belongsToTable>;
 
-export type BelongsToSelect = InferSelectModel<typeof belongsToTable>;
-export type BelongsToInsert = InferInsertModel<typeof belongsToTable>;
+export type GoodAt = InferSelectModel<typeof goodAtTable>;
 
-export type GoodAtSelect = InferSelectModel<typeof goodAtTable>;
-export type GoodAtInsert = InferInsertModel<typeof goodAtTable>;
+export type Topic = InferSelectModel<typeof topicsTable>;
 
-export type TopicSelect = InferSelectModel<typeof topicsTable>;
-export type TopicInsert = InferInsertModel<typeof topicsTable>;
+export type WantToLearn = InferSelectModel<typeof wantToLearnTable>;
 
-export type WantToLearnSelect = InferSelectModel<typeof wantToLearnTable>;
-export type WantToLearnInsert = InferInsertModel<typeof wantToLearnTable>;
+export type Application = InferSelectModel<typeof applicationsTable>;
 
-export type ApplicationSelect = InferSelectModel<typeof applicationsTable>;
-export type ApplicationInsert = InferInsertModel<typeof applicationsTable>;
+export type Location = InferSelectModel<typeof locationsTable>;
 
-export type LocationSelect = InferSelectModel<typeof locationsTable>;
-export type LocationInsert = InferInsertModel<typeof locationsTable>;
-
-export type LocatedAtSelect = InferSelectModel<typeof locatedAtTable>;
-export type LocatedAtInsert = InferInsertModel<typeof locatedAtTable>;
+export type LocatedAt = InferSelectModel<typeof locatedAtTable>;
