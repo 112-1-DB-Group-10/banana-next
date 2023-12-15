@@ -85,7 +85,7 @@ const Profile = () => {
             <div className='flex'>
               <div className='pr-2 text-lg font-bold'>{user.username}</div>
               <Separator orientation="vertical" />
-              <div className='pl-2'>{user.sex}</div>
+              <div className='pl-2'>{user.sex == 'female' ? '女' : '男'}</div>
               <div className='pl-2'>{user.institute == null ? '' : user.institute}</div>
             </div>
             <div className='py-2'>{user.email}</div>
@@ -94,27 +94,27 @@ const Profile = () => {
         <div className='p-4'>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">Edit Profile</Button>
+              <Button variant="outline">修改個人資料</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
+                <DialogTitle>修改個人資料</DialogTitle>
                 <DialogDescription>
-                  Make changes to your profile here.
+                  在此修改個人資料
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
-                    Name
+                    使用者名稱
                   </Label>
                   <Input
                     id="name"
-                    value="Pedro Duarte"
+                    value={user.username}
                     className="col-span-3"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
+                {/* <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
                     Username
                   </Label>
@@ -123,10 +123,10 @@ const Profile = () => {
                     value="@peduarte"
                     className="col-span-3"
                   />
-                </div>
+                </div> */}
               </div>
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit">儲存變更</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -167,16 +167,24 @@ const Profile = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>曾經互動過的卡片</CardTitle>
-                  <CardDescription>
+                  {/* <CardDescription>
                     把卡片縮圖插在這裡
-                  </CardDescription>
+                  </CardDescription> */}
                 </CardHeader>
-                <CardContent className="space-y-2">
+                {/* <CardContent className="space-y-2">
                   繼續假裝我們有卡片縮圖
                 </CardContent>
                 <CardFooter>
                   <Button>展開卡片內容</Button>
-                </CardFooter>
+                </CardFooter> */}
+                <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
+                  {cards.length > 0 ?
+                  cards.map((card, index) => (
+                    <div key={`card-${index}`} className="py-2">
+                      <SkillCard cardData={card}></SkillCard>
+                    </div>
+                  )) : <div className='p-2'>還沒有互動過的卡片</div>}
+                </div>
               </Card>
             </TabsContent>
           </Tabs>
