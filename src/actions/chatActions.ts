@@ -4,54 +4,74 @@ import { messagesTable } from '../db/schema';
 import { eq, gt, lt, gte, ne, or, sql, max, desc, and } from 'drizzle-orm';
 import { db } from '@/db';
 import { UUID } from 'crypto';
+import { uuid } from 'drizzle-orm/pg-core';
 import { time } from 'console';
+import { v4 as uuidv4 } from 'uuid';
+import { union, unionAll } from 'drizzle-orm/pg-core'
+import { Unica_One } from 'next/font/google';
 
 //找出與自己有聊過天的使用者
 //依據他們最後一則訊息進行時間排序並且顯示最後一則訊息
-export const getConversations = async (userId: UUID) => {
+export const getConversations = async (userId: any) => {
     const getSender = db
   .select({
-    sender_id: messagesTable.sender_id,
-    receiver_id: messagesTable.receiver_id,
-    contents: max(messagesTable.contents),
-    time_stamp: max(messagesTable.time_stamp),
+    partner_id: messagesTable.sender_id,
+    last_time_stamp: max(messagesTable.time_stamp).as('last_time_stamp'),
   })
   .from(messagesTable)
   .where(
     eq(messagesTable.receiver_id, userId),
   )
-  .groupBy(messagesTable.sender_id, messagesTable.receiver_id)
-  .orderBy(desc(max(messagesTable.time_stamp)))
-  .as('getSender');
+  .groupBy(messagesTable.sender_id);
 
 const getReceiver = db
   .select({
-    sender_id: messagesTable.sender_id,
-    receiver_id: messagesTable.receiver_id,
-    contents: max(messagesTable.contents),
-    time_stamp: max(messagesTable.time_stamp),
+    partner_id: messagesTable.receiver_id,
+    last_time_stamp: max(messagesTable.time_stamp).as('last_time_stamp'),
   })
   .from(messagesTable)
   .where(
     eq(messagesTable.sender_id, userId),
   )
-  .groupBy(messagesTable.sender_id, messagesTable.receiver_id)
-  .orderBy(desc(max(messagesTable.time_stamp)))
-  .as('getReceiver');
+  .groupBy(messagesTable.receiver_id);
 
-const conversations = await db
+  const unionResult = union(getSender, getReceiver)
+  .as('unionResult');
+
+  const last_time = db
   .select({
-    sender_id: messagesTable.sender_id,
-    receiver_id: messagesTable.receiver_id,
-    contents: max(messagesTable.contents),
-    time_stamp: max(messagesTable.time_stamp),
+    partner_id: unionResult.partner_id,
+    last_time_stamp: max(unionResult.last_time_stamp).as('last_time_stamp')
   })
-  .from(messagesTable)
-  .groupBy(messagesTable.receiver_id, messagesTable.sender_id)
-  .innerJoin(getSender, eq(getSender.sender_id, messagesTable.sender_id))
-  .innerJoin(getReceiver, eq(getReceiver.sender_id, messagesTable.receiver_id))
-  .orderBy(desc(max(messagesTable.time_stamp)));
-    //console.log(conversations);
+  .from(unionResult)
+  .groupBy(unionResult.partner_id)
+  .as('last_time');
+
+  const conversations = await db
+  .select({
+    partner_id: last_time.partner_id,
+    last_time_stamp: max(last_time.last_time_stamp),
+    contents: max(messagesTable.contents)
+  })
+  .from(last_time)
+  .innerJoin(messagesTable, and(
+    or(
+      eq(messagesTable.receiver_id, last_time.partner_id),
+      eq(messagesTable.sender_id, last_time.partner_id)
+    ),
+    eq(messagesTable.time_stamp, last_time.last_time_stamp)
+  ))
+  .where(
+    and(
+      or(
+        eq(messagesTable.receiver_id, last_time.partner_id),
+        eq(messagesTable.sender_id, last_time.partner_id)
+      ),
+      eq(messagesTable.time_stamp, last_time.last_time_stamp)
+    )
+  )
+  .groupBy(last_time.partner_id);
+    // console.log(conversations);
 
     return conversations;
 }
@@ -80,31 +100,6 @@ export const getChatBox = async (selfId: UUID, targetId: UUID) => {
         )
     )
     .orderBy(messagesTable.time_stamp)
-    //console.log(chatBox);
-    return chatBox;
+    console.log(chatBox);
 }
-
-// 聊天增加紀錄
-export const insertMessages = async (
-  sender_id: UUID, 
-  receiver_id: UUID, 
-  contents: string, 
-  time_stamp: any
-) => {
-  try {
-    const messages = await db
-  .insert(messagesTable)
-  .values({
-    sender_id: sender_id,
-    receiver_id: receiver_id,
-    contents: contents,
-    time_stamp: time_stamp
-  });
-    console.log('messages insert successfully!');
-    return messages;
-  } catch (error) {
-    console.error('Error inserting messages:', error);
-    throw error;
-  }
-};
 
