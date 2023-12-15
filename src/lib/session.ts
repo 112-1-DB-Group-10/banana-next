@@ -4,7 +4,6 @@ import { db } from '@/db';
 import { usersTable } from '@/db/schema';
 
 export const session = async ({ session, token }: any) => {
-  // console.log(token);
   if (token.email) {
     const existingUser = await db
       .select()
