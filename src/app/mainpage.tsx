@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const topics = [
   '運動',
@@ -76,7 +76,7 @@ export default function MainPage() {
                   {labels.map((label, index) => (
                     <Button
                       key={index}
-                      className={`w-[180px] bg-white text-black hover:bg-gray-200 py-2`}
+                      className={`w-[180px] bg-white py-2 text-black hover:bg-gray-200`}
                       onClick={() => handleLableSelect(label)}
                     >
                       {label}
@@ -100,34 +100,37 @@ export default function MainPage() {
           </Accordion>
         </div>
       </div>
-      
-      <Tabs defaultValue='popular' className="w-[610px] px-4">
-      <TabsList>
-        <TabsTrigger value="popular" className='w-[300px] h-[35px]'>熱門</TabsTrigger>
-        <TabsTrigger value="recent" className='w-[300px] h-[35px]'>最新</TabsTrigger>
-      </TabsList>
-      <TabsContent value="popular">
-      <div className="flex flex-grow p-1">
-        <div className="mx-6 text-xl font-bold">
-          {selectedTopic ? `${selectedTopic}` : '熱門'}
-        </div>
-        <div className="mx-6 text-xl">
-          {selectedLabel ? `>${selectedLabel}` : ''}
-        </div>
-      </div>
-      </TabsContent>
-      <TabsContent value="recent">
-      <div className="flex flex-grow p-1">
-        <div className="mx-6 text-xl font-bold">
-          {selectedTopic ? `${selectedTopic}` : '最新'}
-        </div>
-        <div className="mx-6 text-xl">
-          {selectedLabel ? `>${selectedLabel}` : ''}
-        </div>
-      </div>
-      </TabsContent>
+
+      <Tabs defaultValue="popular" className="w-[610px] px-4">
+        <TabsList>
+          <TabsTrigger value="popular" className="h-[35px] w-[300px]">
+            熱門
+          </TabsTrigger>
+          <TabsTrigger value="recent" className="h-[35px] w-[300px]">
+            最新
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="popular">
+          <div className="flex flex-grow p-1">
+            <div className="mx-6 text-xl font-bold">
+              {selectedTopic ? `${selectedTopic}` : '熱門'}
+            </div>
+            <div className="mx-6 text-xl">
+              {selectedLabel ? `>${selectedLabel}` : ''}
+            </div>
+          </div>
+        </TabsContent>
+        <TabsContent value="recent">
+          <div className="flex flex-grow p-1">
+            <div className="mx-6 text-xl font-bold">
+              {selectedTopic ? `${selectedTopic}` : '最新'}
+            </div>
+            <div className="mx-6 text-xl">
+              {selectedLabel ? `>${selectedLabel}` : ''}
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
-      
     </div>
   );
 }
