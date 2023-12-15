@@ -33,5 +33,5 @@ export interface Topic {
 
 export interface Conversation {
   lastMessage: Message;
-  user: User;
+  partner: User;
 }
