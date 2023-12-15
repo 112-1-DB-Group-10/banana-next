@@ -1,6 +1,6 @@
 'use server';
 
-import { applicationsTable, belongsToTable, cardsTable, labelsTable, topicsTable, locationsTable, locatedAtTable } from '../db/schema';
+import { applicationsTable, belongsToTable, cardsTable, labelsTable, topicsTable, locationsTable, locatedAtTable, usersTable } from '../db/schema';
 import { eq, gt, lt, gte, ne, or, sql, max, desc, and } from 'drizzle-orm';
 import { db } from '@/db';
 import { UUID } from 'crypto';
@@ -10,6 +10,7 @@ export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
 export type NewCards = typeof cardsTable.$inferInsert;
 export type NewLabels = typeof labelsTable.$inferInsert;
+export type NewUsers = typeof usersTable.$inferInsert;
 
 //新增一筆 Applications
 //user_id, englishname, enroll_year, verification, institute, document_url
@@ -156,6 +157,34 @@ export const findInstitute = async (
     return t;
   } catch (error) {
     console.error('Error Find Institute:', error);
+    throw error;
+  }
+};
+
+export const getUserById = async (
+  user_id: any
+) => {
+  try {
+    const t = db
+    .select({
+      username: usersTable.username,
+      sex: usersTable.sex,
+      age: usersTable.age,
+      email: usersTable.email,
+      role: usersTable.role,
+      suspended: usersTable.suspended,
+      avatar: usersTable.avatar,
+      institute: applicationsTable.institute
+    })
+    .from(usersTable)
+    .innerJoin(applicationsTable, and(
+      eq(applicationsTable.user_id, user_id),
+      eq(applicationsTable.verification, "pass"),
+    ))
+    .where(eq(usersTable.user_id, user_id))
+    return t;
+  } catch (error) {
+    console.error('Error finding user:', error);
     throw error;
   }
 };

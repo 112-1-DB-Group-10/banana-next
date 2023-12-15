@@ -12,7 +12,7 @@ import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
 import { getChatBox, getConversations } from '@/actions/chatActions';
 
 export default async function HomePage() {
-  const conversations = await getConversations('0007970e-3ee4-4814-a886-0717399d1547');
+  const conversations = await getConversations("0007970e-3ee4-4814-a886-0717399d1547");
   console.log(conversations);
   // const chatBox = await getChatBox('0007970e-3ee4-4814-a886-0717399d1547', 'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c');
   // const application: NewApplications = {
