@@ -9,6 +9,7 @@ import { uuid } from 'drizzle-orm/pg-core';
 import { union, unionAll } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '@/db';
+import { NewUsers } from './adminActions';
 
 //找出與自己有聊過天的使用者
 //依據他們最後一則訊息進行時間排序並且顯示最後一則訊息
@@ -97,5 +98,19 @@ export const getChatBox = async (selfId: UUID, targetId: UUID) => {
       ),
     )
     .orderBy(messagesTable.time_stamp);
-  console.log(chatBox);
+  // console.log(chatBox);
+  return chatBox;
+};
+
+//新增訊息
+export const insertMessages = async (selfId: UUID, targetId: UUID, contents: string, time_stamp: any) => {
+  const message = await db
+    .insert(messagesTable)
+    .values({
+      sender_id: selfId,
+      receiver_id: targetId,
+      contents: contents,
+      time_stamp: time_stamp,
+    });
+    return message;
 };
