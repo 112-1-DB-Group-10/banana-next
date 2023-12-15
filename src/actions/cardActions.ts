@@ -1,15 +1,9 @@
 "use server";
 
 import { db } from '@/db';
-<<<<<<< HEAD
-import { usersTable, cardsTable, messagesTable, applicationsTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "../db/schema";
-import { asc, desc, count, sql, eq, and, like, isNull, inArray } from 'drizzle-orm';
-import { QueryBuilder } from 'drizzle-orm/pg-core';
-=======
 import { usersTable, cardsTable, messagesTable, applicationsTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "@/db/schema";
 import { asc, desc, count, sql, eq, and, like, isNull, inArray, SQL } from 'drizzle-orm';
 import { PgUUID, QueryBuilder } from 'drizzle-orm/pg-core';
->>>>>>> card_1214
 import { any } from 'zod';
 import { UUID } from 'crypto';
 import {v4 as uuidv4} from 'uuid';
