@@ -51,7 +51,7 @@ export const messagesTable = pgTable(
     receiver_id: uuid('receiver_id')
       .notNull()
       .references(() => usersTable.user_id),
-    time_stamp: timestamp('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull().defaultNow(),
     contents: text('contents').notNull(),
   },
   (table) => {
@@ -105,7 +105,7 @@ export const likesTable = pgTable(
     card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
-    time_stamp: timestamp('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull().defaultNow(),
   },
   (table) => {
     return {
@@ -126,7 +126,7 @@ export const commentsTable = pgTable(
     card_id: uuid('card_id')
       .notNull()
       .references(() => cardsTable.card_id),
-    time_stamp: timestamp('time_stamp').notNull(),
+    time_stamp: timestamp('time_stamp').notNull().defaultNow(),
     contents: text('contents').notNull(),
   },
   (table) => {

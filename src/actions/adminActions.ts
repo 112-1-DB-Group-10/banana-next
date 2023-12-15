@@ -6,8 +6,6 @@ import { db } from '@/db';
 import { UUID } from 'crypto';
 import exp from 'constants';
 
-//新增一筆 Applications
-//user_id, englishname, enroll_year, verification, institute, document_url
 export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
 export type NewCards = typeof cardsTable.$inferInsert;
@@ -26,6 +24,27 @@ export const insertApplication = async (application: NewApplications) => {
   }
 };
 
+//刪除一筆 applications
+export const deleteApplication = async (application: NewApplications) => {
+  try {
+    const t = await db
+    .delete(applicationsTable)
+    .where(
+      and(
+        eq(applicationsTable.user_id, application.user_id),
+        eq(applicationsTable.englishname, application.englishname),
+        eq(applicationsTable.enroll_year, application.enroll_year),
+        eq(applicationsTable.institute, application.institute),
+        eq(applicationsTable.document_url, application.document_url),
+      )
+    );
+    console.log('delete application success');
+    return t;
+    }catch(error){
+      console.error('Error deleting applications!:', error);
+      throw error;
+    }
+};
 //新增一個 topic
 export const insertTopic = async (topic: NewTopics) => {
   try {
