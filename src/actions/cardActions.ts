@@ -8,6 +8,7 @@ import { any } from 'zod';
 import { UUID } from 'crypto';
 import {v4 as uuidv4} from 'uuid';
 import { comment } from 'postcss';
+import { createAccordionScope } from '@radix-ui/react-accordion';
 
 
 export type NewCard = typeof cardsTable.$inferInsert;
@@ -33,7 +34,25 @@ const getLabelsByTopic = async (topic: string) => {
 const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, cardPerPage: number, page: number) => {
     try {
         let cardsInLocation;
-        if (locations) {
+        if (locations.length == 0) {
+            console.log("nothing");
+            cardsInLocation = db
+            .$with('cardsInLocation')
+            .as(
+                db.select({
+                    card_id: cardsTable.card_id,
+                    deleted: cardsTable.deleted,
+                    contents: cardsTable.contents,
+                    created_time: cardsTable.created_time,
+                    user_id: cardsTable.user_id,
+                    updated_time: cardsTable.updated_time,
+                    visibility: cardsTable.visibility,
+                    suspended: cardsTable.suspended,
+                })
+                .from(cardsTable)
+            );
+        } else {
+            console.log(locations);
             const cardIdsInLocation = db
             .select({
                 card_id: locatedAtTable.card_id,
@@ -45,17 +64,20 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
             cardsInLocation = db
             .$with('cardsInLocation')
             .as(
-                db.select()
+                db.select({
+                    card_id: cardsTable.card_id,
+                    deleted: cardsTable.deleted,
+                    contents: cardsTable.contents,
+                    created_time: cardsTable.created_time,
+                    user_id: cardsTable.user_id,
+                    updated_time: cardsTable.updated_time,
+                    visibility: cardsTable.visibility,
+                    suspended: cardsTable.suspended,
+                })
                 .from(cardsTable)
                 .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
             );
-        } else {
-            cardsInLocation = db
-            .$with('cardsInLocation')
-            .as(
-                db.select()
-                .from(cardsTable)
-            );
+            
         }
 
         // Subquery for likes
@@ -81,25 +103,25 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
         const cardsLikedAndCommented = await db
             .with(likesSubquery, commentsSubquery, cardsInLocation)
             .select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
+                card_id: cardsInLocation.card_id,
+                deleted: cardsInLocation.deleted,
+                contents: cardsInLocation.contents,
+                created_time: cardsInLocation.created_time,
+                user_id: cardsInLocation.user_id,
+                updated_time: cardsInLocation.updated_time,
+                visibility: cardsInLocation.visibility,
+                suspended: cardsInLocation.suspended,
                 commentCount: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
                 likeCount: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             })
             .from(cardsInLocation)
-            .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsTable.card_id))
-            .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsTable.card_id))
+            .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
+            .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
             .where(
                 and(
-                    eq(cardsTable.deleted, false),
-                    eq(cardsTable.suspended, false),
-                    inArray(cardsTable.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
+                    eq(cardsInLocation.deleted, false),
+                    eq(cardsInLocation.suspended, false),
+                    inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
                 )
             )
             .orderBy(desc(sql<number>`coalesce(${commentsSubquery.commentCount}, 0) * 3 + coalesce(${likesSubquery.likeCount}, 0)`))
@@ -116,19 +138,65 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
 };
 
 const getNewestCards = async (verifiedUser: boolean, locations: Array<string>, cardPerPage: number, page: number) => {
-    
+    let cardsInLocation;
+    if (locations.length == 0) {
+        console.log("nothing");
+        cardsInLocation = db
+        .$with('cardsInLocation')
+        .as(
+            db.select({
+                card_id: cardsTable.card_id,
+                deleted: cardsTable.deleted,
+                contents: cardsTable.contents,
+                created_time: cardsTable.created_time,
+                user_id: cardsTable.user_id,
+                updated_time: cardsTable.updated_time,
+                visibility: cardsTable.visibility,
+                suspended: cardsTable.suspended,
+            })
+            .from(cardsTable)
+        );
+    } else {
+        console.log(locations);
+        const cardIdsInLocation = db
+        .select({
+            card_id: locatedAtTable.card_id,
+        })
+        .from(locatedAtTable)
+        .where(inArray(locatedAtTable.location_name, locations))
+        .as("cardIdsInLocations");
+
+        cardsInLocation = db
+        .$with('cardsInLocation')
+        .as(
+            db.select({
+                card_id: cardsTable.card_id,
+                deleted: cardsTable.deleted,
+                contents: cardsTable.contents,
+                created_time: cardsTable.created_time,
+                user_id: cardsTable.user_id,
+                updated_time: cardsTable.updated_time,
+                visibility: cardsTable.visibility,
+                suspended: cardsTable.suspended,
+            })
+            .from(cardsTable)
+            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
+        );
+        
+    }
 
     const newCards = await db
+    .with(cardsInLocation)
     .select()
     .from(cardsTable)
     .where(
         and(
-            eq(cardsTable.deleted, false),
-            eq(cardsTable.suspended, false),
-            inArray(cardsTable.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
+            eq(cardsInLocation.deleted, false),
+            eq(cardsInLocation.suspended, false),
+            inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
         )
     )
-    .orderBy(cardsTable.created_time)
+    .orderBy(cardsInLocation.created_time)
     .limit(cardPerPage)
     .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
 
@@ -138,20 +206,66 @@ const getNewestCards = async (verifiedUser: boolean, locations: Array<string>, c
 
 
 const getCardsBySubstring = async (verifiedUser: boolean, mysubstring: string, locations: Array<string>, cardPerPage: number, page: number) => {
+    let cardsInLocation;
+    if (locations.length == 0) {
+        console.log("nothing");
+        cardsInLocation = db
+        .$with('cardsInLocation')
+        .as(
+            db.select({
+                card_id: cardsTable.card_id,
+                deleted: cardsTable.deleted,
+                contents: cardsTable.contents,
+                created_time: cardsTable.created_time,
+                user_id: cardsTable.user_id,
+                updated_time: cardsTable.updated_time,
+                visibility: cardsTable.visibility,
+                suspended: cardsTable.suspended,
+            })
+            .from(cardsTable)
+        );
+    } else {
+        console.log(locations);
+        const cardIdsInLocation = db
+        .select({
+            card_id: locatedAtTable.card_id,
+        })
+        .from(locatedAtTable)
+        .where(inArray(locatedAtTable.location_name, locations))
+        .as("cardIdsInLocations");
 
+        cardsInLocation = db
+        .$with('cardsInLocation')
+        .as(
+            db.select({
+                card_id: cardsTable.card_id,
+                deleted: cardsTable.deleted,
+                contents: cardsTable.contents,
+                created_time: cardsTable.created_time,
+                user_id: cardsTable.user_id,
+                updated_time: cardsTable.updated_time,
+                visibility: cardsTable.visibility,
+                suspended: cardsTable.suspended,
+            })
+            .from(cardsTable)
+            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
+        );
+        
+    }
 
     const cards = await db
+    .with(cardsInLocation)
     .select()
     .from(cardsTable)
     .where(
         and(
-            like(cardsTable.contents, `%${mysubstring}%`), 
-            eq(cardsTable.deleted, false),
-            eq(cardsTable.suspended, false),
-            inArray(cardsTable.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
+            like(cardsInLocation.contents, `%${mysubstring}%`), 
+            eq(cardsInLocation.deleted, false),
+            eq(cardsInLocation.suspended, false),
+            inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
         )
     )
-    .orderBy(cardsTable.created_time)
+    .orderBy(cardsInLocation.created_time)
     .limit(cardPerPage)
     .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
 
@@ -160,6 +274,53 @@ const getCardsBySubstring = async (verifiedUser: boolean, mysubstring: string, l
 };
 
 const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: Array<string>, cardPerPage: number, page: number) => {
+
+    let cardsInLocation;
+    if (locations.length == 0) {
+        console.log("nothing");
+        cardsInLocation = db
+        .$with('cardsInLocation')
+        .as(
+            db.select({
+                card_id: cardsTable.card_id,
+                deleted: cardsTable.deleted,
+                contents: cardsTable.contents,
+                created_time: cardsTable.created_time,
+                user_id: cardsTable.user_id,
+                updated_time: cardsTable.updated_time,
+                visibility: cardsTable.visibility,
+                suspended: cardsTable.suspended,
+            })
+            .from(cardsTable)
+        );
+    } else {
+        console.log(locations);
+        const cardIdsInLocation = db
+        .select({
+            card_id: locatedAtTable.card_id,
+        })
+        .from(locatedAtTable)
+        .where(inArray(locatedAtTable.location_name, locations))
+        .as("cardIdsInLocations");
+
+        cardsInLocation = db
+        .$with('cardsInLocation')
+        .as(
+            db.select({
+                card_id: cardsTable.card_id,
+                deleted: cardsTable.deleted,
+                contents: cardsTable.contents,
+                created_time: cardsTable.created_time,
+                user_id: cardsTable.user_id,
+                updated_time: cardsTable.updated_time,
+                visibility: cardsTable.visibility,
+                suspended: cardsTable.suspended,
+            })
+            .from(cardsTable)
+            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
+        );
+        
+    }
 
     const cardIdsInLabel = db
     .select({
@@ -172,25 +333,26 @@ const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: 
 
 
     const cards = await db
+    .with(cardsInLocation)
     .select({
-        card_id: cardsTable.card_id,
-        deleted: cardsTable.deleted,
-        contents: cardsTable.contents,
-        created_time: cardsTable.created_time,
-        user_id: cardsTable.user_id,
-        updated_time: cardsTable.updated_time,
-        visibility: cardsTable.visibility,
-        suspended: cardsTable.suspended,
+        card_id: cardsInLocation.card_id,
+        deleted: cardsInLocation.deleted,
+        contents: cardsInLocation.contents,
+        created_time: cardsInLocation.created_time,
+        user_id: cardsInLocation.user_id,
+        updated_time: cardsInLocation.updated_time,
+        visibility: cardsInLocation.visibility,
+        suspended: cardsInLocation.suspended,
         labal_name: cardIdsInLabel.label_name
     })
-    .from(cardsTable)
-    .innerJoin(cardIdsInLabel, eq(cardIdsInLabel.card_id, cardsTable.card_id))
+    .from(cardsInLocation)
+    .innerJoin(cardIdsInLabel, eq(cardIdsInLabel.card_id, cardsInLocation.card_id))
     // .innerJoin(cardIdsInLocation, eq(cardIdsInLocation.card_id, cardsTable.card_id))
     .where(
         and(
-            eq(cardsTable.deleted, false),
-            eq(cardsTable.suspended, false), 
-            inArray(cardsTable.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
+            eq(cardsInLocation.deleted, false),
+            eq(cardsInLocation.suspended, false), 
+            inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
         )
     )
     .limit(cardPerPage)
@@ -202,7 +364,56 @@ const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: 
 
 
 const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: Array<string>, cardPerPage: number, page: number) => {
+    
     try {
+
+        let cardsInLocation;
+        if (locations.length == 0) {
+            console.log("nothing");
+            cardsInLocation = db
+            .$with('cardsInLocation')
+            .as(
+                db.select({
+                    card_id: cardsTable.card_id,
+                    deleted: cardsTable.deleted,
+                    contents: cardsTable.contents,
+                    created_time: cardsTable.created_time,
+                    user_id: cardsTable.user_id,
+                    updated_time: cardsTable.updated_time,
+                    visibility: cardsTable.visibility,
+                    suspended: cardsTable.suspended,
+                })
+                .from(cardsTable)
+            );
+        } else {
+            console.log(locations);
+            const cardIdsInLocation = db
+            .select({
+                card_id: locatedAtTable.card_id,
+            })
+            .from(locatedAtTable)
+            .where(inArray(locatedAtTable.location_name, locations))
+            .as("cardIdsInLocations");
+
+            cardsInLocation = db
+            .$with('cardsInLocation')
+            .as(
+                db.select({
+                    card_id: cardsTable.card_id,
+                    deleted: cardsTable.deleted,
+                    contents: cardsTable.contents,
+                    created_time: cardsTable.created_time,
+                    user_id: cardsTable.user_id,
+                    updated_time: cardsTable.updated_time,
+                    visibility: cardsTable.visibility,
+                    suspended: cardsTable.suspended,
+                })
+                .from(cardsTable)
+                .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
+            );
+            
+        }
+
         const labelsInTopic = db
         .select({
             topic_name: belongsToTable.topic_name,
@@ -231,20 +442,21 @@ const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: 
         // .as("cardIdsInLocations");
     
         const cards = await db
+        .with(cardsInLocation)
         .select({
-            card_id: cardsTable.card_id,
-            deleted: cardsTable.deleted,
-            contents: cardsTable.contents,
-            created_time: cardsTable.created_time,
-            user_id: cardsTable.user_id,
-            updated_time: cardsTable.updated_time,
-            visibility: cardsTable.visibility,
-            suspended: cardsTable.suspended,
+            card_id: cardsInLocation.card_id,
+            deleted: cardsInLocation.deleted,
+            contents: cardsInLocation.contents,
+            created_time: cardsInLocation.created_time,
+            user_id: cardsInLocation.user_id,
+            updated_time: cardsInLocation.updated_time,
+            visibility: cardsInLocation.visibility,
+            suspended: cardsInLocation.suspended,
             // topic_name: belongsToTable.topic_name,
             // label_name: cardIdsInLabels.label_name,
         })
-        .from(cardsTable)
-        .innerJoin(cardIdsInLabels, eq(cardIdsInLabels.card_id, cardsTable.card_id))
+        .from(cardsInLocation)
+        .innerJoin(cardIdsInLabels, eq(cardIdsInLabels.card_id, cardsInLocation.card_id))
         // .innerJoin(cardIdsInLocation, eq(cardIdsInLocation.card_id, cardsTable.card_id))
         .where(
             and(
@@ -269,6 +481,7 @@ const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: 
 
 const getCardsPostedByUser = async (userId: UUID, cardPerPage: number, page: number) => {
     try {
+
         const cards = await db
         .select()
         .from(cardsTable)
@@ -285,6 +498,7 @@ const getCardsPostedByUser = async (userId: UUID, cardPerPage: number, page: num
 
 const getCardsLikedOrCommentedByUser = async (userId: UUID, cardPerPage: number, page: number) => {
     try {
+
         const liked = db
         .select()
         .from(likesTable)
