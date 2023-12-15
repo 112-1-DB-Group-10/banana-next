@@ -28,3 +28,17 @@ export interface Topic {
   topic_name: string;
   labels: string[];
 }
+
+export interface User {
+  username: string;
+  sex: string;
+  age: number;
+  email: string;
+  role: string;
+  suspended: boolean;
+  user_id: string;
+  avatar: string;
+  institute: string;
+  posted_card: CardData[];
+  engaged_card: CardData[];
+}
