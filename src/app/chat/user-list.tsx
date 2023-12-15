@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { User } from '@/db/types';
 import users from '@/db/users.json';
 import Search from './search';
-import UserItem from './useritem';
+import UserItem from './user-item';
 
 const UserList: React.FC = () => {
   const searchParms = useSearchParams();

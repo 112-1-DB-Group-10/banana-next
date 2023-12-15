@@ -1,6 +1,6 @@
 'use server';
 
-import UserList from './userlist';
+import UserList from './user-list';
 
 export default async function ChatLayout({
   children,
