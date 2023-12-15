@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Avatar from '@/components/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { CardData } from '@/actions/types';
+import { getTimeSinceByDate } from '@/lib/utils';
+import Avatar from './avatar';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 import {
   Card,
   CardContent,
@@ -11,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from './ui/card';
 import {
   Dialog,
   DialogContent,
@@ -20,45 +22,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+} from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Separator } from './ui/separator';
 
-const cardData = {
-  card_id: 'aaa',
-  user_id: 'bbb',
-  avatar: 'https://github.com/shadcn.png',
-  username: 'Min Min',
-  institute: '國立台灣大學',
-  timestamp: '10分鐘前',
-  location: '線上',
-  want_to_learn: '寫前端',
-  good_at: 'FLOLAC',
-  contnets: '我不會寫前端嗚嗚嗚嗚嗚',
-  likes: 10,
-};
-
-const commentData = [
-  {
-    card_id: 'aaa',
-    user_id: 'bbb',
-    avatar: 'https://github.com/shadcn.png',
-    username: 'Min Min',
-    timestamp: '1分鐘前',
-    contents: '幫自己推',
-  },
-  {
-    card_id: 'aaa',
-    user_id: 'ccc',
-    avatar: 'https://github.com/shadcn.png',
-    username: 'Wen',
-    timestamp: '1分鐘前',
-    contents: '我是賴玟',
-  },
-];
-
-const cardstemp = () => {
+const SkillCard = ({ cardData }: { cardData: CardData }) => {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
 
@@ -76,11 +45,13 @@ const cardstemp = () => {
     <Card className="space-around h-fit w-[40rem] flex-col">
       <CardHeader className="flex-row items-center justify-between">
         <div className="flex items-center gap-5">
-          <Avatar image="https://github.com/shadcn.png" />
+          <Avatar image={cardData.avatar} />
           <CardTitle className="">
             <div>{cardData.username}</div>
             <CardDescription>{cardData.institute}</CardDescription>
-            <div className="text-xs font-light">{cardData.timestamp}</div>
+            <div className="text-xs font-light">
+              {getTimeSinceByDate(cardData.time_stamp)}
+            </div>
           </CardTitle>
         </div>
 
@@ -139,7 +110,7 @@ const cardstemp = () => {
             <div className="flex flex-col space-y-1.5 font-bold">
               其他想說的話
             </div>
-            <div>{cardData.contnets}</div>
+            <div>{cardData.contents}</div>
           </div>
         </form>
       </CardContent>
@@ -157,7 +128,7 @@ const cardstemp = () => {
       <CardContent>
         {showComments && (
           <div>
-            {commentData.map((comment, index) => (
+            {cardData.comments.map((comment, index) => (
               <div
                 key={index}
                 className="my-2 flex items-start justify-between space-x-2"
@@ -170,7 +141,9 @@ const cardstemp = () => {
                   </div>
                 </div>
 
-                <div className="text-xs font-light">{comment.timestamp}</div>
+                <div className="text-xs font-light">
+                  {getTimeSinceByDate(comment.time_stamp)}
+                </div>
               </div>
             ))}
             <div className="my-4 flex items-center space-x-2">
@@ -191,4 +164,4 @@ const cardstemp = () => {
   );
 };
 
-export default cardstemp;
+export default SkillCard;
