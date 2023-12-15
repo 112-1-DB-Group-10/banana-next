@@ -8,7 +8,7 @@ import { db } from '@/db';
 //找出與自己有聊過天的使用者
 //依據他們最後一則訊息進行時間排序並且顯示最後一則訊息
 export const getConversations = async (userId: UUID) => {
-  const getSender = await db
+  const getSender = db
     .select({
       sender_id: messagesTable.sender_id,
       receiver_id: messagesTable.receiver_id,
@@ -21,7 +21,7 @@ export const getConversations = async (userId: UUID) => {
     .orderBy(desc(max(messagesTable.time_stamp)))
     .as('getSender');
 
-  const getReceiver = await db
+  const getReceiver = db
     .select({
       sender_id: messagesTable.sender_id,
       receiver_id: messagesTable.receiver_id,
