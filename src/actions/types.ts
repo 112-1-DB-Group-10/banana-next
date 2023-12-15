@@ -23,3 +23,8 @@ export interface CardData {
   contents: string;
   likes: number;
 }
+
+export interface Topic {
+  topic_name: string;
+  labels: string[];
+}
