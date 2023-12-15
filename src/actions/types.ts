@@ -1,5 +1,3 @@
-import { Message, User } from '@/db/types';
-
 export interface CommentData {
   card_id: string;
   user_id: string;
@@ -32,6 +30,9 @@ export interface Topic {
 }
 
 export interface Conversation {
-  lastMessage: Message;
-  partner: User;
+  avatar: string;
+  username: string;
+  time_stamp: Date;
+  contents: string;
+  user_id: string;
 }
