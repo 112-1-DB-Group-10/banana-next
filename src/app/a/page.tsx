@@ -31,7 +31,7 @@ export default async function HomePage() {
   // const cardsLikedOrCommentedByUser = await getCardsLikedOrCommentedByUser("ce9534bd-efe3-4187-b8a3-4b2d7da96018", cardPerPage, page);
   // await deleteCard("ada86234-12cb-40df-8ac4-b7057798da3d");
   // await updateCard("ada86234-12cb-40df-8ac4-b7057798da3d", new Date(), "I want to rest.");
-  // const labels = await getLabelsByTopic("體育");
+  const labels = await getAllLabelsWithTopics();
 
   // const popularCards = await getPopularCards();
   return (
