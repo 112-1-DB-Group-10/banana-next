@@ -49,6 +49,4 @@ export interface UserProfile {
   user_id: string;
   avatar: string;
   institute: string;
-  posted_card: CardData[];
-  engaged_card: CardData[];
 }
