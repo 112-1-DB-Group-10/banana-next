@@ -10,15 +10,14 @@ const ConversationList = async ({ query }: { query?: string }) => {
   const session = await getUserSession();
   const conversations = await getConversations(session.user_id);
   console.log(conversations);
-  const filteredConversations: Conversation[] = conversations?.filter(
-    (conversation) =>
-      conversation.username
-        .toLowerCase()
-        .indexOf((query || '').toLowerCase()) !== -1,
-  );
-  console.log(query);
-  console.log(conversations);
-  console.log(filteredConversations);
+  const filteredConversations: Conversation[] = conversations
+    ?.filter(
+      (conversation) =>
+        conversation.username
+          .toLowerCase()
+          .indexOf((query || '').toLowerCase()) !== -1,
+    )
+    .sort((a, b) => b.last_time_stamp.getTime() - a.last_time_stamp.getTime());
   return (
     <div className="w-full">
       {filteredConversations?.map((conversation, index) => (

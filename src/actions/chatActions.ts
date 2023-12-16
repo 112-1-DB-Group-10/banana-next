@@ -118,7 +118,7 @@ export const sendMessage = async (
     .values({
       sender_id: userId,
       receiver_id: partnerId,
-      contents: contents,
+      contents,
       time_stamp: new Date(),
     })
     .returning();
