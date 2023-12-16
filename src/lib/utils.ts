@@ -13,6 +13,12 @@ export const isURL = (text: string) => {
 };
 
 export const getTimeSinceByDate = (time_stamp: Date) => {
+  // const timeSinceString: string = time_stamp.toISOString();
+  if (!(time_stamp instanceof Date)) {
+    // Handle the case where time_stamp is not a Date object
+    return 'Invalid Date';
+  }
+
   const timeSinceString: string = time_stamp.toISOString();
   // var seconds = Math.floor((new Date() - time_stamp) / 1000);
   // var interval = seconds / 31536000;
