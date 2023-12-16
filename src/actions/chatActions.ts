@@ -1,19 +1,18 @@
 'use server';
 
-import { Unica_One } from 'next/font/google';
 import { messagesTable, usersTable } from '../db/schema';
-import { time } from 'console';
 import { UUID } from 'crypto';
-import { and, desc, eq, max, or } from 'drizzle-orm';
-import { uuid } from 'drizzle-orm/pg-core';
-import { union, unionAll } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
+import { and, eq, max, or } from 'drizzle-orm';
+import { union } from 'drizzle-orm/pg-core';
 import { db } from '@/db';
-import { NewUsers } from './adminActions';
+import { Message } from '@/db/types';
+import { Conversation } from './types';
 
-//找出與自己有聊過天的使用者
-//依據他們最後一則訊息進行時間排序並且顯示最後一則訊息
-export const getConversations = async (userId: any) => {
+export const getConversations = async (
+  userId: UUID,
+): Promise<Conversation[]> => {
+  // 找出與自己有聊過天的使用者
+  // 依據他們最後一則訊息進行時間排序並且顯示最後一則訊息
   const getSender = db
     .select({
       partner_id: messagesTable.sender_id,
@@ -72,11 +71,18 @@ export const getConversations = async (userId: any) => {
     .innerJoin(usersTable, eq(usersTable.user_id, last_time.partner_id))
     .groupBy(last_time.partner_id);
   // console.log(conversations);
-  return conversations;
+  return conversations.map((conversation) => ({
+    ...conversation,
+    last_time_stamp: new Date(conversation.last_time_stamp as string),
+    contents: conversation.contents as string,
+  }));
 };
 
-//依照時間排序出跟某個使用者的所有對話
-export const getChatBox = async (selfId: UUID, targetId: UUID) => {
+export const getChatBox = async (
+  userId: UUID,
+  partnerId: UUID,
+): Promise<Message[]> => {
+  // 依照時間排序出跟某個使用者的所有對話
   const chatBox = await db
     .select({
       sender_id: messagesTable.sender_id,
@@ -88,29 +94,33 @@ export const getChatBox = async (selfId: UUID, targetId: UUID) => {
     .where(
       or(
         and(
-          eq(messagesTable.sender_id, selfId),
-          eq(messagesTable.receiver_id, targetId),
+          eq(messagesTable.sender_id, userId),
+          eq(messagesTable.receiver_id, partnerId),
         ),
         and(
-          eq(messagesTable.sender_id, targetId),
-          eq(messagesTable.receiver_id, selfId),
+          eq(messagesTable.sender_id, partnerId),
+          eq(messagesTable.receiver_id, userId),
         ),
       ),
     )
     .orderBy(messagesTable.time_stamp);
-  // console.log(chatBox);
   return chatBox;
 };
 
-//新增訊息
-export const insertMessages = async (selfId: UUID, targetId: UUID, contents: string, time_stamp: any) => {
+export const sendMessages = async (
+  userId: UUID,
+  partnerId: UUID,
+  contents: string,
+) => {
+  // 新增訊息
   const message = await db
     .insert(messagesTable)
     .values({
-      sender_id: selfId,
-      receiver_id: targetId,
+      sender_id: userId,
+      receiver_id: partnerId,
       contents: contents,
-      time_stamp: time_stamp,
-    });
-    return message;
+      time_stamp: new Date(),
+    })
+    .returning();
+  return message;
 };
