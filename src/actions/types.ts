@@ -1,3 +1,5 @@
+import { Message, User } from '@/db/types';
+
 export interface CommentData {
   card_id: string;
   user_id: string;
@@ -27,4 +29,24 @@ export interface CardData {
 export interface Topic {
   topic_name: string;
   labels: string[];
+}
+
+export interface Conversation {
+  lastMessage: Message;
+  user: User;
+}
+
+
+export interface UserProfile {
+  username: string;
+  sex: string;
+  age: number;
+  email: string;
+  role: string;
+  suspended: boolean;
+  user_id: string;
+  avatar: string;
+  institute: string;
+  posted_card: CardData[];
+  engaged_card: CardData[];
 }
