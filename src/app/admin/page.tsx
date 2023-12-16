@@ -21,11 +21,11 @@ const reviewing = () => {
   return (
     <Tabs defaultValue="account">
       <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
-        <TabsTrigger value="fail">fail</TabsTrigger>
+        <TabsTrigger value="pending">待審核</TabsTrigger>
+        <TabsTrigger value="pass">已通過</TabsTrigger>
+        <TabsTrigger value="fail">未通過</TabsTrigger>
       </TabsList>
-      <TabsContent value="account">
+      <TabsContent value="pending">
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
           <div className="flex justify-between px-4">
             <div className="flex">
@@ -99,7 +99,7 @@ const reviewing = () => {
           </div>
         </Card>
       </TabsContent>
-      <TabsContent value="password">
+      <TabsContent value="pass">
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
           <div className="flex justify-between px-4">
             <div className="flex">
