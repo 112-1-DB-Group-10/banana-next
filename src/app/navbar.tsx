@@ -68,7 +68,7 @@ function handleClickAvatar() {
   console.log('click avatar button');
 }
 
-function NavBar() {
+function NavBar({user_id}: {user_id:string}) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -85,7 +85,7 @@ function NavBar() {
     };
   }, []);
 
-  const user_id = 'bbb';
+  // const user_id = 'bbb';
 
   return (
     <NavigationMenu className="fixed top-0 h-16 w-screen bg-[#FFBE00] text-black">
