@@ -33,8 +33,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ToastAction } from '@/components/ui/toast';
 import { toast, useToast } from '@/components/ui/use-toast';
-import { ToastAction } from "@/components/ui/toast"
 import { ProgressBar } from './progress';
 
 const colleges = [
@@ -56,7 +56,12 @@ const colleges = [
 ];
 
 const MAX_FILE_SIZE = 500000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -79,7 +84,7 @@ const FormSchema = z.object({
 });
 
 const Application = () => {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [verificationProgress, setVerificationProgress] = useState(0);
 
@@ -117,7 +122,7 @@ const Application = () => {
   }
   return (
     <Form {...form}>
-      <Card className="bg-blueGray-50 mx-auto w-[50rem] h-fit flex-row justify-between gap-10 p-4 pt-8">
+      <Card className="bg-blueGray-50 mx-auto h-fit w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
         <h1 className="mb-4 text-3xl font-bold">香蕉認證</h1>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -130,7 +135,10 @@ const Application = () => {
               <FormItem>
                 <FormLabel>正式英文名字</FormLabel>
                 <FormControl>
-                  <Input placeholder="護照姓名 (Eg: KUNG,LING-CHIEH)" {...field} />
+                  <Input
+                    placeholder="護照姓名 (Eg: KUNG,LING-CHIEH)"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>這是為了驗證真實身分.</FormDescription>
                 <FormMessage />
@@ -143,24 +151,27 @@ const Application = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>學校</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="請選擇您的學校" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Schools</SelectLabel>
-                        {colleges.map((college) => (
-                          <SelectItem key={college} value={college}>
-                            {college}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="請選擇您的學校" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Schools</SelectLabel>
+                      {colleges.map((college) => (
+                        <SelectItem key={college} value={college}>
+                          {college}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -197,9 +208,7 @@ const Application = () => {
               </FormItem>
             )}
           /> */}
-          <Button type="submit">
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
         </form>
         {/* <div className="mt-20 w-1/3 pl-5">
           <ProgressBar />

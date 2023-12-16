@@ -788,23 +788,7 @@
     "@babel/runtime" "^7.13.10"
     "@radix-ui/react-visually-hidden" "1.0.3"
 
-"@radix-ui/react-accordion@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-accordion/-/react-accordion-1.1.2.tgz#738441f7343e5142273cdef94d12054c3287966f"
-  integrity sha512-fDG7jcoNKVjSK6yfmuAs0EnPDro0WMXIhMtXdTBWqEioVW206ku+4Lw07e+13lUkFkpoEQ2PdeMIAGpdqEAmDg==
-  dependencies:
-    "@babel/runtime" "^7.13.10"
-    "@radix-ui/primitive" "1.0.1"
-    "@radix-ui/react-collapsible" "1.0.3"
-    "@radix-ui/react-collection" "1.0.3"
-    "@radix-ui/react-compose-refs" "1.0.1"
-    "@radix-ui/react-context" "1.0.1"
-    "@radix-ui/react-direction" "1.0.1"
-    "@radix-ui/react-id" "1.0.1"
-    "@radix-ui/react-primitive" "1.0.3"
-    "@radix-ui/react-use-controllable-state" "1.0.1"
-
-"@radix-ui/react-accordion@latest":
+"@radix-ui/react-accordion@^1.1.2", "@radix-ui/react-accordion@latest":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-accordion/-/react-accordion-1.1.2.tgz#738441f7343e5142273cdef94d12054c3287966f"
   integrity sha512-fDG7jcoNKVjSK6yfmuAs0EnPDro0WMXIhMtXdTBWqEioVW206ku+4Lw07e+13lUkFkpoEQ2PdeMIAGpdqEAmDg==
@@ -3690,6 +3674,11 @@ lru-queue@^0.1.0:
   integrity sha512-BpdYkt9EvGl8OfWHDQPISVpcl5xZthb+XPsbELj5AQXxIC8IriDZIQYjBJPEm5rS420sjZ0TLEzRcq5KdBhYrQ==
   dependencies:
     es5-ext "~0.10.2"
+
+lucide-react@^0.297.0:
+  version "0.297.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.297.0.tgz#ddcc613df51e008f107dac2b1f0f16e897f239b5"
+  integrity sha512-PA3ddfQ1KXZbY8j4eBfd4gp5mDusacqVh/M1xNjHviQR+O0QVCmy2NazperLGm5zlU51p9amUB/apFqfsYa0zA==
 
 magic-string@^0.25.3:
   version "0.25.9"

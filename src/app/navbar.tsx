@@ -111,7 +111,7 @@ function NavBar() {
           </NavigationMenuItem>
 
           <NavigationMenuItem className="self-end">
-            <Link href={"/profile/" + user_id} legacyBehavior passHref>
+            <Link href={'/profile/' + user_id} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 <IoPerson />
               </NavigationMenuLink>

@@ -26,6 +26,7 @@ import {
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Separator } from './ui/separator';
+import { ThumbsUp, MessageCircle, MessagesSquare } from 'lucide-react';
 
 const SkillCard = ({ cardData }: { cardData: CardData }) => {
   const [showComments, setShowComments] = useState(false);
@@ -142,13 +143,13 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
       </CardContent>
       <CardFooter className="flex">
         <Button variant="outline" className="mx-2">
-          讚 {cardData.likes}
+          <ThumbsUp /> {cardData.likes}
         </Button>
         <Button variant="outline" className="mx-2" onClick={toggleComments}>
-          留言
+          <MessageCircle />
         </Button>
         <Button variant="outline" className="mx-2">
-          私訊
+          <MessagesSquare />
         </Button>
       </CardFooter>
       <CardContent>

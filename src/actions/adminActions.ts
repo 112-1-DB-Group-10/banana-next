@@ -24,9 +24,9 @@ export type NewUsers = typeof usersTable.$inferInsert;
 //user_id, englishname, enroll_year, verification, institute, document_url
 export const insertApplication = async (application: NewApplications) => {
   try {
-    const t = await db.insert(applicationsTable).values(application);
+    const insertApplicationResult = await db.insert(applicationsTable).values(application);
     console.log('Application inserted successfully!');
-    return t;
+    return insertApplicationResult;
   } catch (error) {
     console.error('Error inserting application:', error);
     throw error;
@@ -36,7 +36,7 @@ export const insertApplication = async (application: NewApplications) => {
 //刪除一筆 applications
 export const deleteApplication = async (application: NewApplications) => {
   try {
-    const t = await db
+    const deleteApplicationResult = await db
       .delete(applicationsTable)
       .where(
         and(
@@ -48,7 +48,7 @@ export const deleteApplication = async (application: NewApplications) => {
         ),
       );
     console.log('delete application success');
-    return t;
+    return deleteApplicationResult;
   } catch (error) {
     console.error('Error deleting applications!:', error);
     throw error;
@@ -57,9 +57,9 @@ export const deleteApplication = async (application: NewApplications) => {
 //新增一個 topic
 export const insertTopic = async (topic: NewTopics) => {
   try {
-    const t = await db.insert(topicsTable).values(topic);
+    const insertTopicResult = await db.insert(topicsTable).values(topic);
     console.log('Topic inserted successfully!');
-    return t;
+    return insertTopicResult;
   } catch (error) {
     console.error('Error inserting topic:', error);
     throw error;
@@ -69,17 +69,17 @@ export const insertTopic = async (topic: NewTopics) => {
 //刪除一個 topic 但在這邊要先手動新增一個 topic 叫做'其他'不然會報錯 因為我們的 db 裡面沒有'其他'
 export const deleteTopic = async (topic: NewTopics) => {
   try {
-    const a = await db.transaction(async (tx) => {
-      const t = await tx
+    const transactionResult = await db.transaction(async (tx) => {
+      await tx
         .update(belongsToTable)
         .set({ topic_name: '其他' })
         .where(eq(belongsToTable.topic_name, topic.topic_name));
-      const m = await tx
+      await tx
         .delete(topicsTable)
         .where(eq(topicsTable.topic_name, topic.topic_name));
     });
     console.log('Topic deleted successfully!');
-    return a;
+    return transactionResult;
   } catch (error) {
     console.log('Error deleting topic name: ', error);
     throw error;
@@ -92,12 +92,13 @@ export const insertBelongsTo = async (
   label_name: string,
 ) => {
   try {
-    const a = await db.transaction(async (tx) => {
-      const t = await tx
+    const transactionResult = await db.transaction(async (tx) => {
+      const insertBelongsToResult = await tx
         .insert(belongsToTable)
         .values({ topic_name: topic_name, label_name: label_name });
+        return insertBelongsToResult;
     });
-    return a;
+    return transactionResult;
   } catch (error) {
     console.error('Error inserting topic:', error);
     throw error;
@@ -110,15 +111,14 @@ export const updateBelongsTo = async (
   label: NewLabels,
 ) => {
   try {
-    const a = await db.transaction(async (tx) => {
-      const t = await tx
+    const transactionResult = await db.transaction(async (tx) => {
+      await tx
         .update(belongsToTable)
         .set({ topic_name: new_topic.topic_name, label_name: label.label_name })
         .where(eq(belongsToTable.label_name, label.label_name));
-      return t;
     });
     console.log('Changed belongs to successfully!');
-    return a;
+    return transactionResult;
   } catch (error) {
     console.error('Error changing belongs:', error);
     throw error;
@@ -131,8 +131,8 @@ export const updateApplication = async (
   status: any,
 ) => {
   try {
-    const t = await db.transaction(async (tx) => {
-      const m = await tx
+    const transactionResult = await db.transaction(async (tx) => {
+      const updatedApplication = await tx
         .update(applicationsTable)
         .set({ verification: status })
         .where(
@@ -144,9 +144,10 @@ export const updateApplication = async (
             eq(applicationsTable.document_url, application.document_url),
           ),
         );
+        return updatedApplication;
     });
     console.log('Changed belongs to successfully!');
-    return t;
+    return transactionResult;
   } catch (error) {
     console.error('Error changing belongs:', error);
     throw error;
@@ -156,7 +157,7 @@ export const updateApplication = async (
 // 找出使用者的 institute
 export const findInstitute = async (user_id: any) => {
   try {
-    const t = await db
+    const userInstitute = await db
       .select({
         institute: applicationsTable.institute,
       })
@@ -169,7 +170,7 @@ export const findInstitute = async (user_id: any) => {
       )
       .orderBy(applicationsTable.enroll_year);
     console.log('Find Institute successfully!');
-    return t;
+    return userInstitute;
   } catch (error) {
     console.error('Error Find Institute:', error);
     throw error;
@@ -179,11 +180,11 @@ export const findInstitute = async (user_id: any) => {
 //新增地點
 export const insertLocation = async (location_name: any) => {
   try {
-    const t = await db
+    const insertedLocation = await db
       .insert(locationsTable)
       .values({ location_name: location_name });
     console.log('Insert Location successfully!');
-    return t;
+    return insertedLocation;
   } catch (error) {
     console.error('Error Inserting Location:', error);
     throw error;
@@ -193,11 +194,11 @@ export const insertLocation = async (location_name: any) => {
 //刪除地點
 export const deleteLocation = async (location_name: any) => {
   try {
-    const t = await db
+    const deletedLocation = await db
       .delete(locationsTable)
       .where(eq(locationsTable.location_name, location_name));
     console.log('Delete Location successfully!');
-    return t;
+    return deletedLocation;
   } catch (error) {
     console.error('Error deleting Location:', error);
     throw error;
@@ -210,14 +211,15 @@ export const updateLocation = async (
   new_location_name: any,
 ) => {
   try {
-    const a = await db.transaction(async (tx) => {
-      const m = await tx
+    const transactionResult = await db.transaction(async (tx) => {
+      const updatedLocation = await tx
         .update(locationsTable)
         .set({ location_name: new_location_name })
         .where(eq(locationsTable.location_name, location_name));
+        return updatedLocation;
     });
     console.log('Update Location successfully!');
-    return a;
+    return transactionResult;
   } catch (error) {
     console.error('Error updating Location:', error);
     throw error;
@@ -227,11 +229,11 @@ export const updateLocation = async (
 //新增 located_at 資料
 export const insertLocatedAt = async (location_name: any, card_id: any) => {
   try {
-    const t = await db
+    const insertedLocation = await db
       .insert(locatedAtTable)
       .values({ location_name: location_name, card_id: card_id });
     console.log('Insert Located at successfully!');
-    return t;
+    return insertedLocation;
   } catch (error) {
     console.error('Error inserting located at:', error);
     throw error;
@@ -241,14 +243,15 @@ export const insertLocatedAt = async (location_name: any, card_id: any) => {
 //更新 located_at 資料
 export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
   try {
-    const a = await db.transaction(async (tx) => {
-      const m = await tx
+    const transactionResult = await db.transaction(async (tx) => {
+      const updatedLocatedAt = await tx
         .update(locatedAtTable)
         .set({ location_name: new_location_name })
         .where(eq(locatedAtTable.card_id, card_id));
+        return updatedLocatedAt
     });
     console.log('Insert Located at successfully!');
-    return a;
+    return transactionResult;
   } catch (error) {
     console.error('Error inserting located at:', error);
     throw error;
@@ -258,14 +261,13 @@ export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
 //新增某個 label 資料之後要記得在新增 belongs to
 export const insertLabel = async (new_label: NewLabels) => {
   try {
-    const a = await db
+    await db
       .insert(labelsTable)
-      .values({ label_name: new_label, created_user: new_user });
-    const b = await db
+      .values({ label_name: new_label.label_name, created_user: new_label.created_user });
+    await db
       .insert(belongsToTable)
-      .values({ label_name: new_label, topic_name: '其他' });
+      .values({ label_name: new_label.label_name, topic_name: '其他' });
     console.log('Insert label success!');
-    return a;
   } catch (error) {
     console.error('Error inserting label!:', error);
     throw error;
@@ -275,16 +277,12 @@ export const insertLabel = async (new_label: NewLabels) => {
 //刪除某個 label
 export const deleteLabel = async (target_label: string) => {
   try {
-    const t = await db
+    await db
       .delete(belongsToTable)
       .where(eq(belongsToTable.label_name, target_label));
-    const a = await db
+    await db
       .delete(labelsTable)
       .where(eq(labelsTable.label_name, target_label));
-    console.log('deleting label');
-    console.log(target_label);
-    console.log('Deleting label success!');
-    return t;
   } catch (error) {
     console.error('Error deleting label:', error);
     throw error;
@@ -294,7 +292,7 @@ export const deleteLabel = async (target_label: string) => {
 //查找所有 pass/pending/fail 的 application 紀錄
 export const queryApplications = async (target_status: any) => {
   try {
-    const a = await db
+    const targetUser = await db
       .select({
         user_id: applicationsTable.user_id,
         enroll_year: applicationsTable.enroll_year,
@@ -305,7 +303,7 @@ export const queryApplications = async (target_status: any) => {
       .from(applicationsTable)
       .where(eq(applicationsTable.verification, target_status));
     console.log('find applications success!');
-    return a;
+    return targetUser;
   } catch (error) {
     console.error('Error finding application that match the status:', error);
     throw error;
@@ -320,20 +318,20 @@ export const insertUser = async (new_user: NewUsers) => {
 
 //停權某使用者
 export const suspendeUser = async (user_id: UUID) => {
-  const a = await db.transaction(async (tx) => {
-    const m = tx
+  const transactionResult = await db.transaction(async (tx) => {
+    const suspendedUser = tx
       .update(usersTable)
       .set({ suspended: true })
       .where(eq(usersTable.user_id, user_id));
-    return m;
+    return suspendedUser;
   });
-  return a;
+  return transactionResult;
 };
 
 //更改用戶資料
 export const updateUser = async (updateUser: NewUsers) => {
-  const updatedUser = await db.transaction(async (tx) => {
-    const m = tx
+  const transactionResult = await db.transaction(async (tx) => {
+    const updatedUser = tx
       .update(usersTable)
       .set({
         username: updateUser.username,
@@ -343,7 +341,7 @@ export const updateUser = async (updateUser: NewUsers) => {
         avatar: updateUser.avatar,
       })
       .where(eq(usersTable.user_id, updateUser.user_id));
-    return m;
+    return updatedUser;
   });
-  return updatedUser;
+  return transactionResult;
 };
