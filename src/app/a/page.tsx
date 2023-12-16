@@ -2,20 +2,21 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import {
-  getLabelsByTopic,
-  getPopularCards,
-  getNewestCards,
-  getCardById,
-  getCardsBySubstring,
-  getCardsByLabel,
-  getCardsByTopic,
-  getCardsPostedByUser,
-  getCardsLikedOrCommentedByUser,
-  likeCard,
-  commentOnCard,
-  deleteCard,
-  updateCard,
-} from '@/actions/cardActions';
+  getAllLabelsWithTopics,
+  // getLabelsByTopic,
+  // getPopularCards,
+  // getNewestCards,
+  // getCardById,
+  // getCardsBySubstring,
+  // getCardsByLabel,
+  // getCardsByTopic,
+  // getCardsPostedByUser,
+  // getCardsLikedOrCommentedByUser,
+  // likeCard,
+  // commentOnCard,
+  // deleteCard,
+  // updateCard,
+} from '@/actions/cardActionsV2';
 
 export default async function HomePage() {
   // function testing
