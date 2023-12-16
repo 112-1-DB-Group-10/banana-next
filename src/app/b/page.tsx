@@ -22,7 +22,7 @@ import {
   updateUser
 } from '@/actions/adminActions';
 import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
-import { getChatBox, getConversations, sendMessages } from '@/actions/chatActions';
+import { getChatBox, getConversations, sendMessage } from '@/actions/chatActions';
 //'0007970e-3ee4-4814-a886-0717399d1547'
 //'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c'
 export default async function HomePage() {
