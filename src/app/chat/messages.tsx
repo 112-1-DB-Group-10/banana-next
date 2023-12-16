@@ -1,7 +1,7 @@
 'use server';
 
 import React from 'react';
-import { getChatBox } from '@/actions/chatQueries';
+import { getChatBox } from '@/actions/chatActions';
 import { cn } from '@/lib/utils';
 
 interface Messages {
