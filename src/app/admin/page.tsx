@@ -1,6 +1,5 @@
 'use client';
 
-import { Separator } from '@/components/ui/separator';
 import Avatar from '@/components/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getTimeSinceByDate } from '@/lib/utils';
 
@@ -26,171 +26,171 @@ const reviewing = () => {
         <TabsTrigger value="fail">fail</TabsTrigger>
       </TabsList>
       <TabsContent value="account">
-      <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+        <Card className="bg-blueGray-50 w-[45rem] pt-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
-                    <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              <div className="relative p-4">
+                <Avatar image={'https://github.com/shadcn.png'} />
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
       </TabsContent>
       <TabsContent value="password">
-      <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+        <Card className="bg-blueGray-50 w-[45rem] pt-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
       </TabsContent>
       <TabsContent value="fail">
-      <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+        <Card className="bg-blueGray-50 w-[45rem] pt-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
         <Card className="bg-blueGray-50 w-[45rem] pt-4">
-            <div className="flex justify-between px-4">
+          <div className="flex justify-between px-4">
             <div className="flex">
-                <div className="relative p-4">
+              <div className="relative p-4">
                 <Avatar image={'https://github.com/shadcn.png'} />
-                </div>
-                <div className="flex flex-col p-4">
+              </div>
+              <div className="flex flex-col p-4">
                 <div className="flex">
-                    <div className="pr-2 text-lg font-bold">username</div>
-                    <Separator orientation="vertical" />
-                    <div className="pl-2">男</div>
-                    <div className="pl-2">institute</div>
+                  <div className="pr-2 text-lg font-bold">username</div>
+                  <Separator orientation="vertical" />
+                  <div className="pl-2">男</div>
+                  <div className="pl-2">institute</div>
                 </div>
                 <div className="py-2">abcdefg2222@gmail.com</div>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </Card>
       </TabsContent>
     </Tabs>
@@ -199,9 +199,8 @@ const reviewing = () => {
 
 export default reviewing;
 
-
-
-    {/* 
+{
+  /* 
     點下左邊那團展開的樣子
     <Card className="space-around h-fit w-[40rem] flex-col">
     <CardHeader className="flex-row items-center justify-between">
@@ -252,4 +251,5 @@ export default reviewing;
         私訊
     </Button>
     </CardFooter>
-</Card> */}
+</Card> */
+}

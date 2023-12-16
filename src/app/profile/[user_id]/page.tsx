@@ -58,13 +58,13 @@ const Profile = () => {
 
   const cards: CardData[] = cards_from_json.map((card) => ({
     ...card,
-    time_stamp: new Date(card.time_stamp),
+    created_time: new Date(card.created_time),
+    updated_time: new Date(card.updated_time),
     comments: card.comments.map((comment) => ({
       ...comment,
       time_stamp: new Date(comment.time_stamp),
     })),
   }));
-
   return (
     <Card className="bg-blueGray-50 w-[45rem] pt-8">
       <div className="flex justify-between px-4">
