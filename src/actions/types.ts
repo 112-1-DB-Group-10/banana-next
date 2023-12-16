@@ -48,7 +48,5 @@ export interface UserProfile {
   suspended: boolean;
   user_id: string;
   avatar: string;
-  institute: string;
-  posted_card: CardData[];
-  engaged_card: CardData[];
+  institute: string | null;
 }

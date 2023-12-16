@@ -9,7 +9,6 @@ import ConversationItem from './conversation-item';
 const ConversationList = async ({ query }: { query?: string }) => {
   const session = await getUserSession();
   const conversations = await getConversations(session.user_id);
-  console.log(conversations);
   const filteredConversations: Conversation[] = conversations
     ?.filter(
       (conversation) =>

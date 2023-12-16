@@ -1,26 +1,34 @@
 'use server';
 
-import { usersTable } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { applicationsTable, usersTable } from '../db/schema';
+import { UUID } from 'crypto';
+import { and, eq } from 'drizzle-orm';
 import { db } from '@/db';
+import { UserProfile } from './types';
 
 //透過 id 找到使用者以及他的 institute
-export const getUserById = async (user_id: any) => {
+export const getUserById = async (userId: UUID): Promise<UserProfile> => {
   try {
-    const t = await db
-      .select({
-        username: usersTable.username,
-        sex: usersTable.sex,
-        age: usersTable.age,
-        email: usersTable.email,
-        role: usersTable.role,
-        suspended: usersTable.suspended,
-        avatar: usersTable.avatar,
-      })
+    const user = await db
+      .select()
       .from(usersTable)
-      .where(eq(usersTable.user_id, user_id));
-    if (t.length > 0) {
-      return t[0];
+      .where(eq(usersTable.user_id, userId));
+
+    const applications = await db
+      .select({ institute: applicationsTable.institute })
+      .from(applicationsTable)
+      .where(
+        and(
+          eq(applicationsTable.user_id, userId),
+          eq(applicationsTable.verification, 'pass'),
+        ),
+      );
+
+    if (user.length > 0) {
+      return {
+        ...user[0],
+        institute: applications.length > 0 ? applications[0].institute : null,
+      };
     } else {
       throw Error('User Not Found.');
     }
