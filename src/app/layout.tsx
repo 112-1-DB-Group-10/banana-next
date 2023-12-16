@@ -16,11 +16,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-<<<<<<< HEAD
-  const session = await getUserSession();
-=======
   // const session = await getUserSession();
->>>>>>> main
   // console.log(
   //   `Session of user '${session.username}' (${session.user_id}) is obtained.`,
   // );
