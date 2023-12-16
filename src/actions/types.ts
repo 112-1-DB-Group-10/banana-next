@@ -36,3 +36,17 @@ export interface Conversation {
   contents: string;
   user_id: string;
 }
+
+export interface UserProfile {
+  username: string;
+  sex: string;
+  age: number;
+  email: string;
+  role: string;
+  suspended: boolean;
+  user_id: string;
+  avatar: string;
+  institute: string;
+  posted_card: CardData[];
+  engaged_card: CardData[];
+}
