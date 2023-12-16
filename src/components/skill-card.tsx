@@ -50,7 +50,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
             <div>{cardData.username}</div>
             <CardDescription>{cardData.institute}</CardDescription>
             <div className="text-xs font-light">
-              {getTimeSinceByDate(cardData.time_stamp)}
+              {getTimeSinceByDate(cardData.created_time)}
             </div>
           </CardTitle>
         </div>
@@ -71,7 +71,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
                 </Label>
                 <Input
                   id="name"
-                  value={cardData.location}
+                  value={cardData.locations}
                   className="col-span-3"
                 />
               </div>
@@ -118,7 +118,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
             <div className="flex h-5 items-center space-x-4">
               <div className="font-bold">地點</div>
               <Separator orientation="vertical" />
-              <Badge variant="outline">{cardData.location}</Badge>
+              <Badge variant="outline">{cardData.locations}</Badge>
             </div>
 
             <div className="flex h-5 items-center space-x-4">

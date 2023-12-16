@@ -5,8 +5,9 @@
     "avatar": "https://github.com/shadcn.png",
     "username": "Min Min",
     "institute": "國立台灣大學",
-    "time_stamp": "2023-12-31T23:59:59",
-    "location": "台北",
+    "created_time": "2023-12-31T22:59:59",
+    "updated_time": "2023-12-31T23:59:59",
+    "locations": "台北",
     "want_to_learn": "FLOLAC",
     "good_at": "寫前端",
     "contents": "我好想學 FLOLAC 喔，有人想一起去今年的 FLOLAC 嗎？",
@@ -30,7 +31,8 @@
       }
     ],
     "visibility": "public",
-    "suspended": false
+    "suspended": false,
+    "deleted": false
   },
   {
     "card_id": "aaa",
@@ -38,8 +40,9 @@
     "avatar": "https://github.com/shadcn.png",
     "username": "Min Min",
     "institute": "國立台灣大學",
-    "time_stamp": "2023-12-31T23:59:59",
-    "location": "線上",
+    "created_time": "2023-12-31T22:59:59",
+    "updated_time": "2023-12-31T23:59:59",
+    "locations": "線上",
     "want_to_learn": "寫前端",
     "good_at": "FLOLAC",
     "contents": "我不會寫前端嗚嗚嗚嗚嗚",
@@ -55,6 +58,7 @@
       }
     ],
     "visibility": "public",
-    "suspended": false
+    "suspended": false,
+    "deleted": false
   }
 ]
