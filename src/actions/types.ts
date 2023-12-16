@@ -34,9 +34,9 @@ export interface Topic {
 export interface Conversation {
   avatar: string;
   username: string;
-  time_stamp: Date;
+  last_time_stamp: Date;
   contents: string;
-  user_id: string;
+  partner_id: string;
 }
 
 export interface UserProfile {
@@ -49,6 +49,4 @@ export interface UserProfile {
   user_id: string;
   avatar: string;
   institute: string;
-  posted_card: CardData[];
-  engaged_card: CardData[];
 }
