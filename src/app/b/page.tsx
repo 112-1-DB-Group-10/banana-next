@@ -9,14 +9,17 @@ import {
   NewLabels,
 } from '@/actions/adminActions';
 import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
-import { getChatBox, getConversations } from '@/actions/chatActions';
+import { getChatBox, getConversations, sendMessages } from '@/actions/chatActions';
 
 export default async function HomePage() {
-  const conversations = await getConversations(
-    '0007970e-3ee4-4814-a886-0717399d1547',
-  );
-  console.log(conversations);
+  const messages = await sendMessages('0007970e-3ee4-4814-a886-0717399d1547', 'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c', '白痴禾家');
+  console.log(messages);
+  // const conversations = await getConversations(
+    // '0007970e-3ee4-4814-a886-0717399d1547',
+  // );
+  // console.log(conversations);
   // const chatBox = await getChatBox('0007970e-3ee4-4814-a886-0717399d1547', 'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c');
+  // console.log(chatBox);
   // const application: NewApplications = {
   //   user_id: "af384980-d23b-4a43-b03c-7324041c808d",
   //   englishname: "Winner",
