@@ -107,7 +107,7 @@ export const getChatBox = async (
   return chatBox;
 };
 
-export const sendMessages = async (
+export const sendMessage = async (
   userId: UUID,
   partnerId: UUID,
   contents: string,

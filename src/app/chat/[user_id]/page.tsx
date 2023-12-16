@@ -1,49 +1,33 @@
 'use server';
 
-import { MdClose } from 'react-icons/md';
-import Link from 'next/link';
-import messages from '@/db/messages.json';
-import users from '@/db/users.json';
-import { cn } from '@/lib/utils';
-import MessageForm from './messageform';
+import ChatNavPane from '../chat-nav-pane';
+import { UUID } from 'crypto';
+import { Card } from '@/components/ui/card';
+import { getUserSession } from '@/lib/session';
+import ChatBox from './chat-box';
 
-const ChatBox = async ({ params }: { params: { user_id: string } }) => {
-  const userId: string = 'abc123';
-  const chat = messages.filter(
-    (message) =>
-      (message.receiver_id === userId &&
-        message.sender_id === params.user_id) ||
-      (message.sender_id === userId && message.receiver_id === params.user_id),
-  );
-  const chattingUser = users.filter(
-    (user) => user.user_id === params.user_id,
-  )[0];
+const ChatBoxPage = async ({
+  searchParams,
+  params,
+}: {
+  params: {
+    user_id: UUID;
+  };
+  searchParams?: {
+    q?: string;
+  };
+}) => {
+  const session = await getUserSession();
   return (
-    <div className="flex h-full w-full flex-col">
-      <div className="mb-4 flex w-full items-center justify-between border-b-2 p-1 pb-2">
-        <p>{chattingUser.username}</p>
-        <Link href="/chat">
-          <MdClose className="h-6 w-6" />
-        </Link>
-      </div>
-      <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
-        {chat.map((message, index) => (
-          <div
-            key={`message-${index}`}
-            className={cn(
-              'max-w-xs rounded-lg px-4 py-2',
-              message.sender_id === userId
-                ? 'ml-auto bg-blue-100' // For user's messages
-                : 'mr-auto bg-gray-100', // For other user's messages
-            )}
-          >
-            {message.contents}
-          </div>
-        ))}
-      </div>
-      <MessageForm />
-    </div>
+    <>
+      <ChatNavPane query={searchParams?.q} />
+      <Card className="flex h-[35rem] w-[50rem] justify-around overflow-y-scroll p-4">
+        <div className="flex h-full w-full flex-col">
+          <ChatBox partnerId={params.user_id} />
+        </div>
+      </Card>
+    </>
   );
 };
 
-export default ChatBox;
+export default ChatBoxPage;

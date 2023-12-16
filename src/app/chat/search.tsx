@@ -13,7 +13,7 @@ const Search: React.FC = () => {
     searchParams.get('q') || '',
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const q = e.target.value;
     setSearchQuery(q);
     if (q.length > 0) router.push(`${pathname}?q=${q}`);
@@ -25,7 +25,7 @@ const Search: React.FC = () => {
       <input
         type="text"
         value={searchQuery}
-        onChange={handleChange}
+        onChange={handleSearch}
         className="w-full rounded-2xl border-gray-200 border-transparent px-2 py-2 focus:outline-none"
         placeholder="我的朋友叫..."
       />

@@ -1,10 +1,18 @@
 'use server';
 
-import { applicationsTable, belongsToTable, cardsTable, labelsTable, topicsTable, locationsTable, locatedAtTable, usersTable } from '../db/schema';
-import { eq, gt, lt, gte, ne, or, sql, max, desc, and } from 'drizzle-orm';
-import { db } from '@/db';
+import {
+  applicationsTable,
+  belongsToTable,
+  cardsTable,
+  labelsTable,
+  locatedAtTable,
+  locationsTable,
+  topicsTable,
+  usersTable,
+} from '../db/schema';
 import { UUID } from 'crypto';
-import exp from 'constants';
+import { and, eq } from 'drizzle-orm';
+import { db } from '@/db';
 
 export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
@@ -29,22 +37,22 @@ export const insertApplication = async (application: NewApplications) => {
 export const deleteApplication = async (application: NewApplications) => {
   try {
     const t = await db
-    .delete(applicationsTable)
-    .where(
-      and(
-        eq(applicationsTable.user_id, application.user_id),
-        eq(applicationsTable.englishname, application.englishname),
-        eq(applicationsTable.enroll_year, application.enroll_year),
-        eq(applicationsTable.institute, application.institute),
-        eq(applicationsTable.document_url, application.document_url),
-      )
-    );
+      .delete(applicationsTable)
+      .where(
+        and(
+          eq(applicationsTable.user_id, application.user_id),
+          eq(applicationsTable.englishname, application.englishname),
+          eq(applicationsTable.enroll_year, application.enroll_year),
+          eq(applicationsTable.institute, application.institute),
+          eq(applicationsTable.document_url, application.document_url),
+        ),
+      );
     console.log('delete application success');
     return t;
-    }catch(error){
-      console.error('Error deleting applications!:', error);
-      throw error;
-    }
+  } catch (error) {
+    console.error('Error deleting applications!:', error);
+    throw error;
+  }
 };
 //新增一個 topic
 export const insertTopic = async (topic: NewTopics) => {
@@ -61,7 +69,8 @@ export const insertTopic = async (topic: NewTopics) => {
 //刪除一個 topic
 export const deleteTopic = async (topic: NewTopics) => {
   try {
-    const t = await db.update(belongsToTable)
+    const t = await db
+      .update(belongsToTable)
       .set({ topic_name: '其他' })
       .where(eq(belongsToTable.topic_name, topic.topic_name));
     await db
@@ -95,13 +104,14 @@ export const updateBelongsTo = async (
   label_name: any,
 ) => {
   try {
-    const a = await db
-    .transaction( async (tx) => {
-      const m = await tx.delete(belongsToTable).where(eq(label_name, belongsToTable.label_name));
+    const a = await db.transaction(async (tx) => {
+      const m = await tx
+        .delete(belongsToTable)
+        .where(eq(label_name, belongsToTable.label_name));
       const t = await tx
-      .update(belongsToTable)
-      .set({ topic_name: new_topic.topic_name, label_name: label_name })
-      .where(eq(labelsTable.label_name, label_name));
+        .update(belongsToTable)
+        .set({ topic_name: new_topic.topic_name, label_name: label_name })
+        .where(eq(labelsTable.label_name, label_name));
     });
     console.log('Changed belongs to successfully!');
     return a;
@@ -117,19 +127,19 @@ export const updateApplication = async (
   status: any,
 ) => {
   try {
-    const t = await db
-    .transaction( async (tx) => {
-      const m = await tx.update(applicationsTable)
-      .set({ verification: status})
-      .where(
-        and(
-          eq(applicationsTable.user_id, application.user_id),
-          eq(applicationsTable.englishname, application.englishname),
-          eq(applicationsTable.enroll_year, application.enroll_year),
-          eq(applicationsTable.institute, application.institute),
-          eq(applicationsTable.document_url, application.document_url),
-        )
-      );
+    const t = await db.transaction(async (tx) => {
+      const m = await tx
+        .update(applicationsTable)
+        .set({ verification: status })
+        .where(
+          and(
+            eq(applicationsTable.user_id, application.user_id),
+            eq(applicationsTable.englishname, application.englishname),
+            eq(applicationsTable.enroll_year, application.enroll_year),
+            eq(applicationsTable.institute, application.institute),
+            eq(applicationsTable.document_url, application.document_url),
+          ),
+        );
     });
     console.log('Changed belongs to successfully!');
     return t;
@@ -140,22 +150,20 @@ export const updateApplication = async (
 };
 
 // 找出使用者的 institute
-export const findInstitute = async (
-  user_id: any
-) => {
+export const findInstitute = async (user_id: any) => {
   try {
     const t = await db
-    .select({
-      institute: applicationsTable.institute,
-    })
-    .from(applicationsTable)
-    .where(
-      and(
-        eq(applicationsTable.user_id, user_id),
-        eq(applicationsTable.verification, "pass"),
+      .select({
+        institute: applicationsTable.institute,
+      })
+      .from(applicationsTable)
+      .where(
+        and(
+          eq(applicationsTable.user_id, user_id),
+          eq(applicationsTable.verification, 'pass'),
+        ),
       )
-    )
-    .orderBy(applicationsTable.enroll_year);
+      .orderBy(applicationsTable.enroll_year);
     console.log('Find Institute successfully!');
     return t;
   } catch (error) {
@@ -163,43 +171,13 @@ export const findInstitute = async (
     throw error;
   }
 };
-//透過 id 找到使用者以及他的 institute
-export const getUserById = async (
-  user_id: any
-) => {
-  try {
-    const t = db
-    .select({
-      username: usersTable.username,
-      sex: usersTable.sex,
-      age: usersTable.age,
-      email: usersTable.email,
-      role: usersTable.role,
-      suspended: usersTable.suspended,
-      avatar: usersTable.avatar,
-      institute: applicationsTable.institute
-    })
-    .from(usersTable)
-    .innerJoin(applicationsTable, and(
-      eq(applicationsTable.user_id, user_id),
-      eq(applicationsTable.verification, "pass"),
-    ))
-    .where(eq(usersTable.user_id, user_id))
-    return t;
-  } catch (error) {
-    console.error('Error finding user:', error);
-    throw error;
-  }
-};
 
 //新增地點
-export const insertLocation = async (
-  location_name: any
-) => {
+export const insertLocation = async (location_name: any) => {
   try {
     const t = await db
-    .insert(locationsTable)
-    .values({location_name: location_name});
+      .insert(locationsTable)
+      .values({ location_name: location_name });
     console.log('Insert Location successfully!');
     return t;
   } catch (error) {
@@ -209,13 +187,11 @@ export const insertLocation = async (
 };
 
 //刪除地點
-export const deleteLocation = async (
-  location_name: any
-) => {
+export const deleteLocation = async (location_name: any) => {
   try {
     const t = await db
-    .delete(locationsTable)
-    .where(eq(locationsTable.location_name, location_name));
+      .delete(locationsTable)
+      .where(eq(locationsTable.location_name, location_name));
     console.log('Delete Location successfully!');
     return t;
   } catch (error) {
@@ -227,14 +203,14 @@ export const deleteLocation = async (
 //更新地點名稱
 export const updateLocation = async (
   location_name: any,
-  new_location_name: any
+  new_location_name: any,
 ) => {
   try {
-    const a = await db
-    .transaction( async (tx) => {
-      const m = await tx.update(locationsTable)
-      .set({location_name: new_location_name})
-      .where(eq(locationsTable.location_name, location_name));
+    const a = await db.transaction(async (tx) => {
+      const m = await tx
+        .update(locationsTable)
+        .set({ location_name: new_location_name })
+        .where(eq(locationsTable.location_name, location_name));
     });
     console.log('Update Location successfully!');
     return a;
@@ -245,14 +221,11 @@ export const updateLocation = async (
 };
 
 //新增 located_at 資料
-export const insertLocatedAt = async (
-  location_name: any,
-  card_id: any
-) => {
+export const insertLocatedAt = async (location_name: any, card_id: any) => {
   try {
     const t = await db
-    .insert(locatedAtTable)
-    .values({location_name: location_name, card_id: card_id});
+      .insert(locatedAtTable)
+      .values({ location_name: location_name, card_id: card_id });
     console.log('Insert Located at successfully!');
     return t;
   } catch (error) {
@@ -262,16 +235,13 @@ export const insertLocatedAt = async (
 };
 
 //更新 located_at 資料
-export const updateLocatedAt = async (
-  new_location_name: any,
-  card_id: any
-) => {
+export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
   try {
-    const a = await db
-    .transaction( async (tx) => {
-      const m = await tx.update(locatedAtTable)
-      .set({location_name: new_location_name})
-      .where(eq(locatedAtTable.card_id, card_id));
+    const a = await db.transaction(async (tx) => {
+      const m = await tx
+        .update(locatedAtTable)
+        .set({ location_name: new_location_name })
+        .where(eq(locatedAtTable.card_id, card_id));
     });
     console.log('Insert Located at successfully!');
     return a;
@@ -282,59 +252,52 @@ export const updateLocatedAt = async (
 };
 
 //新增某個 label 資料之後要記得在新增 belongs to
-export const insertLabel = async (
-  new_label: any,
-  new_user: UUID,
-) => {
+export const insertLabel = async (new_label: any, new_user: UUID) => {
   try {
     const a = await db
-    .insert(labelsTable)
-    .values({label_name: new_label, created_user: new_user});
+      .insert(labelsTable)
+      .values({ label_name: new_label, created_user: new_user });
     const b = await db
-    .insert(belongsToTable)
-    .values({label_name: new_label, topic_name: '其他'});
+      .insert(belongsToTable)
+      .values({ label_name: new_label, topic_name: '其他' });
     console.log('Insert label success!');
     return a;
-  }catch(error){
+  } catch (error) {
     console.error('Error inserting label!:', error);
     throw error;
   }
 };
 
 //刪除某個 label
-export const deleteLabel = async (
-  target_label: any,
-) =>{
+export const deleteLabel = async (target_label: any) => {
   try {
     const a = await db
-    .delete(labelsTable)
-    .where(eq(labelsTable.label_name, target_label));
+      .delete(labelsTable)
+      .where(eq(labelsTable.label_name, target_label));
     console.log('Deleting label success!');
     return a;
-  }catch(error){
+  } catch (error) {
     console.error('Error deleting label:', error);
     throw error;
   }
 };
 
 //查找所有 pass/pending/fail 的 application 紀錄
-export const queryApplications = async (
-  target_status: any,
-) => {
+export const queryApplications = async (target_status: any) => {
   try {
     const a = await db
-    .select({
-      user_id: applicationsTable.user_id,
-      enroll_year: applicationsTable.enroll_year,
-      institute: applicationsTable.institute,
-      userEnglishName: applicationsTable.englishname,
-      documnet_url: applicationsTable.document_url,
-    })
-    .from(applicationsTable)
-    .where(eq(applicationsTable.verification, target_status));
+      .select({
+        user_id: applicationsTable.user_id,
+        enroll_year: applicationsTable.enroll_year,
+        institute: applicationsTable.institute,
+        userEnglishName: applicationsTable.englishname,
+        documnet_url: applicationsTable.document_url,
+      })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.verification, target_status));
     console.log('find applications success!');
     return a;
-  }catch(error){
+  } catch (error) {
     console.error('Error finding application that match the status:', error);
     throw error;
   }
@@ -345,63 +308,59 @@ export const updateLabel = async (
   originLabel: NewLabels,
   updateLabel: NewLabels,
 ) => {
-  const a = await db
-    .transaction( async (tx) => {
-      const m = await tx.update(labelsTable)
-      .set({label_name: updateLabel.label_name, created_user: updateLabel.created_user})
+  const a = await db.transaction(async (tx) => {
+    const m = await tx
+      .update(labelsTable)
+      .set({
+        label_name: updateLabel.label_name,
+        created_user: updateLabel.created_user,
+      })
       .where(eq(labelsTable.label_name, originLabel.label_name));
-    });
-    return a;
+  });
+  return a;
 };
 
 //新增使用者
 export const insertUser = async (new_user: NewUsers) => {
-  const users = await db
-    .insert(usersTable)
-    .values(new_user);
-    return users;
+  const users = await db.insert(usersTable).values(new_user);
+  return users;
 };
 
 //停權某使用者
-export const suspendeUser = async (user_id:UUID) => {
-  const a = await db
-    .transaction( async (tx) => {
-      const m = tx
-    .update(usersTable)
-    .set({suspended: true})
-    .where(eq(usersTable.user_id, user_id));
-    });
+export const suspendeUser = async (user_id: UUID) => {
+  const a = await db.transaction(async (tx) => {
+    const m = tx
+      .update(usersTable)
+      .set({ suspended: true })
+      .where(eq(usersTable.user_id, user_id));
+  });
   return a;
 };
 
 //更改用戶資料
-export const updateUser =async (updateUser:NewUsers) => {
-  const updatedUser = await db
-    .transaction( async (tx) => {
-      const m = tx
+export const updateUser = async (updateUser: NewUsers) => {
+  const updatedUser = await db.transaction(async (tx) => {
+    const m = tx
       .update(usersTable)
       .set({
-       username: updateUser.username,
-       sex: updateUser.sex,
-       age: updateUser.age,
-       role: updateUser.role,
-       avatar: updateUser.avatar, 
+        username: updateUser.username,
+        sex: updateUser.sex,
+        age: updateUser.age,
+        role: updateUser.role,
+        avatar: updateUser.avatar,
       })
       .where(eq(usersTable.user_id, updateUser.user_id));
-    });
-    return updatedUser;
+  });
+  return updatedUser;
 };
 
 //更新 topic 名字
-export const updateTopic = async (
-  updateTopic: NewTopics,
-) => {
-  const updatedTopic = await db
-    .transaction( async (tx) => {
-      const m = tx
-    .update(topicsTable)
-    .set({topic_name: updateTopic.topic_name})
-    .where(eq(topicsTable.topic_name, updateTopic.topic_name));
-    });
-    return updatedTopic;
+export const updateTopic = async (updateTopic: NewTopics) => {
+  const updatedTopic = await db.transaction(async (tx) => {
+    const m = tx
+      .update(topicsTable)
+      .set({ topic_name: updateTopic.topic_name })
+      .where(eq(topicsTable.topic_name, updateTopic.topic_name));
+  });
+  return updatedTopic;
 };

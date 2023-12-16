@@ -1,9 +1,15 @@
-'use client';
+'use server';
 
-import { Card } from '@/components/ui/card';
+import ChatNavPane from './chat-nav-pane';
 
-const Chat = () => {
-  return <Card className="hidden transition-all duration-500">dawda</Card>;
+const Chat = async ({
+  searchParams,
+}: {
+  searchParams?: {
+    q?: string;
+  };
+}) => {
+  return <ChatNavPane query={searchParams?.q} />;
 };
 
 export default Chat;
