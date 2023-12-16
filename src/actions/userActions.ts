@@ -32,11 +32,7 @@ export const getUserById = async (user_id: any) => {
         eq(usersTable.user_id, user_id)
         )
         );
-    if (user.length > 0) {
-      return user[0];
-    } else {
-      throw Error('User Not Found.');
-    }
+    return user;
   } catch (error) {
     console.error('Error finding user:', error);
     throw error;
