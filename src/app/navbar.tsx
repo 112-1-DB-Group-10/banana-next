@@ -95,7 +95,7 @@ function NavBar() {
         </NavigationMenuItem>
         <div className="flex gap-4">
           <NavigationMenuItem className="self-end">
-            <Link href="/cardstemp" legacyBehavior passHref>
+            <Link href="/create" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 <FaPen />
               </NavigationMenuLink>
