@@ -1,22 +1,12 @@
 'use client';
 
-import * as React from 'react';
 import Image from 'next/image';
 import cards_from_json from '@/actions/cards.json';
 import { CardData } from '@/actions/types';
 import user from '@/actions/user.json';
-import Avatar from '@/components/avatar';
 import SkillCard from '@/components/skill-card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -28,16 +18,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User } from '@/db/types';
 // import users from '@/db/users.json';
 import { isURL } from '@/lib/utils';
 
