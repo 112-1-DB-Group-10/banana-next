@@ -96,14 +96,15 @@ export const updateBelongsTo = async (
 ) => {
   try {
     const a = await db
-      .delete(belongsToTable)
-      .where(eq(label_name, belongsToTable.label_name));
-    const t = await db
+    .transaction( async (tx) => {
+      const m = await tx.delete(belongsToTable).where(eq(label_name, belongsToTable.label_name));
+      const t = await tx
       .update(belongsToTable)
       .set({ topic_name: new_topic.topic_name, label_name: label_name })
       .where(eq(labelsTable.label_name, label_name));
+    });
     console.log('Changed belongs to successfully!');
-    return t;
+    return a;
   } catch (error) {
     console.error('Error changing belongs:', error);
     throw error;
@@ -117,7 +118,8 @@ export const updateApplication = async (
 ) => {
   try {
     const t = await db
-      .update(applicationsTable)
+    .transaction( async (tx) => {
+      const m = await tx.update(applicationsTable)
       .set({ verification: status})
       .where(
         and(
@@ -128,6 +130,7 @@ export const updateApplication = async (
           eq(applicationsTable.document_url, application.document_url),
         )
       );
+    });
     console.log('Changed belongs to successfully!');
     return t;
   } catch (error) {
@@ -227,12 +230,14 @@ export const updateLocation = async (
   new_location_name: any
 ) => {
   try {
-    const t = await db
-    .update(locationsTable)
-    .set({location_name: new_location_name})
-    .where(eq(locationsTable.location_name, location_name));
+    const a = await db
+    .transaction( async (tx) => {
+      const m = await tx.update(locationsTable)
+      .set({location_name: new_location_name})
+      .where(eq(locationsTable.location_name, location_name));
+    });
     console.log('Update Location successfully!');
-    return t;
+    return a;
   } catch (error) {
     console.error('Error updating Location:', error);
     throw error;
@@ -263,9 +268,11 @@ export const updateLocatedAt = async (
 ) => {
   try {
     const a = await db
-    .update(locatedAtTable)
-    .set({location_name: new_location_name})
-    .where(eq(locatedAtTable.card_id, card_id));
+    .transaction( async (tx) => {
+      const m = await tx.update(locatedAtTable)
+      .set({location_name: new_location_name})
+      .where(eq(locatedAtTable.card_id, card_id));
+    });
     console.log('Insert Located at successfully!');
     return a;
   } catch (error) {
@@ -283,6 +290,9 @@ export const insertLabel = async (
     const a = await db
     .insert(labelsTable)
     .values({label_name: new_label, created_user: new_user});
+    const b = await db
+    .insert(belongsToTable)
+    .values({label_name: new_label, topic_name: '其他'});
     console.log('Insert label success!');
     return a;
   }catch(error){
@@ -332,12 +342,16 @@ export const queryApplications = async (
 
 //更新 label 名字
 export const updateLabel = async (
+  originLabel: NewLabels,
   updateLabel: NewLabels,
 ) => {
-  const updatedLabel = db
-    .update(labelsTable)
-    .set({label_name: updateLabel.label_name, created_user: updateLabel.created_user});
-    return updatedLabel;
+  const a = await db
+    .transaction( async (tx) => {
+      const m = await tx.update(labelsTable)
+      .set({label_name: updateLabel.label_name, created_user: updateLabel.created_user})
+      .where(eq(labelsTable.label_name, originLabel.label_name));
+    });
+    return a;
 };
 
 //新增使用者
@@ -350,24 +364,30 @@ export const insertUser = async (new_user: NewUsers) => {
 
 //停權某使用者
 export const suspendeUser = async (user_id:UUID) => {
-  const suspendedUser = db
+  const a = await db
+    .transaction( async (tx) => {
+      const m = tx
     .update(usersTable)
-    .set({suspended: true});
-  return suspendedUser;
+    .set({suspended: true})
+    .where(eq(usersTable.user_id, user_id));
+    });
+  return a;
 };
 
 //更改用戶資料
 export const updateUser =async (updateUser:NewUsers) => {
-  const updatedUser = db
-    .update(usersTable)
-    .set({
-     username: updateUser.username,
-     sex: updateUser.sex,
-     age: updateUser.age,
-     email: updateUser.email,
-     role: updateUser.role,
-     suspended: updateUser.suspended,
-     avatar: updateUser.avatar, 
+  const updatedUser = await db
+    .transaction( async (tx) => {
+      const m = tx
+      .update(usersTable)
+      .set({
+       username: updateUser.username,
+       sex: updateUser.sex,
+       age: updateUser.age,
+       role: updateUser.role,
+       avatar: updateUser.avatar, 
+      })
+      .where(eq(usersTable.user_id, updateUser.user_id));
     });
     return updatedUser;
 };
@@ -376,8 +396,12 @@ export const updateUser =async (updateUser:NewUsers) => {
 export const updateTopic = async (
   updateTopic: NewTopics,
 ) => {
-  const updatedTopic = db
+  const updatedTopic = await db
+    .transaction( async (tx) => {
+      const m = tx
     .update(topicsTable)
-    .set({topic_name: updateTopic.topic_name});
-    return updateTopic;
+    .set({topic_name: updateTopic.topic_name})
+    .where(eq(topicsTable.topic_name, updateTopic.topic_name));
+    });
+    return updatedTopic;
 };
