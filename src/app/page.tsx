@@ -1,6 +1,6 @@
 'use server';
 
-import { getChatBox, getConversations } from '@/actions/chatQueries';
+// import { getChatBox, getConversations } from '@/actions/chatQueries';
 import MainPage from './mainpage';
 
 export default async function HomePage() {
