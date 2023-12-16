@@ -32,7 +32,8 @@ export default function MainPage() {
   // const cards: CardData[] = );
   const cards: CardData[] = cardData.map((card) => ({
     ...card,
-    time_stamp: new Date(card.time_stamp),
+    created_time: new Date(card.created_time),
+    updated_time: new Date(card.updated_time),
     comments: card.comments.map((comment) => ({
       ...comment,
       time_stamp: new Date(comment.time_stamp),
