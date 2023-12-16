@@ -9,6 +9,7 @@ import { any } from 'zod';
 import { UUID } from 'crypto';
 import {v4 as uuidv4} from 'uuid';
 import { userInfo } from 'os';
+import { Card, GoodAt, WantToLearn } from '@/db/types';
 
 
 export type NewCard = typeof cardsTable.$inferInsert;
@@ -821,7 +822,86 @@ const getCardsLikedOrCommentedByUser = async (userId: UUID, cardPerPage: number,
     console.log(cards.length);
     console.log("getCardsLikedOrCommentedByUser");
     return cards;
-}
+};
+
+const likeCard = async (like: NewLike) => {
+    return db.insert(likesTable).values(like);
+};
+
+const unlikeCard = async (like: NewLike) => {
+    await db
+    .delete(likesTable)
+    .where(
+        and(
+            eq(likesTable.card_id, like.card_id),
+            eq(likesTable.user_id, like.user_id)
+        )
+    );
+};
+
+const commentOnCard = async (comment: NewComment) => {
+    return db.insert(commentsTable).values(comment);
+};
+
+
+const deleteCard = async (cardId: UUID) => {
+    console.log("deleting card");
+    await db.update(cardsTable)
+    .set({ deleted: true })
+    .where(eq(cardsTable.card_id, cardId));
+    console.log("card deleted");
+};
+
+const updateCard = async (cardId: UUID, updatedTime: Date, updatedText: string) => {
+    console.log("updating card");
+    await db.update(cardsTable)
+    .set({
+        updated_time: updatedTime,
+        contents: updatedText,
+    })
+    .where(eq(cardsTable.card_id, cardId));
+    console.log("card updated");
+};
+
+const createCard = async(card: Card) => {
+    return db.insert(cardsTable).values(card);
+};
+const createWantToLearn = async(wantToLearn: WantToLearn) => {
+    return db.insert(wantToLearnTable).values(wantToLearn);
+};
+const createGoodAt = async(goodAt: GoodAt) => {
+    return db.insert(goodAtTable).values(goodAt);
+};
+
+const handleNewCard = async (cardData: CardData) => {
+    console.log("creating card");
+    const card: Card = {
+        card_id: cardData.card_id,
+        user_id: cardData.user_id,
+        contents: cardData.contents,
+        created_time: cardData.created_time,
+        updated_time: cardData.updated_time,
+        deleted: cardData.deleted,
+        visibility: cardData.visibility,
+        suspended: cardData.suspended,
+    };
+    console.log("creating want_to_learn");
+    const wantToLearn: WantToLearn = {
+        card_id: cardData.card_id,
+        label_name: cardData.want_to_learn
+    };
+    console.log("creating good_at");
+    const goodAt: GoodAt = {
+        card_id: cardData.card_id,
+        label_name: cardData.good_at
+    };
+
+    await createCard(card);
+    await createGoodAt(goodAt);
+    await createWantToLearn(wantToLearn);
+};
+
+
 
 export {
     getAllLabelsWithTopics,
@@ -835,12 +915,13 @@ export {
     getCardsByTopic, // Q2: 卡片是否回傳 label_name 與 topic_name？ 還是前端弄就好？
     
     getCardsPostedByUser,
-    getCardsLikedOrCommentedByUser, // Q3: 卡片是否回傳 「按讚時間」 與 「留言時間」 ？還是前端弄就好？
+    getCardsLikedOrCommentedByUser,
     // /* 這個區塊裡都需要 location filter 功能，但我還沒寫好 */
 
-    // likeCard, // Q4: 是否需要「取消按讚」功能，要的話要多一個函式
-    // commentOnCard, // Q5: 是否需要「刪除留言」功能，要的話要多一個函式
-    // deleteCard,
-    // updateCard,
-    // createCard,
+    likeCard,
+    unlikeCard,
+    commentOnCard,
+    deleteCard,
+    updateCard,
+    createCard,
 };
