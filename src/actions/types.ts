@@ -8,20 +8,22 @@ export interface CommentData {
 }
 
 export interface CardData {
-  visibility: string;
-  suspended: boolean;
-  comments: CommentData[];
   card_id: string;
   user_id: string;
-  avatar: string;
   username: string;
+  avatar: string;
+  contents: string;
+  locations: string;
   institute: string;
-  time_stamp: Date;
-  location: string;
+  created_time: Date;
+  updated_time: Date;
+  visibility: string;
+  suspended: boolean;
+  deleted: boolean;
   want_to_learn: string;
   good_at: string;
-  contents: string;
   likes: number;
+  comments: CommentData[];
 }
 
 export interface Topic {
