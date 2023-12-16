@@ -2,25 +2,26 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import {
-  getLabelsByTopic,
+  getAllLabelsWithTopics,
+  // getLabelsByTopic,
   getPopularCards,
   getNewestCards,
-  getCardById,
+  // getCardById,
   getCardsBySubstring,
   getCardsByLabel,
   getCardsByTopic,
   getCardsPostedByUser,
   getCardsLikedOrCommentedByUser,
-  likeCard,
-  commentOnCard,
-  deleteCard,
-  updateCard,
-} from '@/actions/cardActions';
+  // likeCard,
+  // commentOnCard,
+  // deleteCard,
+  // updateCard,
+} from '@/actions/cardActionsV2';
 
 export default async function HomePage() {
   // function testing
 
-  // const cardPerPage = 10, page = 1;
+  const cardPerPage = 10, page = 1;
   // const popularCards = await getPopularCards(true, [] ,cardPerPage, page);
   // const newestCards = await getNewestCards(true, [], cardPerPage, page);
   // const oneCard = await getCardById("bde171ab-9b44-4343-b794-3701a14ca4a3");
@@ -28,10 +29,10 @@ export default async function HomePage() {
   // const filteredCardsByLabel = await getCardsByLabel(true, "天文學", ["台北", "彰化"], cardPerPage, page);
   // const filteredCardsByTopic = await getCardsByTopic(true, "體育", ["台北"], cardPerPage, page);
   // const cardsPostedByUser = await getCardsPostedByUser("9456173c-2dfd-4f98-9012-6573ab4f15e8", cardPerPage, page);
-  // const cardsLikedOrCommentedByUser = await getCardsLikedOrCommentedByUser("ce9534bd-efe3-4187-b8a3-4b2d7da96018", cardPerPage, page);
+  const cardsLikedOrCommentedByUser = await getCardsLikedOrCommentedByUser("ce9534bd-efe3-4187-b8a3-4b2d7da96018", cardPerPage, page);
   // await deleteCard("ada86234-12cb-40df-8ac4-b7057798da3d");
   // await updateCard("ada86234-12cb-40df-8ac4-b7057798da3d", new Date(), "I want to rest.");
-  // const labels = await getLabelsByTopic("體育");
+  // const labels = await getAllLabelsWithTopics();
 
   // const popularCards = await getPopularCards();
   return (
