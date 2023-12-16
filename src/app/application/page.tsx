@@ -1,134 +1,211 @@
 'use client';
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { toast, useToast } from '@/components/ui/use-toast';
+import { ToastAction } from "@/components/ui/toast"
+import { ProgressBar } from './progress';
 
 const colleges = [
   '國立台灣大學',
   '國立政治大學',
   '私立大葉大學',
   '私立文化大學',
+  '國立中興大學',
+  '國立臺灣師範大學',
+  '國立成功大學',
+  '國立臺北大學',
+  '國立中央大學',
+  '國立臺灣海洋大學',
+  '國立高雄師範大學',
+  '國立彰化師範大學',
+  '國立中山大學',
+  '國立中正大學',
+  '國立宜蘭大學',
 ];
 
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+const FormSchema = z.object({
+  username: z.string().min(2, {
+    message: 'Username must be at least 2 characters.',
+  }),
+  school: z.string({
+    required_error: 'Please select an email to display.',
+  }),
+  enrollYear: z.string().min(2, {
+    message: '請輸入入學年份',
+  }),
+  // profilePicture: z
+  // .any()
+  // .refine((files) => files?.length == 1, "Image is required.")
+  // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+  // .refine(
+  //   (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+  //   ".jpg, .jpeg, .png and .webp files are accepted."
+  // ),
+});
+
 const Application = () => {
-  const [name, setName] = useState('');
-  const [selectedCollege, setSelectedCollege] = useState('');
-  const [collegeYear, setCollegeYear] = useState('');
+  const { toast } = useToast()
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [verificationProgress, setVerificationProgress] = useState(0);
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-
-  const handleCollegeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCollege(e.target.value);
-  };
-
-  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCollegeYear(e.target.value);
-  };
-
-  const handlePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      setProfilePicture(file);
-    }
-  };
+  // const handlePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files && e.target.files[0];
+  //   if (file) {
+  //     setProfilePicture(file);
+  //   }
+  // };
 
   const handleSubmit = () => {
     setVerificationProgress((prevProgress) => prevProgress + 25);
   };
 
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      username: '',
+      school: '',
+      enrollYear: '',
+      // profilePicture,
+    },
+  });
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log('fuck');
+    toast({
+      title: 'You submitted the following values:',
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+  }
   return (
-    <div className="container mx-auto flex justify-between gap-10 p-4">
-      <div className="relative w-3/5 space-y-4">
-        <div className="space-y-4 rounded-md border p-4 shadow-md">
-          <h1 className="mb-4 text-3xl font-bold">香蕉認證</h1>
-
-          <div className="mb-4">
-            <label htmlFor="name" className="mb-1 block">
-              Name:
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="w-2/3 rounded-md border border-gray-300 p-2"
-              value={name}
-              onChange={handleNameChange}
-            />
-          </div>
-
-          <div className="mb-4 flex items-center">
-            <label htmlFor="college" className="mb-1 mr-4 block">
-              學校：
-            </label>
-            <select
-              id="college"
-              className="w-1/3 rounded-md border border-gray-300 p-2"
-              value={selectedCollege}
-              onChange={handleCollegeChange}
-            >
-              <option value="">請選擇學校</option>
-              {colleges.map((college) => (
-                <option key={college} value={college}>
-                  {college}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-4 flex items-center">
-            <label htmlFor="year" className="mb-1 mr-4 block">
-              入學年份：
-            </label>
-            <input
-              type="text"
-              id="year"
-              className="w-1/4 rounded-md border border-gray-300 p-2"
-              value={collegeYear}
-              onChange={handleYearChange}
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="profilePicture" className="mb-1 block">
-              上傳認證文件
-            </label>
-            <input
-              type="file"
-              id="profilePicture"
-              className="w-1/3 rounded-md border border-gray-300 p-2"
-              onChange={handlePictureUpload}
-            />
-          </div>
-
-          <div className="absolute bottom-4 right-4">
-            <button
-              className="rounded-md bg-blue-500 px-5 py-3 text-white"
-              onClick={handleSubmit}
-            >
-              送出認證
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-20 w-1/3 pl-5">
-        <div className="flex flex-col justify-center">
-          <h2 className="mb-2 text-lg font-bold">審核進度</h2>
-          <div className="flex items-center">
-            <progress
-              className="mr-2 w-full rounded-md border border-gray-300"
-              value={verificationProgress}
-              max="100"
-            >
-              {verificationProgress}%
-            </progress>
-            <span>{verificationProgress}%</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Form {...form}>
+      <Card className="bg-blueGray-50 mx-auto w-[50rem] h-fit flex-row justify-between gap-10 p-4 pt-8">
+        <h1 className="mb-4 text-3xl font-bold">香蕉認證</h1>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-2/3 space-y-6"
+        >
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>正式英文名字</FormLabel>
+                <FormControl>
+                  <Input placeholder="護照姓名 (Eg: KUNG,LING-CHIEH)" {...field} />
+                </FormControl>
+                <FormDescription>這是為了驗證真實身分.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="school"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>學校</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="請選擇您的學校" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Schools</SelectLabel>
+                        {colleges.map((college) => (
+                          <SelectItem key={college} value={college}>
+                            {college}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="enrollYear"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>入學年份</FormLabel>
+                <FormControl>
+                  <Input placeholder="2023" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+            control={form.control}
+            name="profilePicture"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>上傳認證文件</FormLabel>
+                <FormControl>
+                  <Input
+                    // accept=".jpg, .jpeg, .png, .pdf"
+                    type="file"
+                    id="profilePicture"
+                    placeholder="您的學生證"
+                    className="border-blue-600 file:rounded-md file:border file:border-solid file:border-blue-700 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          <Button type="submit">
+            Submit
+          </Button>
+        </form>
+        {/* <div className="mt-20 w-1/3 pl-5">
+          <ProgressBar />
+        </div> */}
+      </Card>
+    </Form>
   );
 };
 

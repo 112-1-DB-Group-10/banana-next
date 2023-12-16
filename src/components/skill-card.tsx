@@ -62,34 +62,48 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
           <DialogContent className="sm:max-w-[450px]">
             <DialogHeader>
               <DialogTitle>編輯卡片</DialogTitle>
-              <DialogDescription>
-                在此修改卡片資訊
-              </DialogDescription>
+              <DialogDescription>在此修改卡片資訊</DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   地點
                 </Label>
-                <Input id="name" value={cardData.location} className="col-span-3" />
+                <Input
+                  id="name"
+                  value={cardData.location}
+                  className="col-span-3"
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   想學的技能
                 </Label>
-                <Input id="username" value={cardData.want_to_learn} className="col-span-3" />
+                <Input
+                  id="username"
+                  value={cardData.want_to_learn}
+                  className="col-span-3"
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   擅長的技能
                 </Label>
-                <Input id="username" value={cardData.good_at} className="col-span-3" />
+                <Input
+                  id="username"
+                  value={cardData.good_at}
+                  className="col-span-3"
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   其他想說的話
                 </Label>
-                <Input id="username" value={cardData.contents} className="col-span-3" />
+                <Input
+                  id="username"
+                  value={cardData.contents}
+                  className="col-span-3"
+                />
               </div>
             </div>
             <DialogFooter>
