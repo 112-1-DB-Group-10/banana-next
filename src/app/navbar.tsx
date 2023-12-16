@@ -85,6 +85,8 @@ function NavBar() {
     };
   }, []);
 
+  const user_id = 'bbb';
+
   return (
     <NavigationMenu className="fixed top-0 h-16 w-screen bg-[#FFBE00] text-black">
       <NavigationMenuList className="flex w-screen items-center justify-between px-4">
@@ -109,7 +111,7 @@ function NavBar() {
           </NavigationMenuItem>
 
           <NavigationMenuItem className="self-end">
-            <Link href="/profile" legacyBehavior passHref>
+            <Link href={"/profile/" + user_id} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 <IoPerson />
               </NavigationMenuLink>
