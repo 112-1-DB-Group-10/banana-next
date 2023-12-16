@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from '@/components/ui/toaster';
 import { getUserSession } from '@/lib/session';
 import './globals.css';
 import NavBar from './navbar';
-import { Toaster } from "@/components/ui/toaster"
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {

@@ -1,30 +1,23 @@
 'use server';
 
-import { 
+import { v4 as uuidv4 } from 'uuid';
+import {
   getLabelsByTopic,
-
   getPopularCards,
   getNewestCards,
-
   getCardById,
   getCardsBySubstring,
   getCardsByLabel,
   getCardsByTopic,
   getCardsPostedByUser,
   getCardsLikedOrCommentedByUser,
-
   likeCard,
   commentOnCard,
   deleteCard,
   updateCard,
-} from "@/actions/cardActions";
-
-
-import {v4 as uuidv4} from 'uuid';
-
+} from '@/actions/cardActions';
 
 export default async function HomePage() {
-
   // function testing
 
   // const cardPerPage = 10, page = 1;
