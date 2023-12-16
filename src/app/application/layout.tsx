@@ -5,9 +5,5 @@ export default async function ChatBoxLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="flex justify-center items-center">
-      {children}
-    </div>
-  );
+  return <div className="flex items-center justify-center">{children}</div>;
 }

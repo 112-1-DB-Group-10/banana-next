@@ -48,5 +48,5 @@ export interface UserProfile {
   suspended: boolean;
   user_id: string;
   avatar: string;
-  institute: string;
+  institute: string | null;
 }

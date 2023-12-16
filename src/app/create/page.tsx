@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { randomUUID } from 'crypto';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,9 +34,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ToastAction } from '@/components/ui/toast';
 import { toast, useToast } from '@/components/ui/use-toast';
-import { ToastAction } from "@/components/ui/toast"
-import { randomUUID } from 'crypto';
+
 // import { ProgressBar } from './progress';
 
 const colleges = [
@@ -56,21 +57,26 @@ const colleges = [
   '國立宜蘭大學',
 ];
 
-const visibility_options = ["public", "verified"]
+const visibility_options = ['public', 'verified'];
 
 const MAX_FILE_SIZE = 500000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
 
 const FormSchema = z.object({
-//   username: z.string().min(2, {
-//     message: 'Username must be at least 2 characters.',
-//   }),
-//   school: z.string({
-//     required_error: 'Please select an email to display.',
-//   }),
-//   enrollYear: z.string().min(2, {
-//     message: '請輸入入學年份',
-//   }),
+  //   username: z.string().min(2, {
+  //     message: 'Username must be at least 2 characters.',
+  //   }),
+  //   school: z.string({
+  //     required_error: 'Please select an email to display.',
+  //   }),
+  //   enrollYear: z.string().min(2, {
+  //     message: '請輸入入學年份',
+  //   }),
   location: z.string({
     required_error: '請選擇地點',
   }),
@@ -80,11 +86,9 @@ const FormSchema = z.object({
   good_at: z.string().min(1, {
     message: '請輸入擅長的技能名稱',
   }),
-  contents: z.string({
-    
-  }),
+  contents: z.string({}),
   visibility: z.string({
-    required_error: '請選擇是否公開卡片'
+    required_error: '請選擇是否公開卡片',
   }),
   card_id: z.string({}),
   user_id: z.string({}),
@@ -96,7 +100,7 @@ const FormSchema = z.object({
   suspended: z.boolean({}),
   deleted: z.boolean({}),
   likes: z.number({}),
-  comments: z.string({})
+  comments: z.string({}),
   // profilePicture: z
   // .any()
   // .refine((files) => files?.length == 1, "Image is required.")
@@ -108,7 +112,7 @@ const FormSchema = z.object({
 });
 
 const Application = () => {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [verificationProgress, setVerificationProgress] = useState(0);
 
@@ -126,9 +130,9 @@ const Application = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-    //   username: '',
-    //   school: '',
-    //   enrollYear: '',
+      //   username: '',
+      //   school: '',
+      //   enrollYear: '',
       location: '',
       want_to_learn: '',
       good_at: '',
@@ -144,7 +148,7 @@ const Application = () => {
       suspended: false,
       deleted: false,
       likes: 0,
-      comments: ''
+      comments: '',
       // profilePicture,
     },
   });
@@ -162,7 +166,7 @@ const Application = () => {
   }
   return (
     <Form {...form}>
-      <Card className="bg-blueGray-50 mx-auto w-[50rem] h-fit flex-row justify-between gap-10 p-4 pt-8">
+      <Card className="bg-blueGray-50 mx-auto h-fit w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
         <h1 className="mb-4 text-3xl font-bold">創建卡片</h1>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -228,24 +232,27 @@ const Application = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>地點</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="請選擇地點" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>地點</SelectLabel>
-                        {colleges.map((college) => (
-                          <SelectItem key={college} value={college}>
-                            {college}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="請選擇地點" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>地點</SelectLabel>
+                      {colleges.map((college) => (
+                        <SelectItem key={college} value={college}>
+                          {college}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -295,24 +302,27 @@ const Application = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>卡片是否公開</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel></SelectLabel>
-                        {visibility_options.map((opt) => (
-                          <SelectItem key={opt} value={opt}>
-                            {opt}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel></SelectLabel>
+                      {visibility_options.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -336,9 +346,7 @@ const Application = () => {
               </FormItem>
             )}
           /> */}
-          <Button type="submit">
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
         </form>
         {/* <div className="mt-20 w-1/3 pl-5">
           <ProgressBar />

@@ -41,7 +41,7 @@ export default function MainPage() {
   }));
 
   return (
-    <div className="flex w-full justify-center max-h-[30rem]">
+    <div className="flex max-h-[30rem] w-full justify-center">
       <div className="">
         <Input></Input>
         <div className="py-2 text-xl font-bold">主題</div>
