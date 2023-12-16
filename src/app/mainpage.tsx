@@ -40,7 +40,7 @@ export default function MainPage() {
   }));
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex w-full justify-center max-h-[30rem]">
       <div className="">
         <Input></Input>
         <div className="py-2 text-xl font-bold">主題</div>
@@ -99,7 +99,7 @@ export default function MainPage() {
               {selectedTopic ? `${selectedTopic}` : '熱門'}
             </div>
             <div className="mx-6 text-xl">
-              {selectedLabel ? `>${selectedLabel}` : ''}
+              {selectedLabel ? `${selectedLabel}` : ''}
             </div>
           </div>
           <div className="no-scrollbar flex max-h-[600px] flex-col overflow-y-auto">
@@ -116,7 +116,7 @@ export default function MainPage() {
               {selectedTopic ? `${selectedTopic}` : '最新'}
             </div>
             <div className="mx-6 text-xl">
-              {selectedLabel ? `>${selectedLabel}` : ''}
+              {selectedLabel ? `${selectedLabel}` : ''}
             </div>
           </div>
         </TabsContent>
