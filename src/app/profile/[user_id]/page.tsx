@@ -1,23 +1,28 @@
 'use server';
 
+import { getUserById } from '@/actions/userActions';
 import { getUserSession } from '@/lib/session';
-import ProfileClient from "./profileClient";
-import { getUserById } from '@/actions/userActions'
+import ProfileClient from './profileClient';
+import { UUID } from 'crypto';
 
-
-const Profile = async () => {
-
-  const session = await getUserSession();
-  const user_data = await getUserById(session.user_id);
+const Profile = async ({
+  params,
+}: {
+  params: {
+    user_id: UUID;
+  };
+}) => {
+  // const session = await getUserSession();
+  const user_data = await getUserById(params.user_id);
   // const user_data = await getUserById('561aaede-e6d5-4893-acd6-698cb26e3f18')
   // console.log(session.user_id)
   // console.log('user data:', user_data)
-  
+
   return (
     // <div>test</div>
-    <ProfileClient user={user_data}/>
+    <ProfileClient user={user_data} />
   );
-}
+};
 
 export default Profile;
 

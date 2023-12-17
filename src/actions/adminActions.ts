@@ -24,7 +24,9 @@ export type NewUsers = typeof usersTable.$inferInsert;
 //user_id, englishname, enroll_year, verification, institute, document_url
 export const insertApplication = async (application: NewApplications) => {
   try {
-    const insertApplicationResult = await db.insert(applicationsTable).values(application);
+    const insertApplicationResult = await db
+      .insert(applicationsTable)
+      .values(application);
     console.log('Application inserted successfully!');
     return insertApplicationResult;
   } catch (error) {
@@ -96,7 +98,7 @@ export const insertBelongsTo = async (
       const insertBelongsToResult = await tx
         .insert(belongsToTable)
         .values({ topic_name: topic_name, label_name: label_name });
-        return insertBelongsToResult;
+      return insertBelongsToResult;
     });
     return transactionResult;
   } catch (error) {
@@ -144,7 +146,7 @@ export const updateApplication = async (
             eq(applicationsTable.document_url, application.document_url),
           ),
         );
-        return updatedApplication;
+      return updatedApplication;
     });
     console.log('Changed belongs to successfully!');
     return transactionResult;
@@ -216,7 +218,7 @@ export const updateLocation = async (
         .update(locationsTable)
         .set({ location_name: new_location_name })
         .where(eq(locationsTable.location_name, location_name));
-        return updatedLocation;
+      return updatedLocation;
     });
     console.log('Update Location successfully!');
     return transactionResult;
@@ -248,7 +250,7 @@ export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
         .update(locatedAtTable)
         .set({ location_name: new_location_name })
         .where(eq(locatedAtTable.card_id, card_id));
-        return updatedLocatedAt
+      return updatedLocatedAt;
     });
     console.log('Insert Located at successfully!');
     return transactionResult;
@@ -263,7 +265,10 @@ export const insertLabel = async (new_label: NewLabels) => {
   try {
     await db
       .insert(labelsTable)
-      .values({ label_name: new_label.label_name, created_user: new_label.created_user });
+      .values({
+        label_name: new_label.label_name,
+        created_user: new_label.created_user,
+      });
     await db
       .insert(belongsToTable)
       .values({ label_name: new_label.label_name, topic_name: '其他' });

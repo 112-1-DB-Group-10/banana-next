@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FaPen } from 'react-icons/fa';
 import { IoChatbubbleSharp, IoPerson } from 'react-icons/io5';
 import Link from 'next/link';
+import { UUID } from 'crypto';
 // import { Icons } from '@/components/icons';
 import {
   NavigationMenu,
@@ -13,7 +14,6 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { UUID } from 'crypto';
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -69,7 +69,7 @@ function handleClickAvatar() {
   console.log('click avatar button');
 }
 
-function NavBar({user_id}: {user_id: UUID}) {
+function NavBar({ user_id }: { user_id: UUID }) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

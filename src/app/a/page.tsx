@@ -2,17 +2,14 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import {
-  getAllLabelsWithTopics,
-  // getLabelsByTopic,
+  getAllLabelsWithTopics, // getLabelsByTopic,
   getPopularCards,
-  getNewestCards,
-  // getCardById,
+  getNewestCards, // getCardById,
   getCardsBySubstring,
   getCardsByLabel,
   getCardsByTopic,
   getCardsPostedByUser,
-  getCardsLikedOrCommentedByUser,
-  // likeCard,
+  getCardsLikedOrCommentedByUser, // likeCard,
   // commentOnCard,
   // deleteCard,
   // updateCard,
@@ -21,7 +18,8 @@ import {
 export default async function HomePage() {
   // function testing
 
-  const cardPerPage = 10, page = 1;
+  const cardPerPage = 10,
+    page = 1;
   // const popularCards = await getPopularCards(true, [] ,cardPerPage, page);
   // const newestCards = await getNewestCards(true, [], cardPerPage, page);
   // const oneCard = await getCardById("bde171ab-9b44-4343-b794-3701a14ca4a3");
