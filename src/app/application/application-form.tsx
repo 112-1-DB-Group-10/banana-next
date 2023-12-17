@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { randomUUID } from 'crypto';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,8 +35,10 @@ import {
 } from '@/components/ui/select';
 import { ToastAction } from '@/components/ui/toast';
 import { toast, useToast } from '@/components/ui/use-toast';
+import { ProgressBar } from './progress';
+import { UUID } from 'crypto';
+import { NewApplications, insertApplication } from '@/actions/adminActions'
 
-// import { ProgressBar } from './progress';
 
 const colleges = [
   '國立台灣大學',
@@ -57,8 +58,6 @@ const colleges = [
   '國立宜蘭大學',
 ];
 
-const visibility_options = ['public', 'verified'];
-
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
   'image/jpeg',
@@ -68,39 +67,18 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const FormSchema = z.object({
-  //   username: z.string().min(2, {
-  //     message: 'Username must be at least 2 characters.',
-  //   }),
-  //   school: z.string({
-  //     required_error: 'Please select an email to display.',
-  //   }),
-  //   enrollYear: z.string().min(2, {
-  //     message: '請輸入入學年份',
-  //   }),
-  location: z.string({
-    required_error: '請選擇地點',
+  englishName: z.string().min(2, {
+    message: 'Username must be at least 2 characters.',
   }),
-  want_to_learn: z.string().min(1, {
-    message: '請輸入想學的技能名稱',
+  school: z.string({
+    required_error: 'Please select an email to display.',
   }),
-  good_at: z.string().min(1, {
-    message: '請輸入擅長的技能名稱',
+  enrollYear: z.string().min(2, {
+    message: '請輸入入學年份',
   }),
-  contents: z.string({}),
-  visibility: z.string({
-    required_error: '請選擇是否公開卡片',
+  document_url: z.string().min(2, {
+    message: '請輸入認證照片的網址',
   }),
-  card_id: z.string({}),
-  user_id: z.string({}),
-  username: z.string({}),
-  avatar: z.string({}),
-  institute: z.string({}),
-  created_time: z.date({}),
-  updated_time: z.date({}),
-  suspended: z.boolean({}),
-  deleted: z.boolean({}),
-  likes: z.number({}),
-  comments: z.string({}),
   // profilePicture: z
   // .any()
   // .refine((files) => files?.length == 1, "Image is required.")
@@ -111,7 +89,7 @@ const FormSchema = z.object({
   // ),
 });
 
-const Application = () => {
+const ApplicationForm = ({user_id}:{user_id: UUID}) => {
   const { toast } = useToast();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [verificationProgress, setVerificationProgress] = useState(0);
@@ -130,31 +108,26 @@ const Application = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      //   username: '',
-      //   school: '',
-      //   enrollYear: '',
-      location: '',
-      want_to_learn: '',
-      good_at: '',
-      contents: '',
-      visibility: 'public',
-      card_id: crypto.randomUUID(),
-      user_id: 'test',
-      username: 'test',
-      avatar: 'test',
-      institute: 'test',
-      created_time: new Date(),
-      updated_time: new Date(),
-      suspended: false,
-      deleted: false,
-      likes: 0,
-      comments: '',
+      englishName: '',
+      school: '',
+      enrollYear: '',
+      document_url: '',
       // profilePicture,
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log('fuck');
+    const submission : NewApplications = {
+        user_id: user_id,
+        englishname: data.englishName,
+        enroll_year: Number(data.enrollYear),
+        institute: data.school,
+        verification: "pending",        
+        document_url: data.document_url
+    }
+    console.log(submission)
+    await insertApplication(submission)
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -166,20 +139,23 @@ const Application = () => {
   }
   return (
     <Form {...form}>
-      <Card className="bg-blueGray-50 mx-auto h-fit w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
-        <h1 className="mb-4 text-3xl font-bold">創建卡片</h1>
+      <Card className="bg-blueGray-50 mx-auto w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
+        <h1 className="mb-4 text-3xl font-bold">香蕉認證</h1>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-2/3 space-y-6"
         >
-          {/* <FormField
+          <FormField
             control={form.control}
-            name="username"
+            name="englishName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>正式英文名字</FormLabel>
                 <FormControl>
-                  <Input placeholder="護照姓名 (Eg: KUNG,LING-CHIEH)" {...field} />
+                  <Input
+                    placeholder="護照姓名 (Eg: KUNG,LING-CHIEH)"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>這是為了驗證真實身分.</FormDescription>
                 <FormMessage />
@@ -192,24 +168,27 @@ const Application = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>學校</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="請選擇學校" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>學校</SelectLabel>
-                        {colleges.map((college) => (
-                          <SelectItem key={college} value={college}>
-                            {college}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="請選擇您的學校" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Schools</SelectLabel>
+                      {colleges.map((college) => (
+                        <SelectItem key={college} value={college}>
+                          {college}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -225,103 +204,20 @@ const Application = () => {
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>地點</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="請選擇地點" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>地點</SelectLabel>
-                      {colleges.map((college) => (
-                        <SelectItem key={college} value={college}>
-                          {college}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
           />
-          <FormField
+            <FormField
             control={form.control}
-            name="want_to_learn"
+            name="document_url"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>想學的技能</FormLabel>
+                <FormLabel>認證文件的網址</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input
+                    placeholder="Google Drive 網址"
+                    {...field}
+                  />
                 </FormControl>
                 {/* <FormDescription>這是為了驗證真實身分.</FormDescription> */}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="good_at"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>擅長的技能</FormLabel>
-                <FormControl>
-                  <Input placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="contents"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>其他想說的話</FormLabel>
-                <FormControl>
-                  <Input placeholder="" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="visibility"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>卡片是否公開</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel></SelectLabel>
-                      {visibility_options.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -346,7 +242,7 @@ const Application = () => {
               </FormItem>
             )}
           /> */}
-          <Button type="submit">Submit</Button>
+            <Button type="submit">Submit</Button>
         </form>
         {/* <div className="mt-20 w-1/3 pl-5">
           <ProgressBar />
@@ -356,4 +252,4 @@ const Application = () => {
   );
 };
 
-export default Application;
+export default ApplicationForm;
