@@ -25,7 +25,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main className="flex h-screen w-screen flex-col items-center justify-around">
-          <NavBar />
+          <NavBar user_id={session.user_id}/>
           <div className="flex w-screen flex-1 justify-around py-24">
             {children}
           </div>

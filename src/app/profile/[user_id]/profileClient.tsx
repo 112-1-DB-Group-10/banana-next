@@ -39,9 +39,9 @@ import { isURL } from '@/lib/utils';
 import cards_from_json from '@/actions/cards.json';
 import user from '@/actions/user.json';
 import SkillCard from '@/components/skill-card';
-import { CardData } from '@/actions/types';
+import { CardData, UserProfile } from '@/actions/types';
 
-const ProfileClient = () => {
+const ProfileClient = ({user}: {user: UserProfile}) => {
   // const userId = 'xdd877';
   // const user = users.filter((user) => user.user_id === userId).pop() as User;
   // const user = {

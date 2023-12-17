@@ -8,14 +8,14 @@ import { getUserById } from '@/actions/userActions'
 const Profile = async () => {
 
   const session = await getUserSession();
-  // const user_data = await getUserById(session.user_id);
-  const user_data = await getUserById('561aaede-e6d5-4893-acd6-698cb26e3f18')
+  const user_data = await getUserById(session.user_id);
+  // const user_data = await getUserById('561aaede-e6d5-4893-acd6-698cb26e3f18')
   // console.log(session.user_id)
-  console.log('user data:', user_data)
+  // console.log('user data:', user_data)
   
   return (
-    <div>test</div>
-    // <ProfileClient/>
+    // <div>test</div>
+    <ProfileClient user={user_data}/>
   );
 }
 
