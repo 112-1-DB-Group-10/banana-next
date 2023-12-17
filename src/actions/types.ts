@@ -13,17 +13,17 @@ export interface CardData {
   username: string;
   avatar: string;
   contents: string;
-  locations: string;
+  locations: string[];
   institute: string;
   created_time: Date;
   updated_time: Date;
-  visibility: string;
+  visibility: "public" | "verified";
   suspended: boolean;
   deleted: boolean;
   want_to_learn: string;
   good_at: string;
-  likes: number;
-  comments: CommentData[];
+  num_likes: number;
+  num_comments: number;
 }
 
 export interface Topic {
