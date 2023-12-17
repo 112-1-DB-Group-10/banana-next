@@ -1,20 +1,9 @@
 'use server';
 
+import { UUID } from 'crypto';
 import { getUserById } from '@/actions/userActions';
 import { getUserSession, session } from '@/lib/session';
 import ProfileClient from './profileClient';
-import { UUID } from 'crypto';
-import ProfileInfo from './profile-info';
-import ProfileCards from './profile-cards';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Profile = async ({
   params,

@@ -10,5 +10,5 @@ export const client = new Client({
   connectionTimeoutMillis: 5000,
 });
 
-await client.connect();
+client.connect();
 export const db = drizzle(client, { schema });
