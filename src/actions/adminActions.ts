@@ -263,12 +263,10 @@ export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
 //新增某個 label 資料之後要記得在新增 belongs to
 export const insertLabel = async (new_label: NewLabels) => {
   try {
-    await db
-      .insert(labelsTable)
-      .values({
-        label_name: new_label.label_name,
-        created_user: new_label.created_user,
-      });
+    await db.insert(labelsTable).values({
+      label_name: new_label.label_name,
+      created_user: new_label.created_user,
+    });
     await db
       .insert(belongsToTable)
       .values({ label_name: new_label.label_name, topic_name: '其他' });

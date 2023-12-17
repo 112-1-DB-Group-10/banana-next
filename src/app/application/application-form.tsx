@@ -38,8 +38,9 @@ import { toast, useToast } from '@/components/ui/use-toast';
 import { ProgressBar } from './progress';
 import { UUID } from 'crypto';
 import { NewApplications, insertApplication } from '@/actions/adminActions'
-
-
+import { useRouter } from 'next/navigation'
+ 
+ 
 const colleges = [
   '國立台灣大學',
   '國立政治大學',
@@ -89,7 +90,8 @@ const FormSchema = z.object({
   // ),
 });
 
-const ApplicationForm = ({user_id}:{user_id: UUID}) => {
+const ApplicationForm = ({user_id, onSubmit}:{user_id: string; onSubmit: () => void }) => {
+  const router = useRouter()
   const { toast } = useToast();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [verificationProgress, setVerificationProgress] = useState(0);
@@ -116,27 +118,7 @@ const ApplicationForm = ({user_id}:{user_id: UUID}) => {
     },
   });
 
-    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log('fuck');
-    const submission : NewApplications = {
-        user_id: user_id,
-        englishname: data.englishName,
-        enroll_year: Number(data.enrollYear),
-        institute: data.school,
-        verification: "pending",        
-        document_url: data.document_url
-    }
-    console.log(submission)
-    await insertApplication(submission)
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          {/* <code className="text-white">{JSON.stringify(data, null, 2)}</code> */}
-        </pre>
-      ),
-    });
-  }
+  
   return (
     <Form {...form}>
       <Card className="bg-blueGray-50 mx-auto w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
@@ -205,7 +187,7 @@ const ApplicationForm = ({user_id}:{user_id: UUID}) => {
               </FormItem>
             )}
           />
-            <FormField
+          <FormField
             control={form.control}
             name="document_url"
             render={({ field }) => (
@@ -242,7 +224,7 @@ const ApplicationForm = ({user_id}:{user_id: UUID}) => {
               </FormItem>
             )}
           /> */}
-            <Button type="submit">Submit</Button>
+          <Button type="submit">Submit</Button>
         </form>
         {/* <div className="mt-20 w-1/3 pl-5">
           <ProgressBar />

@@ -1,9 +1,9 @@
 'use server';
 
+import { UUID } from 'crypto';
 import { getUserById } from '@/actions/userActions';
 import { getUserSession } from '@/lib/session';
 import ProfileClient from './profileClient';
-import { UUID } from 'crypto';
 
 const Profile = async ({
   params,
