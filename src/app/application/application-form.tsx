@@ -90,7 +90,7 @@ const FormSchema = z.object({
   // ),
 });
 
-const ApplicationForm = ({user_id, onSubmit}:{user_id: string; onSubmit: () => void }) => {
+const ApplicationForm = ({user_id}:{user_id: string}) => {
   const router = useRouter()
   const { toast } = useToast();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -118,7 +118,29 @@ const ApplicationForm = ({user_id, onSubmit}:{user_id: string; onSubmit: () => v
     },
   });
 
-  
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => { 
+    console.log('fuck');
+    router.push('/profile/'+user_id, { scroll: false })
+
+    const submission : NewApplications = {
+      document_url: data.document_url,
+      user_id: user_id,
+      englishname: data.englishName,
+      enroll_year: Number(data.enrollYear),
+      institute: data.school,
+      verification: "pending",        
+    }
+    console.log(submission)
+    await insertApplication(submission)
+    toast({
+      title: 'You submitted the following values:',
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+  }
   return (
     <Form {...form}>
       <Card className="bg-blueGray-50 mx-auto w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
