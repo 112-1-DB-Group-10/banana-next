@@ -40,6 +40,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User } from '@/db/types';
 // import users from '@/db/users.json';
 import { isURL } from '@/lib/utils';
+import { getCardsPostedByUser } from '@/actions/cardActionsV2';
 
 const ProfileClient = ({ user }: { user: UserProfile }) => {
   // const userId = 'xdd877';
@@ -56,19 +57,20 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
   //   "institute": "國立台灣大學"
   // }
 
-  const cards: CardData[] = cards_from_json.map((card) => ({
-    ...card,
-    created_time: new Date(card.created_time),
-    updated_time: new Date(card.updated_time),
-    comments: card.comments.map((comment) => ({
-      ...comment,
-      time_stamp: new Date(comment.time_stamp),
-    })),
-  }));
+  // const cards: CardData[] = cards_from_json.map((card) => ({
+  //   ...card,
+  //   created_time: new Date(card.created_time),
+  //   updated_time: new Date(card.updated_time),
+  //   comments: card.comments.map((comment) => ({
+  //     ...comment,
+  //     time_stamp: new Date(comment.time_stamp),
+  //   })),
+  // }));
+  
 
   return (
     <Card className="bg-blueGray-50 w-[45rem] pt-8">
-      <div className="flex justify-between px-4">
+      {/* <div className="flex justify-between px-4">
         <div className="flex">
           <div className="relative p-4">
             <Image
@@ -118,16 +120,6 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                     className="col-span-3"
                   />
                 </div>
-                {/* <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    value="@peduarte"
-                    className="col-span-3"
-                  />
-                </div> */}
               </div>
               <DialogFooter>
                 <Button type="submit">儲存變更</Button>
@@ -135,7 +127,7 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
             </DialogContent>
           </Dialog>
         </div>
-      </div>
+      </div> */}
 
       <div className="border-blueGray-200 mt-5 flex items-center justify-center border-t px-2 py-5">
         <Tabs defaultValue="cards" className="w-[42rem]">
@@ -157,7 +149,8 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                 <CardFooter>
                   <Button>展開卡片內容</Button>
                 </CardFooter> */}
-              <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
+                <div>aaa</div>
+              {/* <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
                 {cards.length > 0 ? (
                   cards.map((card, index) => (
                     <div key={`card-${index}`} className="py-2">
@@ -167,7 +160,7 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                 ) : (
                   <div className="p-2">還沒有發布過的卡片</div>
                 )}
-              </div>
+              </div> */}
             </Card>
           </TabsContent>
           <TabsContent value="interactions">
@@ -184,7 +177,8 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                 <CardFooter>
                   <Button>展開卡片內容</Button>
                 </CardFooter> */}
-              <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
+                <div>bbb</div>
+              {/* <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
                 {cards.length > 0 ? (
                   cards.map((card, index) => (
                     <div key={`card-${index}`} className="py-2">
@@ -194,7 +188,7 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                 ) : (
                   <div className="p-2">還沒有互動過的卡片</div>
                 )}
-              </div>
+              </div> */}
             </Card>
           </TabsContent>
         </Tabs>
