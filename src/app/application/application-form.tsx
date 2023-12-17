@@ -103,10 +103,6 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
   //   }
   // };
 
-  const handleSubmit = () => {
-    setVerificationProgress((prevProgress) => prevProgress + 25);
-  };
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -131,7 +127,7 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
       verification: "pending",        
     }
     console.log(submission)
-    await insertApplication(submission)
+    async() => {await insertApplication(submission)}
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -226,31 +222,8 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
               </FormItem>
             )}
           />
-          {/* <FormField
-            control={form.control}
-            name="profilePicture"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>上傳認證文件</FormLabel>
-                <FormControl>
-                  <Input
-                    // accept=".jpg, .jpeg, .png, .pdf"
-                    type="file"
-                    id="profilePicture"
-                    placeholder="您的學生證"
-                    className="border-blue-600 file:rounded-md file:border file:border-solid file:border-blue-700 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                    {...field} 
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
           <Button type="submit">Submit</Button>
         </form>
-        {/* <div className="mt-20 w-1/3 pl-5">
-          <ProgressBar />
-        </div> */}
       </Card>
     </Form>
   );
