@@ -124,7 +124,7 @@ const reviewing = () => {
               <Button variant="outline" className="mx-2">
                 Yes
               </Button>
-              <Button variant="destructive" className='mx-4'>
+              <Button variant="destructive" className="mx-4">
                 Reject
               </Button>
             </CardFooter>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ThumbsUp, MessageCircle, MessagesSquare } from 'lucide-react';
 import { CardData } from '@/actions/types';
 import { getTimeSinceByDate } from '@/lib/utils';
 import Avatar from './avatar';
@@ -26,7 +27,6 @@ import {
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Separator } from './ui/separator';
-import { ThumbsUp, MessageCircle, MessagesSquare } from 'lucide-react';
 
 const SkillCard = ({ cardData }: { cardData: CardData }) => {
   const [showComments, setShowComments] = useState(false);
