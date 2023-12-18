@@ -2,6 +2,7 @@
 
 import { getDefaultUsers } from '@/actions/adminActions';
 import UserItem from './user-item';
+import UserSkeleton from './user-skeleton';
 
 const UserList = async ({
   page,
@@ -17,6 +18,7 @@ const UserList = async ({
       {users.map((user, index) => {
         return <UserItem key={`user-item-${index}`} user={user} />;
       })}
+      <UserSkeleton />
     </div>
   );
 };

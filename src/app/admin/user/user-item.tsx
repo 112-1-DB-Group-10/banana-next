@@ -27,7 +27,7 @@ const UserItem = ({ user }: { user: UserProfile }) => {
     <div className="flex h-[4.5rem] w-full flex-row items-center justify-between">
       <AlertDialog>
         <div className="flex flex-row">
-          <Avatar image={user.avatar} />
+          <Avatar userId={user.user_id} image={user.avatar} />
           <div className="w-[10rem] p-4 font-bold">{user.username}</div>
           <div className="p-4">{user.sex === 'female' ? '女' : '男'}</div>
           <div className="w-[3rem] p-4">{user.age}</div>
