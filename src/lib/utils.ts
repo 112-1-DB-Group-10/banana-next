@@ -44,3 +44,22 @@ export const getTimeSinceByDate = (time_stamp: Date) => {
   // return Math.floor(seconds) + " seconds";
   return timeSinceString;
 };
+
+export function hex2a(hexx: string) {
+  var hex = hexx.toString(); //force conversion
+  var str = '';
+  for (var i = 0; i < hex.length; i += 2)
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  console.log(str);
+  return str;
+}
+
+export function hextoASCII(ascii: string) {
+  let string = '';
+  for (let i = 0; i < ascii.length; i += 2) {
+    const merge = parseInt(ascii[i] + ascii[i + 1], 16);
+    string = string + String.fromCharCode(merge);
+  }
+  console.log(string);
+  return string;
+}
