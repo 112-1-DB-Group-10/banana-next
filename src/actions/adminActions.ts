@@ -359,11 +359,11 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
   })
   .from(applicationsTable)
   .where(eq(applicationsTable.verification, 'pass'))
+  .groupBy(applicationsTable.user_id, applicationsTable.institute)
   .orderBy(desc(max(applicationsTable.time_stamp)))
   .as('userInstitute');
 
   const suspendedUserInstitute = await db
-  .with(userInstitute)
   .select({
         avatar: usersTable.avatar,
         username: usersTable.username,
@@ -375,7 +375,8 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
         suspended: usersTable.suspended,
         user_id: usersTable.user_id,
   })
-  .from(usersTable)
+  .from(userInstitute)
+  .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
   .where(
     and(
       eq(userInstitute.user_id, usersTable.user_id),
@@ -384,7 +385,7 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
   )
   .limit(userPerPage)
   .offset(userPerPage * (page - 1));
-
+  // return suspendedUserInstitute;
   const mergeUsers = suspendedUserInstitute.map((user, index) => {
     return {
         ...user,
@@ -403,7 +404,6 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
 };
 
 // 回傳一般的用戶
-// 回傳停權的用戶
 export const getDefaultUsers = async (page: number, userPerPage: number): Promise<UserProfile[]> => {
   const userInstitute = db
   .select({
@@ -412,11 +412,11 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   })
   .from(applicationsTable)
   .where(eq(applicationsTable.verification, 'pass'))
+  .groupBy(applicationsTable.user_id, applicationsTable.institute)
   .orderBy(desc(max(applicationsTable.time_stamp)))
   .as('userInstitute');
 
   const suspendedUserInstitute = await db
-  .with(userInstitute)
   .select({
         avatar: usersTable.avatar,
         username: usersTable.username,
@@ -428,7 +428,8 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
         suspended: usersTable.suspended,
         user_id: usersTable.user_id,
   })
-  .from(usersTable)
+  .from(userInstitute)
+  .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
   .where(
     and(
       eq(userInstitute.user_id, usersTable.user_id),
@@ -437,7 +438,7 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   )
   .limit(userPerPage)
   .offset(userPerPage * (page - 1));
-
+  // return suspendedUserInstitute;
   const mergeUsers = suspendedUserInstitute.map((user, index) => {
     return {
         ...user,
