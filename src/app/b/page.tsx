@@ -20,7 +20,8 @@ import {
   suspendUser,
   NewUsers,
   updateUser,
-  getSuspendedUsers
+  getSuspendedUsers,
+  getUsersbySubstring
 } from '@/actions/adminActions';
 import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
 import {
@@ -32,6 +33,7 @@ import {
 //'0007970e-3ee4-4814-a886-0717399d1547'
 //'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c'
 export default async function HomePage() {
+  // const i = await getUsersbySubstring(false, "Excul", 10, 1);
   // const user: NewUsers = {
   //   user_id : "0f0fafb2-3ad6-4349-8ce0-9501b3e98ac0",
   //   username: "Fignan",
@@ -60,9 +62,9 @@ export default async function HomePage() {
   // const i = await deleteLabel('測試用標籤2');
   // // const t = await updateBelongsTo(topic, label);
   // const  i = await updateUser(user);
-  const i = await getSuspendedUsers(3, 10);
+  // const i = await getSuspendedUsers(3, 10);
 
-  console.log(i);
+  // console.log(i);
 
   return (
     <div>

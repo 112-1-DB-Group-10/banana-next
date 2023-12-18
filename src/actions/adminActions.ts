@@ -11,7 +11,7 @@ import {
   usersTable,
 } from '../db/schema';
 import { UUID } from 'crypto';
-import { and, desc, eq, max } from 'drizzle-orm';
+import { and, desc, eq, like, max } from 'drizzle-orm';
 import { db } from '@/db';
 import { UserProfile } from './types';
 
@@ -457,4 +457,61 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
     };
   });
   return mergeUsers;
+};
+
+
+export const getUsersbySubstring = async (suspendedUser: boolean, mysubstring: string, cardPerPage: number, page: number): Promise<UserProfile[]> => {
+  // Subquery for institute
+  const instituteForUsers = db
+      .select({
+          user_id: applicationsTable.user_id,
+          institute: applicationsTable.institute,
+      })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.verification, "pass"))
+      .groupBy(applicationsTable.user_id, applicationsTable.institute)
+      .orderBy(desc(max(applicationsTable.time_stamp)))
+      .as("instituteForUsers");
+  
+  let users = await db
+      .with(instituteForUsers)
+      .select({
+        username: usersTable.username,
+        sex: usersTable.sex,
+        age: usersTable.age,
+        email: usersTable.email,
+        role: usersTable.role,
+        suspended: usersTable.suspended,
+        user_id: usersTable.user_id,
+        avatar: usersTable.avatar,
+        institute: instituteForUsers.institute,
+      })
+      .from(usersTable)
+      .innerJoin(instituteForUsers, eq(usersTable.user_id, instituteForUsers.user_id))
+      .where(
+          and(
+              like(usersTable.username, `%${mysubstring}%`), 
+              eq(usersTable.suspended, suspendedUser),
+          )
+      )
+      .limit(cardPerPage)
+      .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
+
+      const mergedUsers = users.map((user, index) => {
+          return {
+              ...user,
+              avatar: user.avatar as string,
+              username: user.username as string,
+              sex: user.sex as "female" | "male" | "unknown",
+              age: user.age as number,
+              email: user.email as string,
+              role: user.role as "admin" | "default",
+              suspended: user.suspended as boolean,
+              user_id: user.user_id as string,
+              institute: user.institute
+          }
+      });
+  
+      //console.log(mergedCards);
+      return mergedUsers;
 };
