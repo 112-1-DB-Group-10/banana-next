@@ -115,7 +115,7 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => { 
-    console.log('fuck');
+    // console.log('fuck');
 
     const submission : NewApplications = {
       document_url: data.document_url,
@@ -135,7 +135,7 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
         </pre>
       ),
     });
-    router.push('/profile/'+user_id, { scroll: false })
+    router.push('/profile/' + user_id, { scroll: false })
 
   }
   return (
