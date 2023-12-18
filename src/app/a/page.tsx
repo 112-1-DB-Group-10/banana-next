@@ -9,17 +9,18 @@ import {
   getCardsByLabel,
   getCardsByTopic,
   getCardsPostedByUser,
-  getCardsLikedOrCommentedByUser, // likeCard,
-  // commentOnCard,
-  // deleteCard,
-  // updateCard,
-} from '@/actions/cardActionsV2';
+  getCardsLikedOrCommentedByUser, // 
+  likeCard,
+  commentOnCard,
+  deleteCard,
+  updateCard,
+  getCommentsByCardId,
+} from '@/actions/cardActionsV3';
 
 export default async function HomePage() {
   // function testing
 
-  const cardPerPage = 10,
-    page = 1;
+  const cardPerPage = 10, page = 1;
   // const popularCards = await getPopularCards(true, [] ,cardPerPage, page);
   // const newestCards = await getNewestCards(true, [], cardPerPage, page);
   // const oneCard = await getCardById("bde171ab-9b44-4343-b794-3701a14ca4a3");
@@ -31,7 +32,7 @@ export default async function HomePage() {
   // await deleteCard("ada86234-12cb-40df-8ac4-b7057798da3d");
   // await updateCard("ada86234-12cb-40df-8ac4-b7057798da3d", new Date(), "I want to rest.");
   // const labels = await getAllLabelsWithTopics();
-
+  const comments = await getCommentsByCardId("24bee582-3f55-4cc7-9e67-d0e0e9c0f6d8");
   // const popularCards = await getPopularCards();
   return (
     <div>
