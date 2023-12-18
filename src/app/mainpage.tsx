@@ -29,7 +29,6 @@ export default function MainPage() {
     setSelectedLabel(label);
   };
 
-  // const cards: CardData[] = );
   const cards: CardData[] = cardData.map((card) => ({
     ...card,
     created_time: new Date(card.created_time),
@@ -39,6 +38,7 @@ export default function MainPage() {
       time_stamp: new Date(comment.time_stamp),
     })),
   }));
+  // const cards = await get
 
   return (
     <div className="flex max-h-[30rem] w-full justify-center">

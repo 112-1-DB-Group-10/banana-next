@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { hextoASCII, isURL } from '@/lib/utils';
+import { cn, hextoASCII, isURL } from '@/lib/utils';
 
 const Avatar = ({ userId, image }: { userId?: string; image: string }) => {
   const router = useRouter();
@@ -20,7 +20,10 @@ const Avatar = ({ userId, image }: { userId?: string; image: string }) => {
           ? image
           : `data:image/png;base64,${hextoASCII(image.slice(2))}`
       }
-      className="h-12 w-12 cursor-pointer rounded-full object-cover"
+      className={cn(
+        'h-12 w-12 rounded-full object-cover',
+        userId && 'cursor-pointer',
+      )}
       alt="Avatar"
       onClick={handleClick}
     />
