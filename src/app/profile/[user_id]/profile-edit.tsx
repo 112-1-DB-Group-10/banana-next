@@ -1,10 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -23,54 +32,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
+import { ToastAction } from '@/components/ui/toast';
+import { toast, useToast } from '@/components/ui/use-toast';
+import { UUID } from 'crypto';
+import { UserProfile } from '@/actions/types';
+import { NewUsers, insertUser } from '@/actions/adminActions';
+import { updateUser } from '@/actions/adminActions'
+import { User } from '@/db/types';
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 
 const FormSchema = z.object({
+  user_id: z.string({}),
   username: z.string().min(2, {
     message: '姓名至少超過兩個字',
   }),
-  sex: z.string({
-    required_error: '請選擇性別',
-  }),
-  age: z.number().min(0, {
+  sex: z.enum(['male', 'female', 'unknown'], {}),
+  age: z.string().min(1, {
     message: '請輸入年齡',
   }),
+  email: z.string({}),
+  avatar: z.string({}),
+  role: z.string({}),
+  suspended: z.boolean({}),
 });
 
-const ProfileEdit = ({
-  user_id,
-  username,
-  sex,
-  age,
-}: {
-  user_id: string;
-  username: string;
-  sex: string;
-  age: number;
-}) => {
+const ProfileEdit = ({user}:{user:User}) => {
   const router = useRouter();
   const { toast } = useToast();
 
-  const sex_options = ['男', '女'];
+  const sex_options = ['male', 'female', 'unknown'];
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: username,
-      sex: sex,
-      age: age,
+      user_id: user.user_id,
+      username: user.username,
+      sex: user.sex,
+      age: String(user.age),
+      email: user.email,
+      avatar: user.avatar,
+      role: user.role,
+      suspended: user.suspended,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log('fuck');
-    // const submission : NewApplications = {
-    //     username: data.username,
-    //     sex: data.sex,
-    //     age: Number(data.age)
-    // }
-    // console.log(submission)
-    // async() => {await insertApplication(submission)}
+    const submission : NewUsers = {
+      user_id: user.user_id,
+      username: data.username,
+      sex: data.sex,
+      age: Number(data.age),
+      email: user.email,
+      avatar: user.avatar,
+      role: user.role,
+      suspended: user.suspended,
+    }
+    console.log(submission)
+    await updateUser(submission)
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -79,7 +98,7 @@ const ProfileEdit = ({
         </pre>
       ),
     });
-    router.push('/profile/' + user_id, { scroll: false });
+    router.push('/profile/' + user.user_id, { scroll: false });
   };
 
   return (
@@ -138,7 +157,9 @@ const ProfileEdit = ({
             </FormItem>
           )}
         />
-        <Button type="submit">儲存變更</Button>
+        <DialogTrigger asChild>
+          <Button type="submit">儲存變更</Button>
+        </DialogTrigger>
       </form>
     </Form>
   );

@@ -17,7 +17,6 @@ import { getUserSession } from '@/lib/session';
 import ProfileEdit from './profile-edit';
 
 const ProfileInfo = async ({ user }: { user: UserProfile }) => {
-  const session = await getUserSession();
   return (
     <Dialog>
       <div className="flex justify-between px-4">
@@ -54,10 +53,7 @@ const ProfileInfo = async ({ user }: { user: UserProfile }) => {
             <DialogDescription>在此修改個人資料</DialogDescription>
           </DialogHeader>
           <ProfileEdit
-            user_id={session.user_id}
-            username={session.username}
-            sex={session.sex}
-            age={session.age}
+            user={{...user, role:user.role as 'admin' | 'default', sex:user.sex as 'female' | 'male' | 'unknown'}}
           />
         </DialogContent>
       </div>

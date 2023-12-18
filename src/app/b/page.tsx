@@ -17,7 +17,7 @@ import {
   insertLabel,
   deleteLabel,
   queryApplications,
-  suspendedUser,
+  suspendUser,
   NewUsers,
   updateUser,
   getSuspendedUsers
