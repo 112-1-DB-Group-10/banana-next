@@ -80,6 +80,7 @@ const FormSchema = z.object({
   document_url: z.string().min(2, {
     message: '請輸入認證照片的網址',
   }),
+  time_stamp: z.string({}),
   // profilePicture: z
   // .any()
   // .refine((files) => files?.length == 1, "Image is required.")
@@ -110,12 +111,14 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
       school: '',
       enrollYear: '',
       document_url: '',
+      time_stamp:'',
       // profilePicture,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => { 
     // console.log('fuck');
+    router.push('/profile/' + user_id, { scroll: false })
 
     const submission : NewApplications = {
       document_url: data.document_url,
@@ -123,10 +126,17 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
       englishname: data.englishName,
       enroll_year: Number(data.enrollYear),
       institute: data.school,
-      verification: "pending",        
+      time_stamp: new Date(),
+      verification: "pending",
     }
     console.log(submission)
-    async() => {await insertApplication(submission)}
+    // async function asyncInsert() {
+    //   let fuck = await insertApplication(submission)
+    // }
+    // asyncInsert()
+    // async () => {await insertApplication(submission)}
+    await insertApplication(submission)
+
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -135,7 +145,6 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
         </pre>
       ),
     });
-    router.push('/profile/' + user_id, { scroll: false })
 
   }
   return (
