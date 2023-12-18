@@ -1,46 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import Image from 'next/image';
-import cards_from_json from '@/actions/cards.json';
-import { CardData, UserProfile } from '@/actions/types';
-import user from '@/actions/user.json';
-import Avatar from '@/components/avatar';
-import SkillCard from '@/components/skill-card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+import { UserProfile } from '@/actions/types';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User } from '@/db/types';
+
 // import users from '@/db/users.json';
-import { isURL } from '@/lib/utils';
-import { getCardsPostedByUser } from '@/actions/cardActionsV2';
 
 const ProfileClient = ({ user }: { user: UserProfile }) => {
   // const userId = 'xdd877';
@@ -66,7 +30,6 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
   //     time_stamp: new Date(comment.time_stamp),
   //   })),
   // }));
-  
 
   return (
     <Card className="bg-blueGray-50 w-[45rem] pt-8">
@@ -149,7 +112,7 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                 <CardFooter>
                   <Button>展開卡片內容</Button>
                 </CardFooter> */}
-                <div>aaa</div>
+              <div>aaa</div>
               {/* <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
                 {cards.length > 0 ? (
                   cards.map((card, index) => (
@@ -177,7 +140,7 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
                 <CardFooter>
                   <Button>展開卡片內容</Button>
                 </CardFooter> */}
-                <div>bbb</div>
+              <div>bbb</div>
               {/* <div className="no-scrollbar flex max-h-[300px] flex-col overflow-y-auto px-4">
                 {cards.length > 0 ? (
                   cards.map((card, index) => (

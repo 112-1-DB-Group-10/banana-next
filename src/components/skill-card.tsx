@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ThumbsUp, MessageCircle, MessagesSquare } from 'lucide-react';
+import { MessageCircle, MessagesSquare, ThumbsUp } from 'lucide-react';
 import { CardData } from '@/actions/types';
 import { getTimeSinceByDate } from '@/lib/utils';
 import Avatar from './avatar';
@@ -46,7 +46,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
     <Card className="space-around h-fit w-[40rem] flex-col">
       <CardHeader className="flex-row items-center justify-between">
         <div className="flex items-center gap-5">
-          <Avatar image={cardData.avatar} />
+          <Avatar userId={cardData.user_id} image={cardData.avatar} />
           <CardTitle className="">
             <div>{cardData.username}</div>
             <CardDescription>{cardData.institute}</CardDescription>

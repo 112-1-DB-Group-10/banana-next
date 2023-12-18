@@ -1,5 +1,6 @@
 'use server';
 
+import Link from 'next/link';
 import { UserProfile } from '@/actions/types';
 import Avatar from '@/components/avatar';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,7 @@ import ProfileEdit from './profile-edit';
 const ProfileInfo = async ({ user }: { user: UserProfile }) => {
   const session = await getUserSession();
   return (
-    <>
+    <Dialog>
       <div className="flex justify-between px-4">
         <div className="flex">
           <div className="relative p-4">
@@ -39,27 +40,28 @@ const ProfileInfo = async ({ user }: { user: UserProfile }) => {
             <div className="py-2">{user.email}</div>
           </div>
         </div>
-        <div className="p-4">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">修改個人資料</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>修改個人資料</DialogTitle>
-                <DialogDescription>在此修改個人資料</DialogDescription>
-              </DialogHeader>
-              <ProfileEdit
-                user_id={session.user_id}
-                username={session.username}
-                sex={session.sex}
-                age={session.age}
-              />
-            </DialogContent>
-          </Dialog>
+        <div className="flex flex-col gap-6">
+          <Link href="/application" passHref>
+            <Button variant="outline">驗證學生身份</Button>
+          </Link>
+          <DialogTrigger asChild>
+            <Button variant="outline">修改個人資料</Button>
+          </DialogTrigger>
         </div>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>修改個人資料</DialogTitle>
+            <DialogDescription>在此修改個人資料</DialogDescription>
+          </DialogHeader>
+          <ProfileEdit
+            user_id={session.user_id}
+            username={session.username}
+            sex={session.sex}
+            age={session.age}
+          />
+        </DialogContent>
       </div>
-    </>
+    </Dialog>
   );
 };
 

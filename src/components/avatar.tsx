@@ -1,9 +1,16 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { hextoASCII, isURL } from '@/lib/utils';
 
-const Avatar = ({ image }: { image: string }) => {
+const Avatar = ({ userId, image }: { userId?: string; image: string }) => {
+  const router = useRouter();
+  const handleClick = async () => {
+    if (userId) {
+      router.push(`/profile/${userId}/`);
+    }
+  };
   return (
     <Image
       width={100}
@@ -13,8 +20,9 @@ const Avatar = ({ image }: { image: string }) => {
           ? image
           : `data:image/png;base64,${hextoASCII(image.slice(2))}`
       }
-      className="h-12 w-12 rounded-full object-cover"
+      className="h-12 w-12 cursor-pointer rounded-full object-cover"
       alt="Avatar"
+      onClick={handleClick}
     />
   );
 };
