@@ -15,10 +15,24 @@ import {
   deleteCard,
   updateCard,
   getCommentsByCardId,
+  getLabelsByTopic,
+  getLocationsByCardId,
+  getInstituteByUserId,
+  getWantToLearnByCardId,
+  getGoodAtByCardId,
+  NewLike
 } from '@/actions/cardActions';
+import { CardData } from '@/actions/types';
 
 export default async function HomePage() {
   // function testing
+//   const like :NewLike = {
+//     user_id: "75f96dc4-d06c-47d1-a5af-06b6c9060252",
+//     card_id: 'fb80296b-2a75-4631-b681-f11d8fc23331',
+//     time_stamp: new Date()
+// }
+
+  // console.log(i);
 
   const cardPerPage = 10, page = 1;
   // const popularCards = await getPopularCards(true, [] ,cardPerPage, page);
@@ -32,7 +46,7 @@ export default async function HomePage() {
   // await deleteCard("ada86234-12cb-40df-8ac4-b7057798da3d");
   // await updateCard("ada86234-12cb-40df-8ac4-b7057798da3d", new Date(), "I want to rest.");
   // const labels = await getAllLabelsWithTopics();
-  const comments = await getCommentsByCardId("24bee582-3f55-4cc7-9e67-d0e0e9c0f6d8");
+  // const comments = await getCommentsByCardId("24bee582-3f55-4cc7-9e67-d0e0e9c0f6d8");
   // const popularCards = await getPopularCards();
   return (
     <div>
