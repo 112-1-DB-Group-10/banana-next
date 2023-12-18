@@ -83,6 +83,34 @@ const getInstituteByUserId = async (userId: string): Promise<string> => {
     return institute;
 };
 
+const getWantToLearnByCardId = async (cardId: string): Promise<string[]> => {
+    const wantToLearn = await db
+    .select({
+        label_name: wantToLearnTable.label_name,
+    })
+    .from(wantToLearnTable)
+    .where(eq(wantToLearnTable.card_id, cardId));
+    let wantToLearnArray:string[] = [];
+    for (let want of wantToLearn) {
+        wantToLearnArray.push(want.label_name);
+    }
+    return wantToLearnArray;
+};
+
+const getGoodAtByCardId = async (cardId: string): Promise<string[]> => {
+    const goodAt = await db
+    .select({
+        label_name: goodAtTable.label_name,
+    })
+    .from(goodAtTable)
+    .where(eq(goodAtTable.card_id, cardId));
+    let goodAtArray:string[] = [];
+    for (let ga of goodAt) {
+        goodAtArray.push(ga.label_name);
+    }
+    return goodAtArray;
+};
+
 const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
     let cardsInLocation;
     if (locations.length == 0) {
@@ -165,15 +193,11 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
             suspended: cardsInLocation.suspended,
             num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-            good_at: goodAtTable.label_name,
-            want_to_learn: wantToLearnTable.label_name,
         })
         .from(cardsInLocation)
         .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsInLocation.card_id))
-        .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsInLocation.card_id))
         .where(
             and(
                 eq(cardsInLocation.deleted, false),
@@ -188,9 +212,13 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
         
     let cardLocationsArray: string[][] = [];
     let cardInstituteArray: string[] = [];
+    let cardWantToLearnArray: string[][] = [];
+    let cardGoodAtArray: string[][] = [];
     for (let card of cards) {
         cardLocationsArray.push(await getLocationsByCardId(card.card_id));
         cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
     }
 
     const mergedCards = cards.map((card, index) => {
@@ -200,8 +228,8 @@ const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, 
             username: card.username as string,
             locations: cardLocationsArray[index],
             institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+            want_to_learn: cardWantToLearnArray[index],
+            good_at: cardGoodAtArray[index],
         }
     });
 
@@ -291,15 +319,11 @@ const getNewestCards = async (verifiedUser: boolean, locations: Array<string>, c
             suspended: cardsInLocation.suspended,
             num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-            good_at: goodAtTable.label_name,
-            want_to_learn: wantToLearnTable.label_name,
         })
         .from(cardsInLocation)
         .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsInLocation.card_id))
-        .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsInLocation.card_id))
         .where(
             and(
                 eq(cardsInLocation.deleted, false),
@@ -311,27 +335,31 @@ const getNewestCards = async (verifiedUser: boolean, locations: Array<string>, c
         .limit(cardPerPage)
         .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
     
-    let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+        let cardLocationsArray: string[][] = [];
+        let cardInstituteArray: string[] = [];
+        let cardWantToLearnArray: string[][] = [];
+        let cardGoodAtArray: string[][] = [];
+        for (let card of cards) {
+            cardLocationsArray.push(await getLocationsByCardId(card.card_id));
+            cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+            cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+            cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
         }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
+    
+        const mergedCards = cards.map((card, index) => {
+            return {
+                ...card,
+                avatar: card.avatar as string,
+                username: card.username as string,
+                locations: cardLocationsArray[index],
+                institute: cardInstituteArray[index],
+                want_to_learn: cardWantToLearnArray[index],
+                good_at: cardGoodAtArray[index],
+            }
+        });
+    
+        console.log(mergedCards);
+        return mergedCards;
 };
 
 const getCardsBySubstring = async (verifiedUser: boolean, mysubstring: string, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
@@ -416,15 +444,11 @@ const getCardsBySubstring = async (verifiedUser: boolean, mysubstring: string, l
             suspended: cardsInLocation.suspended,
             num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-            good_at: goodAtTable.label_name,
-            want_to_learn: wantToLearnTable.label_name,
         })
         .from(cardsInLocation)
         .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsInLocation.card_id))
-        .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsInLocation.card_id))
         .where(
             and(
                 like(cardsInLocation.contents, `%${mysubstring}%`), 
@@ -438,27 +462,31 @@ const getCardsBySubstring = async (verifiedUser: boolean, mysubstring: string, l
         .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
     
         
-     let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+        let cardLocationsArray: string[][] = [];
+        let cardInstituteArray: string[] = [];
+        let cardWantToLearnArray: string[][] = [];
+        let cardGoodAtArray: string[][] = [];
+        for (let card of cards) {
+            cardLocationsArray.push(await getLocationsByCardId(card.card_id));
+            cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+            cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+            cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
         }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
+    
+        const mergedCards = cards.map((card, index) => {
+            return {
+                ...card,
+                avatar: card.avatar as string,
+                username: card.username as string,
+                locations: cardLocationsArray[index],
+                institute: cardInstituteArray[index],
+                want_to_learn: cardWantToLearnArray[index],
+                good_at: cardGoodAtArray[index],
+            }
+        });
+    
+        console.log(mergedCards);
+        return mergedCards;
 };
 
 const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
@@ -552,16 +580,12 @@ const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: 
             suspended: cardsInLocation.suspended,
             num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-            good_at: goodAtTable.label_name,
-            want_to_learn: wantToLearnTable.label_name,
         })
         .from(cardsInLocation)
         .innerJoin(cardIdsInLabel, eq(cardIdsInLabel.card_id, cardsInLocation.card_id))
         .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsInLocation.card_id))
-        .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsInLocation.card_id))
         .where(
             and( 
                 eq(cardsInLocation.deleted, false),
@@ -576,9 +600,13 @@ const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: 
         
         let cardLocationsArray: string[][] = [];
     let cardInstituteArray: string[] = [];
+    let cardWantToLearnArray: string[][] = [];
+    let cardGoodAtArray: string[][] = [];
     for (let card of cards) {
         cardLocationsArray.push(await getLocationsByCardId(card.card_id));
         cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
     }
 
     const mergedCards = cards.map((card, index) => {
@@ -588,8 +616,8 @@ const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: 
             username: card.username as string,
             locations: cardLocationsArray[index],
             institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+            want_to_learn: cardWantToLearnArray[index],
+            good_at: cardGoodAtArray[index],
         }
     });
 
@@ -698,16 +726,12 @@ const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: 
             suspended: cardsInLocation.suspended,
             num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
             num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-            good_at: goodAtTable.label_name,
-            want_to_learn: wantToLearnTable.label_name,
         })
         .from(cardsInLocation)
         .innerJoin(cardIdsInLabels, eq(cardIdsInLabels.card_id, cardsInLocation.card_id))
         .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
         .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsInLocation.card_id))
-        .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsInLocation.card_id))
         .where(
             and(
                 eq(cardsInLocation.deleted, false),
@@ -720,27 +744,31 @@ const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: 
         .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
     
         
-    let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+        let cardLocationsArray: string[][] = [];
+        let cardInstituteArray: string[] = [];
+        let cardWantToLearnArray: string[][] = [];
+        let cardGoodAtArray: string[][] = [];
+        for (let card of cards) {
+            cardLocationsArray.push(await getLocationsByCardId(card.card_id));
+            cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+            cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+            cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
         }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
+    
+        const mergedCards = cards.map((card, index) => {
+            return {
+                ...card,
+                avatar: card.avatar as string,
+                username: card.username as string,
+                locations: cardLocationsArray[index],
+                institute: cardInstituteArray[index],
+                want_to_learn: cardWantToLearnArray[index],
+                good_at: cardGoodAtArray[index],
+            }
+        });
+    
+        console.log(mergedCards);
+        return mergedCards;
 };
 
 const getCardsPostedByUser = async (userId: string, cardPerPage: number, page: number): Promise<CardData[]> => {
@@ -778,23 +806,23 @@ const getCardsPostedByUser = async (userId: string, cardPerPage: number, page: n
         suspended: cardsTable.suspended,
         num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
         num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        good_at: goodAtTable.label_name,
-        want_to_learn: wantToLearnTable.label_name,
     })
     .from(cardsTable)
     .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsTable.card_id))
     .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsTable.card_id))
     .leftJoin(usersTable, eq(usersTable.user_id, cardsTable.user_id))
-    .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsTable.card_id))
-    .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsTable.card_id))
     .where(eq(cardsTable.user_id, userId))
     .limit(cardPerPage)
     .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
     let cardLocationsArray: string[][] = [];
     let cardInstituteArray: string[] = [];
+    let cardWantToLearnArray: string[][] = [];
+    let cardGoodAtArray: string[][] = [];
     for (let card of cards) {
         cardLocationsArray.push(await getLocationsByCardId(card.card_id));
         cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
     }
 
     const mergedCards = cards.map((card, index) => {
@@ -804,8 +832,8 @@ const getCardsPostedByUser = async (userId: string, cardPerPage: number, page: n
             username: card.username as string,
             locations: cardLocationsArray[index],
             institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+            want_to_learn: cardWantToLearnArray[index],
+            good_at: cardGoodAtArray[index],
         }
     });
 
@@ -873,16 +901,18 @@ const getCardsLikedOrCommentedByUser = async (userId: string, cardPerPage: numbe
     .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsTable.card_id))
     .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsTable.card_id))
     .leftJoin(usersTable, eq(usersTable.user_id, cardsTable.user_id))
-    .leftJoin(wantToLearnTable, eq(wantToLearnTable.card_id, cardsTable.card_id))
-    .leftJoin(goodAtTable, eq(goodAtTable.card_id, cardsTable.card_id))
     .limit(cardPerPage)
     .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
 
     let cardLocationsArray: string[][] = [];
     let cardInstituteArray: string[] = [];
+    let cardWantToLearnArray: string[][] = [];
+    let cardGoodAtArray: string[][] = [];
     for (let card of cards) {
         cardLocationsArray.push(await getLocationsByCardId(card.card_id));
         cardInstituteArray.push(await getInstituteByUserId(card.card_id));
+        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
+        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
     }
 
     const mergedCards = cards.map((card, index) => {
@@ -892,8 +922,8 @@ const getCardsLikedOrCommentedByUser = async (userId: string, cardPerPage: numbe
             username: card.username as string,
             locations: cardLocationsArray[index],
             institute: cardInstituteArray[index],
-            want_to_learn: card.want_to_learn as string,
-            good_at: card.good_at as string,
+            want_to_learn: cardWantToLearnArray[index],
+            good_at: cardGoodAtArray[index],
         }
     });
 
@@ -989,20 +1019,23 @@ const handleNewCard = async (cardData: CardData) => {
         visibility: cardData.visibility,
         suspended: cardData.suspended,
     };
-    console.log("creating want_to_learn");
-    const wantToLearn: WantToLearn = {
-        card_id: cardData.card_id,
-        label_name: cardData.want_to_learn
-    };
-    console.log("creating good_at");
-    const goodAt: GoodAt = {
-        card_id: cardData.card_id,
-        label_name: cardData.good_at
-    };
-
     await createCard(card);
-    await createGoodAt(goodAt);
-    await createWantToLearn(wantToLearn);
+    
+    console.log("creating want_to_learn");
+    for (let wtl of cardData.want_to_learn) {
+        await createWantToLearn({
+            card_id: cardData.card_id,
+            label_name: wtl,
+        });
+    }
+    
+    console.log("creating good_at");
+    for (let ga of cardData.good_at) {
+        await createGoodAt({
+            card_id: cardData.card_id,
+            label_name: ga,
+        });
+    } 
 };
 
 
