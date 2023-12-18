@@ -1,7 +1,6 @@
 'use server';
 
-import usersData from '@/actions/users.json';
-import { Card } from '@/components/ui/card';
+import { getDefaultUsers } from '@/actions/adminActions';
 import UserItem from './user-item';
 
 const UserList = async ({
@@ -12,14 +11,13 @@ const UserList = async ({
   userPerPage: number;
 }) => {
   // const users_data = [];
-  //   const users = await getDefaultUsers(page, userPerPage);
-  const users = usersData;
+  const users = await getDefaultUsers(page, userPerPage);
   return (
-    <Card className="flex flex-col gap-1 p-4">
-      {users.map((user, index) => (
-        <UserItem key={`user-item-${index}`} user={user} />
-      ))}
-    </Card>
+    <div className="flex w-full flex-col gap-1 p-4">
+      {users.map((user, index) => {
+        return <UserItem key={`user-item-${index}`} user={user} />;
+      })}
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import Avatar from '@/components/avatar';
 import { Card } from '@/components/ui/card';
