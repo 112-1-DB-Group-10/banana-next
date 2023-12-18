@@ -20,8 +20,8 @@ export interface CardData {
   visibility: "public" | "verified";
   suspended: boolean;
   deleted: boolean;
-  want_to_learn: string;
-  good_at: string;
+  want_to_learn: string[];
+  good_at: string[];
   num_likes: number;
   num_comments: number;
 }

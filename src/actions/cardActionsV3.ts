@@ -902,13 +902,30 @@ const getCardsLikedOrCommentedByUser = async (userId: string, cardPerPage: numbe
 };
 
 
-const getCommentsByCardId = async (cardId: string) => {
+const getCommentsByCardId = async (cardId: string): Promise<CommentData[]> => {
         const comments = await db
-        .select()
+        .select({
+            card_id: commentsTable.card_id,
+            user_id: commentsTable.user_id,
+            avatar: usersTable.avatar,
+            username: usersTable.username,
+            time_stamp: commentsTable.time_stamp,
+            contents: commentsTable.contents,
+        })
         .from(commentsTable)
-        .where(eq(commentsTable.card_id, cardId));
+        .where(eq(commentsTable.card_id, cardId))
+        .leftJoin(usersTable, eq(usersTable.user_id, commentsTable.user_id))
         console.log(comments);
-        return comments;
+
+        const commentsWithRightType = comments.map((comment) => {
+            return {
+                ...comment,
+                avatar: comment.avatar as string,
+                username: comment.username as string,
+            };
+        });
+
+        return commentsWithRightType;
 };
 
 const likeCard = async (like: NewLike) => {
