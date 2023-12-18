@@ -11,26 +11,8 @@
     "want_to_learn": "FLOLAC",
     "good_at": "寫前端",
     "contents": "我好想學 FLOLAC 喔，有人想一起去今年的 FLOLAC 嗎？",
-    "likes": 100,
-    "comments": [
-      {
-        "card_id": "aaa",
-        "user_id": "bbb",
-        "avatar": "https://github.com/shadcn.png",
-        "username": "Min Min",
-        "institute": "國立台灣大學",
-        "time_stamp": "2023-12-31T23:59:59",
-        "contents": "幫自己推"
-      },
-      {
-        "card_id": "aaa",
-        "user_id": "ccc",
-        "avatar": "https://github.com/shadcn.png",
-        "username": "Wen",
-        "time_stamp": "2023-12-31T23:59:59",
-        "contents": "我是賴玟"
-      }
-    ],
+    "num_likes": 100,
+    "num_comments": 30,
     "visibility": "public",
     "suspended": false,
     "deleted": false
@@ -47,17 +29,8 @@
     "want_to_learn": "寫前端",
     "good_at": "FLOLAC",
     "contents": "我不會寫前端嗚嗚嗚嗚嗚",
-    "likes": 10,
-    "comments": [
-      {
-        "card_id": "aaa",
-        "user_id": "dasfgbjrehkkdljf",
-        "avatar": "https://github.com/shadcn.png",
-        "username": "Ruby Ku",
-        "time_stamp": "2023-12-31T23:59:59",
-        "contents": "嗚嗚嗚嗚嗚嗚嗚嗚"
-      }
-    ],
+    "num_likes": 10,
+    "num_comments": 40,
     "visibility": "public",
     "suspended": false,
     "deleted": false
