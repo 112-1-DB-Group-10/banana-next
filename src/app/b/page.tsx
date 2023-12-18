@@ -17,9 +17,10 @@ import {
   insertLabel,
   deleteLabel,
   queryApplications,
-  suspendeUser,
+  suspendedUser,
   NewUsers,
   updateUser,
+  getSuspendedUsers
 } from '@/actions/adminActions';
 import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
 import {
@@ -56,10 +57,12 @@ export default async function HomePage() {
   //   label_name: "測試用標籤3",
   //   created_user: 'c2cba69e-d7d4-4280-b8d1-fe1995f52a2c'
   // }
-  // const i = await deleteLabel('測試用標籤3');
+  // const i = await deleteLabel('測試用標籤2');
   // // const t = await updateBelongsTo(topic, label);
   // const  i = await updateUser(user);
-  // console.log(i);
+  const i = await getSuspendedUsers(3, 10);
+
+  console.log(i);
 
   return (
     <div>

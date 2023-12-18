@@ -34,6 +34,7 @@ const MessageForm = ({
   return (
     <div className="h-12">
       <form onSubmit={handleSubmit}>
+        form
         <div className="flex w-full items-center gap-2">
           <input
             ref={inputRef}

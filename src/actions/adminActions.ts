@@ -11,7 +11,7 @@ import {
   usersTable,
 } from '../db/schema';
 import { UUID } from 'crypto';
-import { and, eq, desc, max } from 'drizzle-orm';
+import { and, desc, eq, max } from 'drizzle-orm';
 import { db } from '@/db';
 import { UserProfile } from './types';
 
@@ -321,7 +321,7 @@ export const insertUser = async (new_user: NewUsers) => {
 };
 
 //停權某使用者
-export const suspendedUser = async (user_id: UUID) => {
+export const suspendUser = async (user_id: UUID) => {
   const transactionResult = await db.transaction(async (tx) => {
     const suspendedUser = tx
       .update(usersTable)
@@ -351,7 +351,10 @@ export const updateUser = async (updateUser: NewUsers) => {
 };
 
 // 回傳停權的用戶
-export const getSuspendedUsers = async (page: number, userPerPage: number): Promise<UserProfile[]> => {
+export const getSuspendedUsers = async (
+  page: number,
+  userPerPage: number,
+): Promise<UserProfile[]> => {
   const userInstitute = db
   .select({
     user_id: applicationsTable.user_id,
@@ -359,11 +362,11 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
   })
   .from(applicationsTable)
   .where(eq(applicationsTable.verification, 'pass'))
+  .groupBy(applicationsTable.user_id, applicationsTable.institute)
   .orderBy(desc(max(applicationsTable.time_stamp)))
   .as('userInstitute');
 
   const suspendedUserInstitute = await db
-  .with(userInstitute)
   .select({
         avatar: usersTable.avatar,
         username: usersTable.username,
@@ -375,7 +378,8 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
         suspended: usersTable.suspended,
         user_id: usersTable.user_id,
   })
-  .from(usersTable)
+  .from(userInstitute)
+  .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
   .where(
     and(
       eq(userInstitute.user_id, usersTable.user_id),
@@ -384,26 +388,25 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
   )
   .limit(userPerPage)
   .offset(userPerPage * (page - 1));
-
+  // return suspendedUserInstitute;
   const mergeUsers = suspendedUserInstitute.map((user, index) => {
     return {
-        ...user,
-        avatar: user.avatar as string,
-        username: user.username as string,
-        institute: user.institute as string,
-        sex: user.sex as string,
-        age: user.age as number,
-        email: user.email as string,
-        role: user.role as string,
-        suspended: user.suspended as boolean,
-        user_id: user.user_id as string,
-    }
+      ...user,
+      avatar: user.avatar as string,
+      username: user.username as string,
+      institute: user.institute as string,
+      sex: user.sex as string,
+      age: user.age as number,
+      email: user.email as string,
+      role: user.role as string,
+      suspended: user.suspended as boolean,
+      user_id: user.user_id as string,
+    };
   });
   return mergeUsers;
 };
 
 // 回傳一般的用戶
-// 回傳停權的用戶
 export const getDefaultUsers = async (page: number, userPerPage: number): Promise<UserProfile[]> => {
   const userInstitute = db
   .select({
@@ -412,11 +415,11 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   })
   .from(applicationsTable)
   .where(eq(applicationsTable.verification, 'pass'))
+  .groupBy(applicationsTable.user_id, applicationsTable.institute)
   .orderBy(desc(max(applicationsTable.time_stamp)))
   .as('userInstitute');
 
-  const suspendedUserInstitute = await db
-  .with(userInstitute)
+  const defaultUserInstitute = await db
   .select({
         avatar: usersTable.avatar,
         username: usersTable.username,
@@ -428,7 +431,8 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
         suspended: usersTable.suspended,
         user_id: usersTable.user_id,
   })
-  .from(usersTable)
+  .from(userInstitute)
+  .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
   .where(
     and(
       eq(userInstitute.user_id, usersTable.user_id),
@@ -437,20 +441,20 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   )
   .limit(userPerPage)
   .offset(userPerPage * (page - 1));
-
-  const mergeUsers = suspendedUserInstitute.map((user, index) => {
+  // return suspendedUserInstitute;
+  const mergeUsers = defaultUserInstitute.map((user, index) => {
     return {
-        ...user,
-        avatar: user.avatar as string,
-        username: user.username as string,
-        institute: user.institute as string,
-        sex: user.sex as string,
-        age: user.age as number,
-        email: user.email as string,
-        role: user.role as string,
-        suspended: user.suspended as boolean,
-        user_id: user.user_id as string,
-    }
+      ...user,
+      avatar: user.avatar as string,
+      username: user.username as string,
+      institute: user.institute as string,
+      sex: user.sex as string,
+      age: user.age as number,
+      email: user.email as string,
+      role: user.role as string,
+      suspended: user.suspended as boolean,
+      user_id: user.user_id as string,
+    };
   });
   return mergeUsers;
 };
