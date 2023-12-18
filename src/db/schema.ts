@@ -73,28 +73,8 @@ export const applicationsTable = pgTable('applications', {
   verification: verificationEnum('verification').notNull().default('pending'),
   institute: text('institute').notNull(),
   document_url: text('document_url').notNull(),
+  time_stamp: timestamp('time_stamp').defaultNow(),
 });
-
-// export const deletesTable = pgTable(
-//   'deletes',
-//   {
-//     user_id: uuid('user_id')
-//       .notNull()
-//       .references(() => usersTable.user_id),
-//     card_id: uuid('card_id')
-//       .notNull()
-//       .references(() => cardsTable.card_id),
-//     time_stamp: timestamp('time_stamp').notNull(),
-//   },
-//   (table) => {
-//     return {
-//       deletes_pk: primaryKey({
-//         name: 'deletes_pk',
-//         columns: [table.user_id, table.card_id],
-//       }),
-//     };
-//   },
-// );
 
 export const likesTable = pgTable(
   'likes',

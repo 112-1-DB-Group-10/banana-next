@@ -66,7 +66,7 @@ const ProfileInfo = async ({user}: {user: UserProfile}) => {
                   <DialogTitle>修改個人資料</DialogTitle>
                   <DialogDescription>在此修改個人資料</DialogDescription>
                 </DialogHeader>
-                <ProfileEdit user_id={session.user_id} />
+                <ProfileEdit user_id={session.user_id} username={session.username} sex={session.sex} age={session.age}/>
               </DialogContent>
             </Dialog>
           </div>
