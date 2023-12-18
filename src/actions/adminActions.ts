@@ -11,7 +11,7 @@ import {
   usersTable,
 } from '../db/schema';
 import { UUID } from 'crypto';
-import { and, eq, desc, max } from 'drizzle-orm';
+import { and, desc, eq, max } from 'drizzle-orm';
 import { db } from '@/db';
 import { UserProfile } from './types';
 
@@ -321,7 +321,7 @@ export const insertUser = async (new_user: NewUsers) => {
 };
 
 //停權某使用者
-export const suspendedUser = async (user_id: UUID) => {
+export const suspendUser = async (user_id: UUID) => {
   const transactionResult = await db.transaction(async (tx) => {
     const suspendedUser = tx
       .update(usersTable)
@@ -351,7 +351,10 @@ export const updateUser = async (updateUser: NewUsers) => {
 };
 
 // 回傳停權的用戶
-export const getSuspendedUsers = async (page: number, userPerPage: number): Promise<UserProfile[]> => {
+export const getSuspendedUsers = async (
+  page: number,
+  userPerPage: number,
+): Promise<UserProfile[]> => {
   const userInstitute = db
   .select({
     user_id: applicationsTable.user_id,
@@ -388,17 +391,17 @@ export const getSuspendedUsers = async (page: number, userPerPage: number): Prom
   // return suspendedUserInstitute;
   const mergeUsers = suspendedUserInstitute.map((user, index) => {
     return {
-        ...user,
-        avatar: user.avatar as string,
-        username: user.username as string,
-        institute: user.institute as string,
-        sex: user.sex as string,
-        age: user.age as number,
-        email: user.email as string,
-        role: user.role as string,
-        suspended: user.suspended as boolean,
-        user_id: user.user_id as string,
-    }
+      ...user,
+      avatar: user.avatar as string,
+      username: user.username as string,
+      institute: user.institute as string,
+      sex: user.sex as string,
+      age: user.age as number,
+      email: user.email as string,
+      role: user.role as string,
+      suspended: user.suspended as boolean,
+      user_id: user.user_id as string,
+    };
   });
   return mergeUsers;
 };
@@ -441,17 +444,17 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   // return suspendedUserInstitute;
   const mergeUsers = defaultUserInstitute.map((user, index) => {
     return {
-        ...user,
-        avatar: user.avatar as string,
-        username: user.username as string,
-        institute: user.institute as string,
-        sex: user.sex as string,
-        age: user.age as number,
-        email: user.email as string,
-        role: user.role as string,
-        suspended: user.suspended as boolean,
-        user_id: user.user_id as string,
-    }
+      ...user,
+      avatar: user.avatar as string,
+      username: user.username as string,
+      institute: user.institute as string,
+      sex: user.sex as string,
+      age: user.age as number,
+      email: user.email as string,
+      role: user.role as string,
+      suspended: user.suspended as boolean,
+      user_id: user.user_id as string,
+    };
   });
   return mergeUsers;
 };
