@@ -135,7 +135,7 @@ const ApplicationForm = ({user_id}:{user_id: string}) => {
         </pre>
       ),
     });
-    router.push('/profile/'+user_id, { scroll: false })
+    router.push('/profile/' + user_id, { scroll: false })
 
   }
   return (
