@@ -17,19 +17,16 @@ const UserPage = async ({
 }) => {
   const session = await getUserSession();
   return (
-    <Card className="flex h-[40rem] w-fit flex-col justify-around  p-4">
+    <Card className="flex h-[40rem] w-[60rem] flex-col justify-around">
       <Search />
       <div className="overflow-y-scroll py-4">
         <Tabs defaultValue="default">
           <UserTabList />
           <TabsContent value="default">
-            <UserList
-              page={searchParams.page || 1}
-              userPerPage={searchParams.userPerPage || 10}
-            />
+            <UserList />
           </TabsContent>
           <TabsContent value="suspended">
-            <div>test2</div>
+            <UserList />
           </TabsContent>
         </Tabs>
       </div>
