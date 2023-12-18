@@ -416,7 +416,7 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   .orderBy(desc(max(applicationsTable.time_stamp)))
   .as('userInstitute');
 
-  const suspendedUserInstitute = await db
+  const defaultUserInstitute = await db
   .select({
         avatar: usersTable.avatar,
         username: usersTable.username,
@@ -439,7 +439,7 @@ export const getDefaultUsers = async (page: number, userPerPage: number): Promis
   .limit(userPerPage)
   .offset(userPerPage * (page - 1));
   // return suspendedUserInstitute;
-  const mergeUsers = suspendedUserInstitute.map((user, index) => {
+  const mergeUsers = defaultUserInstitute.map((user, index) => {
     return {
         ...user,
         avatar: user.avatar as string,
