@@ -43,25 +43,27 @@ const FormSchema = z.object({
     username: z.string().min(2, {
       message: '姓名至少超過兩個字',
     }),
-    sex: z.string().min(2, {
-      message: '請輸入性別',
+    sex: z.string({
+      required_error: '請選擇性別',
     }),
-    age: z.string().min(2, {
+    age: z.number().min(0, {
       message: '請輸入年齡',
     }),
 });
 
 
-const ProfileEdit = ({user_id}:{user_id: string}) => {
+const ProfileEdit = ({user_id, username, sex, age}:{user_id: string, username: string, sex: string, age: number}) => {
     const router = useRouter()
     const { toast } = useToast();
+
+    const sex_options = ['男', '女'];
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            username: '',
-            sex: '',
-            age: '',
+            username: username,
+            sex: sex,
+            age: age,
         },
     });
 
@@ -96,10 +98,10 @@ const ProfileEdit = ({user_id}:{user_id: string}) => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>姓名</FormLabel>
+                    <FormLabel>使用者名稱</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="輸入你的姓名"
+                        placeholder="請輸入使用者名稱"
                         {...field}
                       />
                     </FormControl>
@@ -108,7 +110,7 @@ const ProfileEdit = ({user_id}:{user_id: string}) => {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="sex"
                 render={({ field }) => (
@@ -123,13 +125,43 @@ const ProfileEdit = ({user_id}:{user_id: string}) => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
+              <FormField
+            control={form.control}
+            name="sex"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>性別</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="請選擇性別" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>性別</SelectLabel>
+                      {sex_options.map((sex_option) => (
+                        <SelectItem key={sex_option} value={sex_option}>
+                          {sex_option}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
               <FormField
                 control={form.control}
                 name="age"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>年紀</FormLabel>
+                    <FormLabel>年齡</FormLabel>
                     <FormControl>
                       <Input
                         // placeholder="Google Drive 網址"
