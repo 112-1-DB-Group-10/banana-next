@@ -17,7 +17,7 @@ export interface CardData {
   institute: string;
   created_time: Date;
   updated_time: Date;
-  visibility: "public" | "verified";
+  visibility: 'public' | 'verified';
   suspended: boolean;
   deleted: boolean;
   want_to_learn: string[];

@@ -4,7 +4,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
+import { UUID } from 'crypto';
 import * as z from 'zod';
+import { NewUsers, insertUser } from '@/actions/adminActions';
+import { updateUser } from '@/actions/adminActions';
+import { UserProfile } from '@/actions/types';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -34,12 +39,7 @@ import {
 } from '@/components/ui/select';
 import { ToastAction } from '@/components/ui/toast';
 import { toast, useToast } from '@/components/ui/use-toast';
-import { UUID } from 'crypto';
-import { UserProfile } from '@/actions/types';
-import { NewUsers, insertUser } from '@/actions/adminActions';
-import { updateUser } from '@/actions/adminActions'
 import { User } from '@/db/types';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 
 const FormSchema = z.object({
   user_id: z.string({}),
@@ -56,7 +56,7 @@ const FormSchema = z.object({
   suspended: z.boolean({}),
 });
 
-const ProfileEdit = ({user}:{user:User}) => {
+const ProfileEdit = ({ user }: { user: User }) => {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -78,7 +78,7 @@ const ProfileEdit = ({user}:{user:User}) => {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log('fuck');
-    const submission : NewUsers = {
+    const submission: NewUsers = {
       user_id: user.user_id,
       username: data.username,
       sex: data.sex,
@@ -87,9 +87,9 @@ const ProfileEdit = ({user}:{user:User}) => {
       avatar: user.avatar,
       role: user.role,
       suspended: user.suspended,
-    }
-    console.log(submission)
-    await updateUser(submission)
+    };
+    console.log(submission);
+    await updateUser(submission);
     toast({
       title: 'You submitted the following values:',
       description: (

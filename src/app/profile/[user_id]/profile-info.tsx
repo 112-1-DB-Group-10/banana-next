@@ -53,7 +53,11 @@ const ProfileInfo = async ({ user }: { user: UserProfile }) => {
             <DialogDescription>在此修改個人資料</DialogDescription>
           </DialogHeader>
           <ProfileEdit
-            user={{...user, role:user.role as 'admin' | 'default', sex:user.sex as 'female' | 'male' | 'unknown'}}
+            user={{
+              ...user,
+              role: user.role as 'admin' | 'default',
+              sex: user.sex as 'female' | 'male' | 'unknown',
+            }}
           />
         </DialogContent>
       </div>
