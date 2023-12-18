@@ -15,7 +15,7 @@ import {
   deleteCard,
   updateCard,
   getCommentsByCardId,
-} from '@/actions/cardActionsV3';
+} from '@/actions/cardActions';
 
 export default async function HomePage() {
   // function testing

@@ -1,1062 +1,350 @@
-"use server";
+'use server';
 
-import { db } from '@/db';
-import { usersTable, cardsTable, messagesTable, applicationsTable, likesTable, commentsTable, locationsTable, locatedAtTable, labelsTable, topicsTable, belongsToTable, goodAtTable, wantToLearnTable } from "@/db/schema";
-import { CardData, CommentData, Topic, Conversation, UserProfile } from './types';
-import { asc, desc, count, sql, eq, and, like, isNull, inArray, SQL } from 'drizzle-orm';
-// import { Pgstring, QueryBuilder } from 'drizzle-orm/pg-core';
-import { any } from 'zod';
+import {
+  applicationsTable,
+  belongsToTable,
+  cardsTable,
+  labelsTable,
+  locatedAtTable,
+  locationsTable,
+  topicsTable,
+  usersTable,
+} from '../db/schema';
 import { UUID } from 'crypto';
-import {v4 as stringv4} from 'uuid';
-import { userInfo } from 'os';
-import { Card, GoodAt, WantToLearn } from '@/db/types';
+import { and, eq } from 'drizzle-orm';
+import { db } from '@/db';
 
+export type NewApplications = typeof applicationsTable.$inferInsert;
+export type NewTopics = typeof topicsTable.$inferInsert;
+export type NewCards = typeof cardsTable.$inferInsert;
+export type NewLabels = typeof labelsTable.$inferInsert;
+export type NewUsers = typeof usersTable.$inferInsert;
 
-export type NewCard = typeof cardsTable.$inferInsert;
-export type NewLike = typeof likesTable.$inferInsert;
-export type NewComment = typeof commentsTable.$inferInsert;
-
-const getLabelsByTopic = async (topic: string) => {
-    try {
-        const labels = await db
-        .select({
-            label_name: belongsToTable.label_name,
-        })
-        .from(belongsToTable)
-        .where(eq(belongsToTable.topic_name, topic));
-        console.log(labels);
-        return labels;
-    } catch (e: any) {
-        console.log(e.message);
-    }
+//新增一筆 Applications
+//user_id, englishname, enroll_year, verification, institute, document_url
+export const insertApplication = async (application: NewApplications) => {
+  try {
+    const insertApplicationResult = await db
+      .insert(applicationsTable)
+      .values(application);
+    console.log('Application inserted successfully!');
+    return insertApplicationResult;
+  } catch (error) {
+    console.error('Error inserting application:', error);
+    throw error;
+  }
 };
 
-const getAllLabelsWithTopics = async (): Promise<Topic[]> => {
-    const topics = await db
-    .select()
-    .from(topicsTable);
-    console.log(topics);
-
-    let topicWithLabels: Topic[] = [];
-    for (let topic of topics) {
-        const labelsOfTopic = await db
-        .select()
-        .from(belongsToTable)
-        .where(eq(belongsToTable.topic_name, topic.topic_name));
-        console.log(labelsOfTopic);
-        let labels: string[] = [];
-        labelsOfTopic.map((label) => {
-            labels.push(label.label_name);
-        });
-        topicWithLabels.push({
-            topic_name: topic.topic_name,
-            labels: labels
-        });
-    }
-    console.log(topicWithLabels);
-    return topicWithLabels;
-};
-
-const getLocationsByCardId = async (cardId: string): Promise<string[]> => {
-    console.log("cardId: ", cardId);
-    let locations: string[] = [];
-    const locationsByCardId = await db
-    .select({ location_name: locatedAtTable.location_name })
-    .from(locatedAtTable) 
-    .where(eq(locatedAtTable.card_id, cardId));
-    console.log(locationsByCardId);
-    locationsByCardId.map((location) => {
-        locations.push(location.location_name);
-    });
-    return locations;
-};
-
-const getInstituteByUserId = async (userId: string): Promise<string> => {
-    const institutePackage = await db
-    .select({ 
-        institute: applicationsTable.institute
-    })
-    .from(applicationsTable)
-    .where(eq(applicationsTable.user_id, userId));
-    console.log(institutePackage);
-    const institute = ((institutePackage.length==0) ? "" : institutePackage[0].institute);
-    return institute;
-};
-
-const getWantToLearnByCardId = async (cardId: string): Promise<string[]> => {
-    const wantToLearn = await db
-    .select({
-        label_name: wantToLearnTable.label_name,
-    })
-    .from(wantToLearnTable)
-    .where(eq(wantToLearnTable.card_id, cardId));
-    let wantToLearnArray:string[] = [];
-    for (let want of wantToLearn) {
-        wantToLearnArray.push(want.label_name);
-    }
-    return wantToLearnArray;
-};
-
-const getGoodAtByCardId = async (cardId: string): Promise<string[]> => {
-    const goodAt = await db
-    .select({
-        label_name: goodAtTable.label_name,
-    })
-    .from(goodAtTable)
-    .where(eq(goodAtTable.card_id, cardId));
-    let goodAtArray:string[] = [];
-    for (let ga of goodAt) {
-        goodAtArray.push(ga.label_name);
-    }
-    return goodAtArray;
-};
-
-const getPopularCards = async (verifiedUser: boolean, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
-    let cardsInLocation;
-    if (locations.length == 0) {
-        console.log("nothing");
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-        );
-    } else {
-        console.log(locations);
-        const cardIdsInLocation = db
-        .select({
-            card_id: locatedAtTable.card_id,
-        })
-        .from(locatedAtTable)
-        .where(inArray(locatedAtTable.location_name, locations))
-        .as("cardIdsInLocations");
-
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
-        );
-    }
-
-    // Subquery for likes
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-    
-    const cards = await db
-        .with(likesSubquery, commentsSubquery, cardsInLocation)
-        .select({
-            card_id: cardsInLocation.card_id,
-            user_id: cardsInLocation.user_id,
-            username: usersTable.username,
-            avatar: usersTable.avatar,
-            contents: cardsInLocation.contents,
-            created_time: cardsInLocation.created_time,
-            updated_time: cardsInLocation.updated_time,
-            visibility: cardsInLocation.visibility,
-            deleted: cardsInLocation.deleted,
-            suspended: cardsInLocation.suspended,
-            num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-            num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        })
-        .from(cardsInLocation)
-        .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .where(
-            and(
-                eq(cardsInLocation.deleted, false),
-                eq(cardsInLocation.suspended, false),
-                inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
-            )
-        )
-        .orderBy(desc(sql<number>`coalesce(${commentsSubquery.commentCount}, 0) * 3 + coalesce(${likesSubquery.likeCount}, 0)`))
-        .limit(cardPerPage)
-        .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-    
-        
-    let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    let cardWantToLearnArray: string[][] = [];
-    let cardGoodAtArray: string[][] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: cardWantToLearnArray[index],
-            good_at: cardGoodAtArray[index],
-        }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
-}
-
-const getNewestCards = async (verifiedUser: boolean, locations: Array<string>, cardPerPage: number, page: number ): Promise<CardData[]> => {
-    let cardsInLocation;
-    if (locations.length == 0) {
-        console.log("nothing");
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-        );
-    } else {
-        console.log(locations);
-        const cardIdsInLocation = db
-        .select({
-            card_id: locatedAtTable.card_id,
-        })
-        .from(locatedAtTable)
-        .where(inArray(locatedAtTable.location_name, locations))
-        .as("cardIdsInLocations");
-
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
-        );
-    }
-
-    // Subquery for likes
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-    
-    let cards = await db
-        .with(likesSubquery, commentsSubquery, cardsInLocation)  
-        .select({
-            card_id: cardsInLocation.card_id,
-            user_id: cardsInLocation.user_id,
-            username: usersTable.username,
-            avatar: usersTable.avatar,
-            contents: cardsInLocation.contents,
-            created_time: cardsInLocation.created_time,
-            updated_time: cardsInLocation.updated_time,
-            visibility: cardsInLocation.visibility,
-            deleted: cardsInLocation.deleted,
-            suspended: cardsInLocation.suspended,
-            num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-            num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        })
-        .from(cardsInLocation)
-        .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .where(
-            and(
-                eq(cardsInLocation.deleted, false),
-                eq(cardsInLocation.suspended, false),
-                inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
-            )
-        )
-        .orderBy(desc(cardsInLocation.created_time))
-        .limit(cardPerPage)
-        .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-    
-        let cardLocationsArray: string[][] = [];
-        let cardInstituteArray: string[] = [];
-        let cardWantToLearnArray: string[][] = [];
-        let cardGoodAtArray: string[][] = [];
-        for (let card of cards) {
-            cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-            cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-            cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-            cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-        }
-    
-        const mergedCards = cards.map((card, index) => {
-            return {
-                ...card,
-                avatar: card.avatar as string,
-                username: card.username as string,
-                locations: cardLocationsArray[index],
-                institute: cardInstituteArray[index],
-                want_to_learn: cardWantToLearnArray[index],
-                good_at: cardGoodAtArray[index],
-            }
-        });
-    
-        console.log(mergedCards);
-        return mergedCards;
-};
-
-const getCardsBySubstring = async (verifiedUser: boolean, mysubstring: string, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
-    let cardsInLocation;
-    if (locations.length == 0) {
-        console.log("nothing");
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-        );
-    } else {
-        console.log(locations);
-        const cardIdsInLocation = db
-        .select({
-            card_id: locatedAtTable.card_id,
-        })
-        .from(locatedAtTable)
-        .where(inArray(locatedAtTable.location_name, locations))
-        .as("cardIdsInLocations");
-
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
-        );
-    }
-
-    // Subquery for likes
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-    
-    let cards = await db
-        .with(likesSubquery, commentsSubquery, cardsInLocation)
-        .select({
-            card_id: cardsInLocation.card_id,
-            user_id: cardsInLocation.user_id,
-            username: usersTable.username,
-            avatar: usersTable.avatar,
-            contents: cardsInLocation.contents,
-            created_time: cardsInLocation.created_time,
-            updated_time: cardsInLocation.updated_time,
-            visibility: cardsInLocation.visibility,
-            deleted: cardsInLocation.deleted,
-            suspended: cardsInLocation.suspended,
-            num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-            num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        })
-        .from(cardsInLocation)
-        .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .where(
-            and(
-                like(cardsInLocation.contents, `%${mysubstring}%`), 
-                eq(cardsInLocation.deleted, false),
-                eq(cardsInLocation.suspended, false),
-                inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
-            )
-        )
-        .orderBy(desc(cardsInLocation.created_time))
-        .limit(cardPerPage)
-        .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-    
-        
-        let cardLocationsArray: string[][] = [];
-        let cardInstituteArray: string[] = [];
-        let cardWantToLearnArray: string[][] = [];
-        let cardGoodAtArray: string[][] = [];
-        for (let card of cards) {
-            cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-            cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-            cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-            cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-        }
-    
-        const mergedCards = cards.map((card, index) => {
-            return {
-                ...card,
-                avatar: card.avatar as string,
-                username: card.username as string,
-                locations: cardLocationsArray[index],
-                institute: cardInstituteArray[index],
-                want_to_learn: cardWantToLearnArray[index],
-                good_at: cardGoodAtArray[index],
-            }
-        });
-    
-        console.log(mergedCards);
-        return mergedCards;
-};
-
-const getCardsByLabel = async (verifiedUser: boolean, label: string, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
-    let cardsInLocation;
-    if (locations.length == 0) {
-        console.log("nothing");
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-        );
-    } else {
-        console.log(locations);
-        const cardIdsInLocation = db
-        .select({
-            card_id: locatedAtTable.card_id,
-        })
-        .from(locatedAtTable)
-        .where(inArray(locatedAtTable.location_name, locations))
-        .as("cardIdsInLocations");
-
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
-        );
-    }
-
-    // Subquery for likes
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-
-    const cardIdsInLabel = db
-        .select({
-            card_id: goodAtTable.card_id,
-            label_name: goodAtTable.label_name,
-        })
-        .from(goodAtTable)
-        .where(eq(goodAtTable.label_name, label))
-        .as("cardIDInLabels");
-    
-    let cards = await db
-        .with(likesSubquery, commentsSubquery, cardsInLocation)
-        .select({
-            card_id: cardsInLocation.card_id,
-            user_id: cardsInLocation.user_id,
-            username: usersTable.username,
-            avatar: usersTable.avatar,
-            contents: cardsInLocation.contents,
-            created_time: cardsInLocation.created_time,
-            updated_time: cardsInLocation.updated_time,
-            visibility: cardsInLocation.visibility,
-            deleted: cardsInLocation.deleted,
-            suspended: cardsInLocation.suspended,
-            num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-            num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        })
-        .from(cardsInLocation)
-        .innerJoin(cardIdsInLabel, eq(cardIdsInLabel.card_id, cardsInLocation.card_id))
-        .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .where(
-            and( 
-                eq(cardsInLocation.deleted, false),
-                eq(cardsInLocation.suspended, false),
-                inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
-            )
-        )
-        .orderBy(desc(cardsInLocation.created_time))
-        .limit(cardPerPage)
-        .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-    
-        
-        let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    let cardWantToLearnArray: string[][] = [];
-    let cardGoodAtArray: string[][] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: cardWantToLearnArray[index],
-            good_at: cardGoodAtArray[index],
-        }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
-};
-
-const getCardsByTopic = async (verifiedUser: boolean, topic: string, locations: Array<string>, cardPerPage: number, page: number): Promise<CardData[]> => {
-    let cardsInLocation;
-    if (locations.length == 0) {
-        console.log("nothing");
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-        );
-    } else {
-        console.log(locations);
-        const cardIdsInLocation = db
-        .select({
-            card_id: locatedAtTable.card_id,
-        })
-        .from(locatedAtTable)
-        .where(inArray(locatedAtTable.location_name, locations))
-        .as("cardIdsInLocations");
-
-        cardsInLocation = db
-        .$with('cardsInLocation')
-        .as(
-            db.select({
-                card_id: cardsTable.card_id,
-                deleted: cardsTable.deleted,
-                contents: cardsTable.contents,
-                created_time: cardsTable.created_time,
-                user_id: cardsTable.user_id,
-                updated_time: cardsTable.updated_time,
-                visibility: cardsTable.visibility,
-                suspended: cardsTable.suspended,
-            })
-            .from(cardsTable)
-            .innerJoin(cardIdsInLocation, eq(cardsTable.card_id, cardIdsInLocation.card_id))
-        );
-    }
-
-    // Subquery for likes
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-    
-
-    const labelsInTopic = db
-        .select({
-            topic_name: belongsToTable.topic_name,
-            label_name: belongsToTable.label_name,
-        })
-        .from(belongsToTable)
-        .where(eq(belongsToTable.topic_name, topic))
-        .as("labelsInTopic");
-
-    const cardIdsInLabels = db
-        .select({
-            card_id: goodAtTable.card_id,
-            label_name: goodAtTable.label_name,
-        })
-        .from(goodAtTable)
-        .innerJoin(labelsInTopic, eq(goodAtTable.label_name, labelsInTopic.label_name))
-        .as("cardIDInLabels");
-    
-    let cards = await db
-        .with(likesSubquery, commentsSubquery, cardsInLocation)
-        .select({
-            card_id: cardsInLocation.card_id,
-            user_id: cardsInLocation.user_id,
-            username: usersTable.username,
-            avatar: usersTable.avatar,
-            contents: cardsInLocation.contents,
-            created_time: cardsInLocation.created_time,
-            updated_time: cardsInLocation.updated_time,
-            visibility: cardsInLocation.visibility,
-            deleted: cardsInLocation.deleted,
-            suspended: cardsInLocation.suspended,
-            num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-            num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        })
-        .from(cardsInLocation)
-        .innerJoin(cardIdsInLabels, eq(cardIdsInLabels.card_id, cardsInLocation.card_id))
-        .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsInLocation.card_id))
-        .leftJoin(usersTable, eq(usersTable.user_id, cardsInLocation.user_id))
-        .where(
-            and(
-                eq(cardsInLocation.deleted, false),
-                eq(cardsInLocation.suspended, false),
-                inArray(cardsInLocation.visibility, verifiedUser ? ["public", "verified"] : ["public"]),
-            )
-        )
-        .orderBy(desc(cardsInLocation.created_time))
-        .limit(cardPerPage)
-        .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-    
-        
-        let cardLocationsArray: string[][] = [];
-        let cardInstituteArray: string[] = [];
-        let cardWantToLearnArray: string[][] = [];
-        let cardGoodAtArray: string[][] = [];
-        for (let card of cards) {
-            cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-            cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-            cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-            cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-        }
-    
-        const mergedCards = cards.map((card, index) => {
-            return {
-                ...card,
-                avatar: card.avatar as string,
-                username: card.username as string,
-                locations: cardLocationsArray[index],
-                institute: cardInstituteArray[index],
-                want_to_learn: cardWantToLearnArray[index],
-                good_at: cardGoodAtArray[index],
-            }
-        });
-    
-        console.log(mergedCards);
-        return mergedCards;
-};
-
-const getCardsPostedByUser = async (userId: string, cardPerPage: number, page: number): Promise<CardData[]> => {
-    // Subquery for likes
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-    
-    const cards = await db
-    .select({
-        card_id: cardsTable.card_id,
-        user_id: cardsTable.user_id,
-        username: usersTable.username,
-        avatar: usersTable.avatar,
-        contents: cardsTable.contents,
-        created_time: cardsTable.created_time,
-        updated_time: cardsTable.updated_time,
-        visibility: cardsTable.visibility,
-        deleted: cardsTable.deleted,
-        suspended: cardsTable.suspended,
-        num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-        num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-    })
-    .from(cardsTable)
-    .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsTable.card_id))
-    .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsTable.card_id))
-    .leftJoin(usersTable, eq(usersTable.user_id, cardsTable.user_id))
-    .where(eq(cardsTable.user_id, userId))
-    .limit(cardPerPage)
-    .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-    let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    let cardWantToLearnArray: string[][] = [];
-    let cardGoodAtArray: string[][] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: cardWantToLearnArray[index],
-            good_at: cardGoodAtArray[index],
-        }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
-};
-
-
-
-const getCardsLikedOrCommentedByUser = async (userId: string, cardPerPage: number, page: number): Promise<CardData[]> => {
-
-    const likesSubquery = db
-        .select({
-            card_id: likesTable.card_id,
-            likeCount: count(likesTable.user_id).as("likeCount"),
-        })
-        .from(likesTable)
-        .groupBy(likesTable.card_id)
-        .as("likesSubquery");
-
-    // Subquery for comments
-    const commentsSubquery = db
-        .select({
-            card_id: commentsTable.card_id,
-            commentCount: count(commentsTable.user_id).as("commentCount"),
-        })
-        .from(commentsTable)
-        .groupBy(commentsTable.card_id)
-        .as("commentsSubquery");
-
-    const liked = db
-        .select()
-        .from(likesTable)
-        .where(eq(likesTable.user_id, userId))
-        .as("liked");
-
-    const likedOrCommented = db
-        .select({
-            card_id: commentsTable.card_id
-        })
-        .from(commentsTable)
-        .where(eq(commentsTable.user_id, userId))
-        .fullJoin(liked, eq(liked.card_id, commentsTable.card_id))
-        .as("likedOrCommented");
-
-    const cards = await db
-    .select({
-        card_id: cardsTable.card_id,
-        user_id: cardsTable.user_id,
-        username: usersTable.username,
-        avatar: usersTable.avatar,
-        contents: cardsTable.contents,
-        created_time: cardsTable.created_time,
-        updated_time: cardsTable.updated_time,
-        visibility: cardsTable.visibility,
-        deleted: cardsTable.deleted,
-        suspended: cardsTable.suspended,
-        num_likes: sql<number>`coalesce(${likesSubquery.likeCount}, 0)`,
-        num_comments: sql<number>`coalesce(${commentsSubquery.commentCount}, 0)`,
-        good_at: goodAtTable.label_name,
-        want_to_learn: wantToLearnTable.label_name,
-    })
-    .from(cardsTable)
-    .innerJoin(likedOrCommented, eq(likedOrCommented.card_id, cardsTable.card_id))
-    .leftJoin(commentsSubquery, eq(commentsSubquery.card_id, cardsTable.card_id))
-    .leftJoin(likesSubquery, eq(likesSubquery.card_id, cardsTable.card_id))
-    .leftJoin(usersTable, eq(usersTable.user_id, cardsTable.user_id))
-    .limit(cardPerPage)
-    .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
-
-    let cardLocationsArray: string[][] = [];
-    let cardInstituteArray: string[] = [];
-    let cardWantToLearnArray: string[][] = [];
-    let cardGoodAtArray: string[][] = [];
-    for (let card of cards) {
-        cardLocationsArray.push(await getLocationsByCardId(card.card_id));
-        cardInstituteArray.push(await getInstituteByUserId(card.card_id));
-        cardWantToLearnArray.push(await getWantToLearnByCardId(card.card_id));
-        cardGoodAtArray.push(await getGoodAtByCardId(card.card_id));
-    }
-
-    const mergedCards = cards.map((card, index) => {
-        return {
-            ...card,
-            avatar: card.avatar as string,
-            username: card.username as string,
-            locations: cardLocationsArray[index],
-            institute: cardInstituteArray[index],
-            want_to_learn: cardWantToLearnArray[index],
-            good_at: cardGoodAtArray[index],
-        }
-    });
-
-    console.log(mergedCards);
-    return mergedCards;
-};
-
-
-const getCommentsByCardId = async (cardId: string): Promise<CommentData[]> => {
-        const comments = await db
-        .select({
-            card_id: commentsTable.card_id,
-            user_id: commentsTable.user_id,
-            avatar: usersTable.avatar,
-            username: usersTable.username,
-            time_stamp: commentsTable.time_stamp,
-            contents: commentsTable.contents,
-        })
-        .from(commentsTable)
-        .where(eq(commentsTable.card_id, cardId))
-        .leftJoin(usersTable, eq(usersTable.user_id, commentsTable.user_id))
-        console.log(comments);
-
-        const commentsWithRightType = comments.map((comment) => {
-            return {
-                ...comment,
-                avatar: comment.avatar as string,
-                username: comment.username as string,
-            };
-        });
-
-        return commentsWithRightType;
-};
-
-const likeCard = async (like: NewLike) => {
-    return db.insert(likesTable).values(like);
-};
-
-const unlikeCard = async (like: NewLike) => {
-    await db
-    .delete(likesTable)
-    .where(
+//刪除一筆 applications
+export const deleteApplication = async (application: NewApplications) => {
+  try {
+    const deleteApplicationResult = await db
+      .delete(applicationsTable)
+      .where(
         and(
-            eq(likesTable.card_id, like.card_id),
-            eq(likesTable.user_id, like.user_id)
-        )
-    );
+          eq(applicationsTable.user_id, application.user_id),
+          eq(applicationsTable.englishname, application.englishname),
+          eq(applicationsTable.enroll_year, application.enroll_year),
+          eq(applicationsTable.institute, application.institute),
+          eq(applicationsTable.document_url, application.document_url),
+        ),
+      );
+    console.log('delete application success');
+    return deleteApplicationResult;
+  } catch (error) {
+    console.error('Error deleting applications!:', error);
+    throw error;
+  }
+};
+//新增一個 topic
+export const insertTopic = async (topic: NewTopics) => {
+  try {
+    const insertTopicResult = await db.insert(topicsTable).values(topic);
+    console.log('Topic inserted successfully!');
+    return insertTopicResult;
+  } catch (error) {
+    console.error('Error inserting topic:', error);
+    throw error;
+  }
 };
 
-const commentOnCard = async (comment: NewComment) => {
-    return db.insert(commentsTable).values(comment);
+//刪除一個 topic 但在這邊要先手動新增一個 topic 叫做'其他'不然會報錯 因為我們的 db 裡面沒有'其他'
+export const deleteTopic = async (topic: NewTopics) => {
+  try {
+    const transactionResult = await db.transaction(async (tx) => {
+      await tx
+        .update(belongsToTable)
+        .set({ topic_name: '其他' })
+        .where(eq(belongsToTable.topic_name, topic.topic_name));
+      await tx
+        .delete(topicsTable)
+        .where(eq(topicsTable.topic_name, topic.topic_name));
+    });
+    console.log('Topic deleted successfully!');
+    return transactionResult;
+  } catch (error) {
+    console.log('Error deleting topic name: ', error);
+    throw error;
+  }
 };
 
-
-const deleteCard = async (cardId: string) => {
-    console.log("deleting card");
-    await db.update(cardsTable)
-    .set({ deleted: true })
-    .where(eq(cardsTable.card_id, cardId));
-    console.log("card deleted");
+//新增一個新的 lable 到你想要的 topic 下面
+export const insertBelongsTo = async (
+  topic_name: string,
+  label_name: string,
+) => {
+  try {
+    const transactionResult = await db.transaction(async (tx) => {
+      const insertBelongsToResult = await tx
+        .insert(belongsToTable)
+        .values({ topic_name: topic_name, label_name: label_name });
+      return insertBelongsToResult;
+    });
+    return transactionResult;
+  } catch (error) {
+    console.error('Error inserting topic:', error);
+    throw error;
+  }
 };
 
-const updateCard = async (cardId: string, updatedTime: Date, updatedText: string) => {
-    console.log("updating card");
-    await db.update(cardsTable)
-    .set({
-        updated_time: updatedTime,
-        contents: updatedText,
-    })
-    .where(eq(cardsTable.card_id, cardId));
-    console.log("card updated");
+//將某個 label 移到新的 topic 下面
+export const updateBelongsTo = async (
+  new_topic: NewTopics,
+  label: NewLabels,
+) => {
+  try {
+    const transactionResult = await db.transaction(async (tx) => {
+      await tx
+        .update(belongsToTable)
+        .set({ topic_name: new_topic.topic_name, label_name: label.label_name })
+        .where(eq(belongsToTable.label_name, label.label_name));
+    });
+    console.log('Changed belongs to successfully!');
+    return transactionResult;
+  } catch (error) {
+    console.error('Error changing belongs:', error);
+    throw error;
+  }
 };
 
-const createCard = async(card: Card) => {
-    return db.insert(cardsTable).values(card);
-};
-const createWantToLearn = async(wantToLearn: WantToLearn) => {
-    return db.insert(wantToLearnTable).values(wantToLearn);
-};
-const createGoodAt = async(goodAt: GoodAt) => {
-    return db.insert(goodAtTable).values(goodAt);
-};
-
-const handleNewCard = async (cardData: CardData) => {
-    console.log("creating card");
-    const card: Card = {
-        card_id: cardData.card_id,
-        user_id: cardData.user_id,
-        contents: cardData.contents,
-        created_time: cardData.created_time,
-        updated_time: cardData.updated_time,
-        deleted: cardData.deleted,
-        visibility: cardData.visibility,
-        suspended: cardData.suspended,
-    };
-    console.log("creating want_to_learn");
-    const wantToLearn: WantToLearn = {
-        card_id: cardData.card_id,
-        label_name: cardData.want_to_learn
-    };
-    console.log("creating good_at");
-    const goodAt: GoodAt = {
-        card_id: cardData.card_id,
-        label_name: cardData.good_at
-    };
-
-    await createCard(card);
-    await createGoodAt(goodAt);
-    await createWantToLearn(wantToLearn);
+//更改某個 application 的狀態
+export const updateApplication = async (
+  application: NewApplications,
+  status: any,
+) => {
+  try {
+    const transactionResult = await db.transaction(async (tx) => {
+      const updatedApplication = await tx
+        .update(applicationsTable)
+        .set({ verification: status })
+        .where(
+          and(
+            eq(applicationsTable.user_id, application.user_id),
+            eq(applicationsTable.englishname, application.englishname),
+            eq(applicationsTable.enroll_year, application.enroll_year),
+            eq(applicationsTable.institute, application.institute),
+            eq(applicationsTable.document_url, application.document_url),
+          ),
+        );
+      return updatedApplication;
+    });
+    console.log('Changed belongs to successfully!');
+    return transactionResult;
+  } catch (error) {
+    console.error('Error changing belongs:', error);
+    throw error;
+  }
 };
 
+// 找出使用者的 institute
+export const findInstitute = async (user_id: any) => {
+  try {
+    const userInstitute = await db
+      .select({
+        institute: applicationsTable.institute,
+      })
+      .from(applicationsTable)
+      .where(
+        and(
+          eq(applicationsTable.user_id, user_id),
+          eq(applicationsTable.verification, 'pass'),
+        ),
+      )
+      .orderBy(applicationsTable.enroll_year);
+    console.log('Find Institute successfully!');
+    return userInstitute;
+  } catch (error) {
+    console.error('Error Find Institute:', error);
+    throw error;
+  }
+};
 
+//新增地點
+export const insertLocation = async (location_name: any) => {
+  try {
+    const insertedLocation = await db
+      .insert(locationsTable)
+      .values({ location_name: location_name });
+    console.log('Insert Location successfully!');
+    return insertedLocation;
+  } catch (error) {
+    console.error('Error Inserting Location:', error);
+    throw error;
+  }
+};
 
-export {
-    getAllLabelsWithTopics,
+//刪除地點
+export const deleteLocation = async (location_name: any) => {
+  try {
+    const deletedLocation = await db
+      .delete(locationsTable)
+      .where(eq(locationsTable.location_name, location_name));
+    console.log('Delete Location successfully!');
+    return deletedLocation;
+  } catch (error) {
+    console.error('Error deleting Location:', error);
+    throw error;
+  }
+};
 
-    // /* 這個區塊裡都需要 location filter 功能，但我還沒寫好 */
-    getPopularCards,
-    getNewestCards,
+//更新地點名稱
+export const updateLocation = async (
+  location_name: any,
+  new_location_name: any,
+) => {
+  try {
+    const transactionResult = await db.transaction(async (tx) => {
+      const updatedLocation = await tx
+        .update(locationsTable)
+        .set({ location_name: new_location_name })
+        .where(eq(locationsTable.location_name, location_name));
+      return updatedLocation;
+    });
+    console.log('Update Location successfully!');
+    return transactionResult;
+  } catch (error) {
+    console.error('Error updating Location:', error);
+    throw error;
+  }
+};
 
-    getCardsBySubstring,
-    getCardsByLabel,
-    getCardsByTopic,
-    
-    getCardsPostedByUser,
-    getCardsLikedOrCommentedByUser,
+//新增 located_at 資料
+export const insertLocatedAt = async (location_name: any, card_id: any) => {
+  try {
+    const insertedLocation = await db
+      .insert(locatedAtTable)
+      .values({ location_name: location_name, card_id: card_id });
+    console.log('Insert Located at successfully!');
+    return insertedLocation;
+  } catch (error) {
+    console.error('Error inserting located at:', error);
+    throw error;
+  }
+};
 
-    getCommentsByCardId,
+//更新 located_at 資料
+export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
+  try {
+    const transactionResult = await db.transaction(async (tx) => {
+      const updatedLocatedAt = await tx
+        .update(locatedAtTable)
+        .set({ location_name: new_location_name })
+        .where(eq(locatedAtTable.card_id, card_id));
+      return updatedLocatedAt;
+    });
+    console.log('Insert Located at successfully!');
+    return transactionResult;
+  } catch (error) {
+    console.error('Error inserting located at:', error);
+    throw error;
+  }
+};
 
-    likeCard,
-    unlikeCard,
-    commentOnCard,
-    deleteCard,
-    updateCard,
-    createCard,
+//新增某個 label 資料之後要記得在新增 belongs to
+export const insertLabel = async (new_label: NewLabels) => {
+  try {
+    await db.insert(labelsTable).values({
+      label_name: new_label.label_name,
+      created_user: new_label.created_user,
+    });
+    await db
+      .insert(belongsToTable)
+      .values({ label_name: new_label.label_name, topic_name: '其他' });
+    console.log('Insert label success!');
+  } catch (error) {
+    console.error('Error inserting label!:', error);
+    throw error;
+  }
+};
+
+//刪除某個 label
+export const deleteLabel = async (target_label: string) => {
+  try {
+    await db
+      .delete(belongsToTable)
+      .where(eq(belongsToTable.label_name, target_label));
+    await db
+      .delete(labelsTable)
+      .where(eq(labelsTable.label_name, target_label));
+  } catch (error) {
+    console.error('Error deleting label:', error);
+    throw error;
+  }
+};
+
+//查找所有 pass/pending/fail 的 application 紀錄
+export const queryApplications = async (target_status: any) => {
+  try {
+    const targetUser = await db
+      .select({
+        user_id: applicationsTable.user_id,
+        enroll_year: applicationsTable.enroll_year,
+        institute: applicationsTable.institute,
+        userEnglishName: applicationsTable.englishname,
+        documnet_url: applicationsTable.document_url,
+      })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.verification, target_status));
+    console.log('find applications success!');
+    return targetUser;
+  } catch (error) {
+    console.error('Error finding application that match the status:', error);
+    throw error;
+  }
+};
+
+//新增使用者
+export const insertUser = async (new_user: NewUsers) => {
+  const users = await db.insert(usersTable).values(new_user);
+  return users;
+};
+
+//停權某使用者
+export const suspendeUser = async (user_id: UUID) => {
+  const transactionResult = await db.transaction(async (tx) => {
+    const suspendedUser = tx
+      .update(usersTable)
+      .set({ suspended: true })
+      .where(eq(usersTable.user_id, user_id));
+    return suspendedUser;
+  });
+  return transactionResult;
+};
+
+//更改用戶資料
+export const updateUser = async (updateUser: NewUsers) => {
+  const transactionResult = await db.transaction(async (tx) => {
+    const updatedUser = tx
+      .update(usersTable)
+      .set({
+        username: updateUser.username,
+        sex: updateUser.sex,
+        age: updateUser.age,
+        role: updateUser.role,
+        avatar: updateUser.avatar,
+      })
+      .where(eq(usersTable.user_id, updateUser.user_id));
+    return updatedUser;
+  });
+  return transactionResult;
 };
