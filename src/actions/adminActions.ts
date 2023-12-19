@@ -13,7 +13,8 @@ import {
 import { UUID } from 'crypto';
 import { and, desc, eq, like, max } from 'drizzle-orm';
 import { db } from '@/db';
-import { UserProfile } from './types';
+import { UserApplication, UserProfile } from './types';
+import { User } from '@/db/types';
 
 export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
@@ -294,7 +295,7 @@ export const deleteLabel = async (target_label: string) => {
 };
 
 //查找所有 pass/pending/fail 的 application 紀錄
-export const queryApplications = async (target_status: 'pending' | 'fail' | 'pass') => {
+export const queryApplications = async (target_status: 'pending' | 'fail' | 'pass'):Promise<UserApplication[]> => {
   try {
     const targetUser = await db
       .select({
@@ -303,6 +304,14 @@ export const queryApplications = async (target_status: 'pending' | 'fail' | 'pas
         institute: applicationsTable.institute,
         userEnglishName: applicationsTable.englishname,
         documnet_url: applicationsTable.document_url,
+        username: usersTable.username,
+        sex: usersTable.sex,
+        age: usersTable.age,
+        email: usersTable.email,
+        role: usersTable.role,
+        suspended: usersTable.suspended,
+        avatar: usersTable.avatar,
+        enrollYear: applicationsTable.enroll_year,
       })
       .from(applicationsTable)
       .where(eq(applicationsTable.verification, target_status));
