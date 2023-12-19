@@ -9,7 +9,7 @@ import {
   getCardsByLabel,
   getCardsByTopic,
   getCardsPostedByUser,
-  getCardsLikedOrCommentedByUser, // 
+  getCardsLikedOrCommentedByUser, //
   likeCard,
   commentOnCard,
   deleteCard,
@@ -20,21 +20,22 @@ import {
   getInstituteByUserId,
   getWantToLearnByCardId,
   getGoodAtByCardId,
-  NewLike
+  NewLike,
 } from '@/actions/cardActions';
 import { CardData } from '@/actions/types';
 
 export default async function HomePage() {
   // function testing
-//   const like :NewLike = {
-//     user_id: "75f96dc4-d06c-47d1-a5af-06b6c9060252",
-//     card_id: 'fb80296b-2a75-4631-b681-f11d8fc23331',
-//     time_stamp: new Date()
-// }
+  //   const like :NewLike = {
+  //     user_id: "75f96dc4-d06c-47d1-a5af-06b6c9060252",
+  //     card_id: 'fb80296b-2a75-4631-b681-f11d8fc23331',
+  //     time_stamp: new Date()
+  // }
 
   // console.log(i);
 
-  const cardPerPage = 10, page = 1;
+  const cardPerPage = 10,
+    page = 1;
   // const popularCards = await getPopularCards(true, [] ,cardPerPage, page);
   // const newestCards = await getNewestCards(true, [], cardPerPage, page);
   // const oneCard = await getCardById("bde171ab-9b44-4343-b794-3701a14ca4a3");

@@ -21,7 +21,7 @@ import {
   NewUsers,
   updateUser,
   getSuspendedUsers,
-  getUsersbySubstring
+  getUsersbySubstring,
 } from '@/actions/adminActions';
 import { insertTopic, NewTopics, deleteTopic } from '@/actions/adminActions';
 import {
