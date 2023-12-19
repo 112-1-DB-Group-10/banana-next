@@ -126,7 +126,6 @@ export const locationsTable = pgTable('locations', {
 export const locatedAtTable = pgTable('located_at', {
   card_id: uuid('card_id')
     .notNull()
-    .primaryKey()
     .references(() => cardsTable.card_id),
   location_name: text('location_name')
     .notNull()
