@@ -131,7 +131,7 @@ export const updateBelongsTo = async (
 //更改某個 application 的狀態
 export const updateApplication = async (
   application: NewApplications,
-  status: any,
+  status: 'pending' | 'pass' | 'fail',
 ) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
@@ -158,7 +158,7 @@ export const updateApplication = async (
 };
 
 // 找出使用者的 institute
-export const findInstitute = async (user_id: any) => {
+export const findInstitute = async (user_id: string) => {
   try {
     const userInstitute = await db
       .select({
@@ -181,7 +181,7 @@ export const findInstitute = async (user_id: any) => {
 };
 
 //新增地點
-export const insertLocation = async (location_name: any) => {
+export const insertLocation = async (location_name: string) => {
   try {
     const insertedLocation = await db
       .insert(locationsTable)
@@ -195,7 +195,7 @@ export const insertLocation = async (location_name: any) => {
 };
 
 //刪除地點
-export const deleteLocation = async (location_name: any) => {
+export const deleteLocation = async (location_name: string) => {
   try {
     const deletedLocation = await db
       .delete(locationsTable)
@@ -210,8 +210,8 @@ export const deleteLocation = async (location_name: any) => {
 
 //更新地點名稱
 export const updateLocation = async (
-  location_name: any,
-  new_location_name: any,
+  location_name: string,
+  new_location_name: string,
 ) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
@@ -230,7 +230,7 @@ export const updateLocation = async (
 };
 
 //新增 located_at 資料
-export const insertLocatedAt = async (location_name: any, card_id: any) => {
+export const insertLocatedAt = async (location_name: string, card_id: string) => {
   try {
     const insertedLocation = await db
       .insert(locatedAtTable)
@@ -244,7 +244,7 @@ export const insertLocatedAt = async (location_name: any, card_id: any) => {
 };
 
 //更新 located_at 資料
-export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
+export const updateLocatedAt = async (new_location_name: string, card_id: string) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
       const updatedLocatedAt = await tx
@@ -294,7 +294,7 @@ export const deleteLabel = async (target_label: string) => {
 };
 
 //查找所有 pass/pending/fail 的 application 紀錄
-export const queryApplications = async (target_status: any) => {
+export const queryApplications = async (target_status: 'pending' | 'fail' | 'pass') => {
   try {
     const targetUser = await db
       .select({
