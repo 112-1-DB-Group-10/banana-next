@@ -13,7 +13,7 @@ export interface CardData {
   username: string;
   avatar: string;
   contents: string;
-  locations: string[];
+  location: string;
   institute: string;
   created_time: Date;
   updated_time: Date;
