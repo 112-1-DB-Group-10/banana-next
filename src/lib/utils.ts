@@ -60,6 +60,5 @@ export function hextoASCII(ascii: string) {
     const merge = parseInt(ascii[i] + ascii[i + 1], 16);
     string = string + String.fromCharCode(merge);
   }
-  console.log(string);
   return string;
 }

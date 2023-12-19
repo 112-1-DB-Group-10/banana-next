@@ -1,12 +1,12 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Topic } from '@/actions/types';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@radix-ui/react-accordion';
-import { Topic } from '@/actions/types';
+} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 
 const TopicItem = ({ topic }: { topic: Topic }) => {

@@ -1,13 +1,14 @@
 'use server';
 
+import { getAllLabelsWithTopics } from '@/actions/cardActions';
 import locations from '@/actions/locations.json';
-import topics from '@/actions/topics.json';
 import LocationsAccodion from './locations-accordion';
 import TopicsAccordion from './topics-accordion';
 
 const Sidebar = async () => {
+  const topics = await getAllLabelsWithTopics();
   return (
-    <div className="no-scrollbar flex max-h-[45vh] w-[180px] flex-col items-start overflow-y-auto">
+    <div className="no-scrollbar flex w-[180px] flex-col items-start overflow-y-scroll">
       <div className="py-2 text-xl font-bold">主題</div>
       <TopicsAccordion topics={topics} />
       {/*  */}

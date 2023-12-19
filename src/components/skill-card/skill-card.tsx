@@ -1,4 +1,4 @@
-'use server';
+'use client';
 
 import Avatar from '../avatar';
 import { Badge } from '../ui/badge';
