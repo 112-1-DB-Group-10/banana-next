@@ -516,14 +516,14 @@ const ApplicationForm = ({ user_id }: { user_id: string }) => {
                           ? colleges.find(
                               (colleges) => colleges.value === value,
                             )?.label
-                          : '搜尋您的學校'}
+                          : '選擇您的學校'}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="請選擇學校" />
+                      <CommandInput placeholder="關鍵字搜尋" />
                       <CommandEmpty>查無此學校</CommandEmpty>
                       <ScrollArea className="h-[150px]">
                         <CommandGroup>
