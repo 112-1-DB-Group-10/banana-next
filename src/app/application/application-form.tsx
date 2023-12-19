@@ -41,6 +41,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -56,82 +57,307 @@ import { cn } from '@/lib/utils';
 import { ProgressBar } from './progress';
 
 const colleges = [
-  '元智大學',
-  '臺北市立大學',
-  '臺北基督學院',
-  '明道學校財團法人明道大學',
-  '國立臺灣海洋大學',
-  '靜宜大學',
-  '義守大學',
-  '真理大學',
-  '淡江大學',
-  '實踐大學',
-  '國立金門大學',
-  '中原大學',
-  '國立東華大學',
-  '國立政治大學',
-  '國立聯合大學',
-  '南華大學',
-  '國立成功大學',
-  '康寧大學',
-  '台灣首府學校財團法人台灣首府大學',
-  '中山醫學大學',
-  '高雄醫學大學',
-  '大葉大學',
-  '國立空中大學',
-  '國立彰化師範大學',
-  '國立中央大學',
-  '銘傳大學',
-  '國立臺灣大學',
-  '國立陽明大學',
-  '國立暨南國際大學',
-  '國立高雄師範大學',
-  '華梵大學',
-  '國立臺北大學',
-  '國立宜蘭大學',
-  '亞洲大學',
-  '長庚大學',
-  '國立臺灣體育運動大學',
-  '國立中正大學',
-  '國立臺北藝術大學',
-  '國立臺中教育大學',
-  '東吳大學',
-  '國立嘉義大學',
-  '輔仁大學',
-  '國立臺南大學',
-  '國立高雄大學',
-  '國立新竹教育大學',
-  '法鼓學校財團法人法鼓文理學院',
-  '國立臺東大學',
-  '國立中興大學',
-  '國立體育大學',
-  '中信金融管理學院',
-  '國立臺灣藝術大學',
-  '臺北醫學大學',
-  '國立臺灣師範大學',
-  '大同大學',
-  '國立交通大學',
-  '中國文化大學',
-  '高雄市立空中大學',
-  '國立屏東大學',
-  '中國醫藥大學',
-  '佛光大學',
-  '逢甲大學',
-  '國立臺南藝術大學',
-  '東海大學',
-  '慈濟學校財團法人慈濟大學',
-  '開南大學',
-  '稻江科技暨管理學院',
-  '世新大學',
-  '國立清華大學',
-  '中華大學',
-  '國立臺北教育大學',
-  '國立中山大學',
-  '馬偕醫學院',
-  '玄奘大學',
-  '學校財團法人中華浸信會基督教台灣浸會神學院',
-  '長榮大學',
-].map((college) => ({ value: college, label: college }));
+  {
+    value: '元智大學',
+    label: '元智大學',
+  },
+  {
+    value: '臺北市立大學',
+    label: '臺北市立大學',
+  },
+  {
+    value: '臺北基督學院',
+    label: '臺北基督學院',
+  },
+  {
+    value: '明道學校財團法人明道大學',
+    label: '明道學校財團法人明道大學',
+  },
+  {
+    value: '國立臺灣海洋大學',
+    label: '國立臺灣海洋大學',
+  },
+  {
+    value: '靜宜大學',
+    label: '靜宜大學',
+  },
+  {
+    value: '義守大學',
+    label: '義守大學',
+  },
+  {
+    value: '真理大學',
+    label: '真理大學',
+  },
+  {
+    value: '淡江大學',
+    label: '淡江大學',
+  },
+  {
+    value: '實踐大學',
+    label: '實踐大學',
+  },
+  {
+    value: '國立金門大學',
+    label: '國立金門大學',
+  },
+  {
+    value: '中原大學',
+    label: '中原大學',
+  },
+  {
+    value: '國立東華大學',
+    label: '國立東華大學',
+  },
+  {
+    value: '國立政治大學',
+    label: '國立政治大學',
+  },
+  {
+    value: '國立聯合大學',
+    label: '國立聯合大學',
+  },
+  {
+    value: '南華大學',
+    label: '南華大學',
+  },
+  {
+    value: '國立成功大學',
+    label: '國立成功大學',
+  },
+  {
+    value: '康寧大學',
+    label: '康寧大學',
+  },
+  {
+    value: '台灣首府學校財團法人台灣首府大學',
+    label: '台灣首府學校財團法人台灣首府大學',
+  },
+  {
+    value: '中山醫學大學',
+    label: '中山醫學大學',
+  },
+  {
+    value: '高雄醫學大學',
+    label: '高雄醫學大學',
+  },
+  {
+    value: '大葉大學',
+    label: '大葉大學',
+  },
+  {
+    value: '國立空中大學',
+    label: '國立空中大學',
+  },
+  {
+    value: '國立彰化師範大學',
+    label: '國立彰化師範大學',
+  },
+  {
+    value: '國立中央大學',
+    label: '國立中央大學',
+  },
+  {
+    value: '銘傳大學',
+    label: '銘傳大學',
+  },
+  {
+    value: '國立臺灣大學',
+    label: '國立臺灣大學',
+  },
+  {
+    value: '國立陽明大學',
+    label: '國立陽明大學',
+  },
+  {
+    value: '國立暨南國際大學',
+    label: '國立暨南國際大學',
+  },
+  {
+    value: '國立高雄師範大學',
+    label: '國立高雄師範大學',
+  },
+  {
+    value: '華梵大學',
+    label: '華梵大學',
+  },
+  {
+    value: '國立臺北大學',
+    label: '國立臺北大學',
+  },
+  {
+    value: '國立宜蘭大學',
+    label: '國立宜蘭大學',
+  },
+  {
+    value: '亞洲大學',
+    label: '亞洲大學',
+  },
+  {
+    value: '長庚大學',
+    label: '長庚大學',
+  },
+  {
+    value: '國立臺灣體育運動大學',
+    label: '國立臺灣體育運動大學',
+  },
+  {
+    value: '國立中正大學',
+    label: '國立中正大學',
+  },
+  {
+    value: '國立臺北藝術大學',
+    label: '國立臺北藝術大學',
+  },
+  {
+    value: '國立臺中教育大學',
+    label: '國立臺中教育大學',
+  },
+  {
+    value: '東吳大學',
+    label: '東吳大學',
+  },
+  {
+    value: '國立嘉義大學',
+    label: '國立嘉義大學',
+  },
+  {
+    value: '輔仁大學',
+    label: '輔仁大學',
+  },
+  {
+    value: '國立臺南大學',
+    label: '國立臺南大學',
+  },
+  {
+    value: '國立高雄大學',
+    label: '國立高雄大學',
+  },
+  {
+    value: '國立新竹教育大學',
+    label: '國立新竹教育大學',
+  },
+  {
+    value: '法鼓學校財團法人法鼓文理學院',
+    label: '法鼓學校財團法人法鼓文理學院',
+  },
+  {
+    value: '國立臺東大學',
+    label: '國立臺東大學',
+  },
+  {
+    value: '國立中興大學',
+    label: '國立中興大學',
+  },
+  {
+    value: '國立體育大學',
+    label: '國立體育大學',
+  },
+  {
+    value: '中信金融管理學院',
+    label: '中信金融管理學院',
+  },
+  {
+    value: '國立臺灣藝術大學',
+    label: '國立臺灣藝術大學',
+  },
+  {
+    value: '臺北醫學大學',
+    label: '臺北醫學大學',
+  },
+  {
+    value: '國立臺灣師範大學',
+    label: '國立臺灣師範大學',
+  },
+  {
+    value: '大同大學',
+    label: '大同大學',
+  },
+  {
+    value: '國立交通大學',
+    label: '國立交通大學',
+  },
+  {
+    value: '中國文化大學',
+    label: '中國文化大學',
+  },
+  {
+    value: '高雄市立空中大學',
+    label: '高雄市立空中大學',
+  },
+  {
+    value: '國立屏東大學',
+    label: '國立屏東大學',
+  },
+  {
+    value: '中國醫藥大學',
+    label: '中國醫藥大學',
+  },
+  {
+    value: '佛光大學',
+    label: '佛光大學',
+  },
+  {
+    value: '逢甲大學',
+    label: '逢甲大學',
+  },
+  {
+    value: '國立臺南藝術大學',
+    label: '國立臺南藝術大學',
+  },
+  {
+    value: '東海大學',
+    label: '東海大學',
+  },
+  {
+    value: '慈濟學校財團法人慈濟大學',
+    label: '慈濟學校財團法人慈濟大學',
+  },
+  {
+    value: '開南大學',
+    label: '開南大學',
+  },
+  {
+    value: '稻江科技暨管理學院',
+    label: '稻江科技暨管理學院',
+  },
+  {
+    value: '世新大學',
+    label: '世新大學',
+  },
+  {
+    value: '國立清華大學',
+    label: '國立清華大學',
+  },
+  {
+    value: '中華大學',
+    label: '中華大學',
+  },
+  {
+    value: '國立臺北教育大學',
+    label: '國立臺北教育大學',
+  },
+  {
+    value: '國立中山大學',
+    label: '國立中山大學',
+  },
+  {
+    value: '馬偕醫學院',
+    label: '馬偕醫學院',
+  },
+  {
+    value: '玄奘大學',
+    label: '玄奘大學',
+  },
+  {
+    value: '學校財團法人中華浸信會基督教台灣浸會神學院',
+    label: '學校財團法人中華浸信會基督教台灣浸會神學院',
+  },
+  {
+    value: '長榮大學',
+    label: '長榮大學',
+  },
+];
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -274,9 +500,10 @@ const ApplicationForm = ({ user_id }: { user_id: string }) => {
             control={form.control}
             name="school"
             render={({ field }) => (
-              <FormItem className='flex flex-col items-start justify-center'>
+              <FormItem className="flex flex-col items-start justify-center">
                 <FormLabel>學校</FormLabel>
-                <Popover> 
+
+                <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -298,30 +525,32 @@ const ApplicationForm = ({ user_id }: { user_id: string }) => {
                     <Command>
                       <CommandInput placeholder="請選擇學校" />
                       <CommandEmpty>查無此學校</CommandEmpty>
-                      <CommandGroup>
-                        {colleges.map((colleges) => (
-                          <CommandItem
-                            key={colleges.value}
-                            value={colleges.value}
-                            onSelect={(currentValue) => {
-                              setValue(
-                                currentValue === value ? '' : currentValue,
-                              );
-                              setOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                'mr-2 h-4 w-4',
-                                value === colleges.value
-                                  ? 'opacity-100'
-                                  : 'opacity-0',
-                              )}
-                            />
-                            {colleges.label}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                      <ScrollArea className="h-[150px]">
+                        <CommandGroup>
+                          {colleges.map((colleges) => (
+                            <CommandItem
+                              key={colleges.value}
+                              value={colleges.value}
+                              onSelect={(currentValue) => {
+                                setValue(
+                                  currentValue === value ? '' : currentValue,
+                                );
+                                setOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  'mr-2 h-4 w-4',
+                                  value === colleges.value
+                                    ? 'opacity-100'
+                                    : 'opacity-0',
+                                )}
+                              />
+                              {colleges.label}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </ScrollArea>
                     </Command>
                   </PopoverContent>
                 </Popover>

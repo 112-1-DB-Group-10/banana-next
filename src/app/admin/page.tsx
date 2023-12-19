@@ -8,12 +8,12 @@ const adminPage = () => {
     <div className="flex flex-row justify-between">
       <div className="w-100 h-100 px-10 py-10">
         <Button asChild className="h-[10rem] w-[20rem] text-3xl">
-          <Link href="/admin/review">管理卡片</Link>
+          <Link href="/admin/review">審核用戶認證</Link>
         </Button>
       </div>
       <div className="px-10 py-10">
         <Button asChild className="h-[10rem] w-[20rem] text-3xl">
-          <Link href="/admin/users">審核用戶</Link>
+          <Link href="/admin/users">管理用戶</Link>
         </Button>
       </div>
       <div className="px-10 py-10">

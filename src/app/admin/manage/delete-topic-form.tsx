@@ -2,8 +2,9 @@
 
 import { UUID } from 'crypto';
 import { suspendUser } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
 import { deleteTopic } from '@/actions/adminActions';
+import { NewTopics } from '@/actions/adminActions';
+import { UserProfile } from '@/actions/types';
 import Avatar from '@/components/avatar';
 import {
   AlertDialog,
@@ -17,7 +18,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { NewTopics } from '@/actions/adminActions';
 
 const DeleteTopicItem = ({ topic }: { topic: string }) => {
   const handleDeleteTopic = async () => {
@@ -25,15 +25,14 @@ const DeleteTopicItem = ({ topic }: { topic: string }) => {
     // console.log(`Suspended user ${user.user_id}`);
     // console.log(s);
     const submission: NewTopics = {
-      topic_name: topic
-    }
+      topic_name: topic,
+    };
     await deleteTopic(submission);
   };
   return (
     <div className="flex h-[2rem] flex-row items-center">
       <AlertDialog>
-        <div className="flex flex-row items-center">
-        </div>
+        <div className="flex flex-row items-center"></div>
         <AlertDialogTrigger asChild>
           <Button>{topic}</Button>
         </AlertDialogTrigger>

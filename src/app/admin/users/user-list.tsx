@@ -15,16 +15,15 @@ const UserList = () => {
   const [query, setQuery] = useState<string>('');
 
   const loadMore = async () => {
-
-    let newUsers = await getUsersbySubstring(false, query,
+    let newUsers = await getUsersbySubstring(
+      false,
+      query,
       20,
-      Number(searchParams.get('page') || '1')
+      Number(searchParams.get('page') || '1'),
     );
     const params = new URLSearchParams(searchParams);
     params.set('page', `${Number(searchParams.get('page') || '1') + 1}`);
-    router.push(
-      `${pathname}?${params.toString()}`,
-    );
+    router.push(`${pathname}?${params.toString()}`);
     console.log(newUsers);
     console.log(searchParams.get('q'));
     setUsers([...users, ...newUsers]);
@@ -35,9 +34,11 @@ const UserList = () => {
       setQuery(searchParams.get('q') as string);
       (async () => {
         await loadMore();
-        let newUsers = await getUsersbySubstring(false, query,
+        let newUsers = await getUsersbySubstring(
+          false,
+          query,
           20,
-          Number(searchParams.get('page') || '1')
+          Number(searchParams.get('page') || '1'),
         );
         setUsers(newUsers);
       })();

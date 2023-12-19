@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getDefaultApplications, getDefaultUsers, queryApplications } from '@/actions/adminActions';
+import {
+  getDefaultApplications,
+  getDefaultUsers,
+  queryApplications,
+} from '@/actions/adminActions';
 import { UserApplication, UserProfile } from '@/actions/types';
-import UserSkeleton from './review-skeleton';
 import ApplicationItem from './review-item';
+import UserSkeleton from './review-skeleton';
 
 const ReviewList = () => {
   const searchParams = useSearchParams();
@@ -35,7 +39,9 @@ const ReviewList = () => {
   return (
     <div className="flex w-full flex-col gap-1 p-6">
       {reviews.map((review, index) => {
-        return <ApplicationItem key={`review-item-${index}`} application={review} />;
+        return (
+          <ApplicationItem key={`review-item-${index}`} application={review} />
+        );
       })}
       <UserSkeleton loadMore={loadMore} />
     </div>

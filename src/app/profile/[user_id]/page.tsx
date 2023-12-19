@@ -2,11 +2,11 @@
 
 import { UUID } from 'crypto';
 import { getUserById } from '@/actions/userActions';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProfileCards from './profile-cards';
 import ProfileInfo from './profile-info';
-import { Button } from '@/components/ui/button';
 
 const Profile = async ({
   params,
@@ -22,14 +22,14 @@ const Profile = async ({
     <Tabs defaultValue="cards">
       <Card className="bg-blueGray-50 h-fit w-[45rem] pt-8">
         <ProfileInfo user={user_data} />
-        <div className="border-blueGray-200 mt-5 flex items-center justify-center overflow-scroll border-t pt-4 no-scrollbar">
+        <div className="border-blueGray-200 no-scrollbar mt-5 flex items-center justify-center overflow-scroll border-t pt-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="cards">發過的卡片</TabsTrigger>
             <TabsTrigger value="interactions">互動過的卡片</TabsTrigger>
           </TabsList>
         </div>
       </Card>
-      <div className="flex w-full items-center justify-center overflow-scroll no-scrollbar">
+      <div className="no-scrollbar flex w-full items-center justify-center overflow-scroll">
         <TabsContent value="cards">
           <ProfileCards posted={true} />
         </TabsContent>
