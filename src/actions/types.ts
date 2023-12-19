@@ -63,5 +63,5 @@ export interface UserApplication {
   institute: string | null;
   enrollYear: number,
   userEnglishName: string,
-  documnet_url: string,
+  document_url: string,
 }
