@@ -3,9 +3,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPen } from 'react-icons/fa';
 import { IoChatbubbleSharp, IoPerson } from 'react-icons/io5';
+import Image from 'next/image';
 import Link from 'next/link';
 import { UUID } from 'crypto';
 // import { Icons } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -14,9 +16,8 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 
-function NavBar({ user_id }: { user_id: UUID }) {
+function NavBar({ user_id }: { user_id: UUID | null }) {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -40,34 +41,45 @@ function NavBar({ user_id }: { user_id: UUID }) {
       <NavigationMenuList className="flex w-screen items-center justify-between px-4">
         <NavigationMenuItem>
           <Link href="/">
-          <Image width={65} height={65} alt="a" src='https://media.discordapp.net/attachments/893439505988743178/1184767785734246450/DALL.png?ex=658d2bfc&is=657ab6fc&hm=017c325753aa52816173c79985aff3e77b8cf2a3e25d4f695d1035acdb726893&=&format=webp&quality=lossless&width=1202&height=1202' />
+            <Image
+              width={65}
+              height={65}
+              alt="a"
+              src="https://media.discordapp.net/attachments/893439505988743178/1184767785734246450/DALL.png?ex=658d2bfc&is=657ab6fc&hm=017c325753aa52816173c79985aff3e77b8cf2a3e25d4f695d1035acdb726893&=&format=webp&quality=lossless&width=1202&height=1202"
+            />
           </Link>
         </NavigationMenuItem>
-        <div className="flex gap-4">
-          <NavigationMenuItem className="self-end">
-            <Link href="/create" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                <FaPen />
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
+        {user_id === null ? (
+          <div className="flex gap-4">
+            <NavigationMenuItem className="self-end">
+              <Link href="/create" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <FaPen />
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
 
-          <NavigationMenuItem className="self-end">
-            <Link href="/chat" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                <IoChatbubbleSharp />
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
+            <NavigationMenuItem className="self-end">
+              <Link href="/chat" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <IoChatbubbleSharp />
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
 
-          <NavigationMenuItem className="self-end">
-            <Link href={`/profile/${user_id}`} legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                <IoPerson />
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-        </div>
+            <NavigationMenuItem className="self-end">
+              <Link href={`/profile/${user_id}`} legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <IoPerson />
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </div>
+        ) : (
+          <Link href="/api/auth/signin">
+            <Button variant="link">登入</Button>
+          </Link>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );
