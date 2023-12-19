@@ -131,7 +131,17 @@ export const locatedAtTable = pgTable('located_at', {
   location_name: text('location_name')
     .notNull()
     .references(() => locationsTable.location_name),
-});
+    
+},
+  (table) => {
+    return {
+      located_at_pk: primaryKey({
+        name: 'located_at_pk',
+        columns: [table.location_name, table.card_id],
+      }),
+    };
+  },
+);
 
 export const labelsTable = pgTable('labels', {
   label_name: text('label_name').notNull().primaryKey(),
