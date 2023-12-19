@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getDefaultUsers } from '@/actions/adminActions';
+import { getDefaultUsers, getUsersbySubstring } from '@/actions/adminActions';
 import { UserProfile } from '@/actions/types';
 import UserItem from './user-item';
 import UserSkeleton from './user-skeleton';
@@ -12,25 +12,37 @@ const UserList = () => {
   const pathname = usePathname();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const router = useRouter();
+  const [query, setQuery] = useState<string>('');
+
   const loadMore = async () => {
-    const newUsers = await getDefaultUsers(
-      Number(searchParams.get('page')) || 1,
+
+    let newUsers = await getUsersbySubstring(false, query,
       20,
+      Number(searchParams.get('page') || '1')
     );
+    const params = new URLSearchParams(searchParams);
+    params.set('page', `${Number(searchParams.get('page') || '1') + 1}`);
     router.push(
-      `${pathname}?page=${(Number(searchParams.get('page')) || 1) + 1}`,
+      `${pathname}?${params.toString()}`,
     );
+    console.log(newUsers);
+    console.log(searchParams.get('q'));
     setUsers([...users, ...newUsers]);
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const newUsers = await getDefaultUsers(page, 15);
-  //     console.log(newUsers);
-  //     setUsers([...users, ...newUsers]);
-  //     console.log(newUsers);
-  //   })();
-  // }, [page]);
+  useEffect(() => {
+    if (searchParams.get('q')) {
+      setQuery(searchParams.get('q') as string);
+      (async () => {
+        await loadMore();
+        let newUsers = await getUsersbySubstring(false, query,
+          20,
+          Number(searchParams.get('page') || '1')
+        );
+        setUsers(newUsers);
+      })();
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex w-full flex-col gap-1 p-6">

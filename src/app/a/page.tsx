@@ -23,10 +23,12 @@ import {
   NewLike,
 } from '@/actions/cardActions';
 import { CardData } from '@/actions/types';
+import { getUsersbySubstring } from '@/actions/adminActions';
 
 export default async function HomePage() {
-  const i = await getCardsByLabel(false, '曲棍球', ['線上'], 10, 1);
-  console.log(i);
+  // const i = await getCardsByLabel(false, '曲棍球', ['線上'], 10, 1);
+  // const i = await getUsersbySubstring(false, '', 10, 1);
+  // console.log(i);
   // function testing
   //   const like :NewLike = {
   //     user_id: "75f96dc4-d06c-47d1-a5af-06b6c9060252",

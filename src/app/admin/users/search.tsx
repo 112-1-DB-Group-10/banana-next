@@ -14,9 +14,11 @@ const Search: React.FC = () => {
     searchParams.get('q') || '',
   );
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const params = new URLSearchParams(searchParams);
     const q = e.target.value;
     setSearchQuery(q);
-    if (q.length > 0) router.push(`${pathname}?q=${q}`);
+    params.set('q', q);
+    if (q.length > 0) router.push(`${pathname}?${params.toString()}`);
     else if (searchParams.get('q')) router.push(pathname);
   };
   return (

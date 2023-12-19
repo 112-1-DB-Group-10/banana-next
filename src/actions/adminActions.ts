@@ -498,7 +498,7 @@ export const getUsersbySubstring = async (
       institute: applicationsTable.institute,
     })
     .from(applicationsTable)
-    .where(eq(applicationsTable.verification, 'pass'))
+    // .where(eq(applicationsTable.verification, 'pass'))
     .groupBy(applicationsTable.user_id, applicationsTable.institute)
     .orderBy(desc(max(applicationsTable.time_stamp)))
     .as('instituteForUsers');
