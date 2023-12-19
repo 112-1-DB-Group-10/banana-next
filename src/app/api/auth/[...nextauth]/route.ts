@@ -1,8 +1,8 @@
 import { NextAuthOptions, Profile } from 'next-auth';
 import NextAuth from 'next-auth/next';
 import GoogleProvider from 'next-auth/providers/google';
-import { eq } from 'drizzle-orm';
 import { v4 as uuid } from 'uuid';
+import { getUserByEmail } from '@/actions/userActions';
 import { db } from '@/db';
 import { usersTable } from '@/db/schema';
 import { session } from '@/lib/session';
@@ -39,15 +39,10 @@ const authOption: NextAuthOptions = {
   callbacks: {
     async signIn({ account, profile }) {
       if (profile) {
-        const existingUser = await db
-          .select({ username: usersTable.username })
-          .from(usersTable)
-          .where(eq(usersTable.email, profile.email as string));
+        const existingUser = await getUserByEmail(profile.email as string);
 
-        if (existingUser.length > 0) {
-          console.log(
-            `User '${existingUser[0].username}' logged in with Google.`,
-          );
+        if (existingUser) {
+          console.log(`User '${existingUser.username}' logged in with Google.`);
         } else {
           const newUser = await addNewUserWithProfile(profile);
           console.log(`Added new user '${newUser.username}' with Google.`);
@@ -61,14 +56,9 @@ const authOption: NextAuthOptions = {
     session,
     async jwt({ token, user, account, profile }) {
       if (profile) {
-        const existingUser = await db
-          .select()
-          .from(usersTable)
-          .where(eq(usersTable.email, profile.email as string));
+        const existingUser = await getUserByEmail(profile.email as string);
         if (existingUser) {
-          console.log(
-            `User '${existingUser[0].username}' logged in with Google.`,
-          );
+          console.log(`User '${existingUser.username}' logged in with Google.`);
         } else {
           const newUser = await addNewUserWithProfile(profile);
           console.log(`Added new user '${newUser.username}' with Google.`);

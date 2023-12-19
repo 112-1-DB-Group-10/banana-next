@@ -641,7 +641,7 @@ const getCardsByLabel = async (
     .as('cardIDInLabels');
 
   let cards = await db
-    .with(likesSubquery, commentsSubquery, cardsInLocation)
+    .with(likesSubquery, commentsSubquery, cardsInLocation, cardIdsInLabel)
     .select({
       card_id: cardsInLocation.card_id,
       user_id: cardsInLocation.user_id,
