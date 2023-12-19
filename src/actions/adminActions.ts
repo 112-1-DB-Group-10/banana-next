@@ -94,9 +94,13 @@ export const deleteTopic = async (topic: NewTopics) => {
 export const insertBelongsTo = async (
   topic_name: string,
   label_name: string,
+  created_user: string,
 ) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
+      const insertLabelResult = await tx
+        .insert(labelsTable)
+        .values({ label_name: label_name, created_user: created_user });
       const insertBelongsToResult = await tx
         .insert(belongsToTable)
         .values({ topic_name: topic_name, label_name: label_name });
