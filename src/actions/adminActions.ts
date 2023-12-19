@@ -13,7 +13,9 @@ import {
 import { UUID } from 'crypto';
 import { and, desc, eq, like, max } from 'drizzle-orm';
 import { db } from '@/db';
-import { UserProfile } from './types';
+import { UserApplication, UserProfile } from './types';
+import { User } from '@/db/types';
+import { use } from 'react';
 
 export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
@@ -130,8 +132,8 @@ export const updateBelongsTo = async (
 
 //更改某個 application 的狀態
 export const updateApplication = async (
-  application: NewApplications,
-  status: any,
+  application: UserApplication,
+  status: 'pending' | 'pass' | 'fail',
 ) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
@@ -141,9 +143,9 @@ export const updateApplication = async (
         .where(
           and(
             eq(applicationsTable.user_id, application.user_id),
-            eq(applicationsTable.englishname, application.englishname),
-            eq(applicationsTable.enroll_year, application.enroll_year),
-            eq(applicationsTable.institute, application.institute),
+            eq(applicationsTable.englishname, application.userEnglishName),
+            eq(applicationsTable.enroll_year, application.enrollYear),
+            // eq(applicationsTable.institute, application.institute),
             eq(applicationsTable.document_url, application.document_url),
           ),
         );
@@ -158,7 +160,7 @@ export const updateApplication = async (
 };
 
 // 找出使用者的 institute
-export const findInstitute = async (user_id: any) => {
+export const findInstitute = async (user_id: string) => {
   try {
     const userInstitute = await db
       .select({
@@ -181,7 +183,7 @@ export const findInstitute = async (user_id: any) => {
 };
 
 //新增地點
-export const insertLocation = async (location_name: any) => {
+export const insertLocation = async (location_name: string) => {
   try {
     const insertedLocation = await db
       .insert(locationsTable)
@@ -195,7 +197,7 @@ export const insertLocation = async (location_name: any) => {
 };
 
 //刪除地點
-export const deleteLocation = async (location_name: any) => {
+export const deleteLocation = async (location_name: string) => {
   try {
     const deletedLocation = await db
       .delete(locationsTable)
@@ -210,8 +212,8 @@ export const deleteLocation = async (location_name: any) => {
 
 //更新地點名稱
 export const updateLocation = async (
-  location_name: any,
-  new_location_name: any,
+  location_name: string,
+  new_location_name: string,
 ) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
@@ -230,7 +232,7 @@ export const updateLocation = async (
 };
 
 //新增 located_at 資料
-export const insertLocatedAt = async (location_name: any, card_id: any) => {
+export const insertLocatedAt = async (location_name: string, card_id: string) => {
   try {
     const insertedLocation = await db
       .insert(locatedAtTable)
@@ -244,7 +246,7 @@ export const insertLocatedAt = async (location_name: any, card_id: any) => {
 };
 
 //更新 located_at 資料
-export const updateLocatedAt = async (new_location_name: any, card_id: any) => {
+export const updateLocatedAt = async (new_location_name: string, card_id: string) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
       const updatedLocatedAt = await tx
@@ -294,24 +296,45 @@ export const deleteLabel = async (target_label: string) => {
 };
 
 //查找所有 pass/pending/fail 的 application 紀錄
-export const queryApplications = async (target_status: any) => {
-  try {
+export const queryApplications = async (target_status: 'pending' | 'fail' | 'pass', applicationPerPage: number, page: number):Promise<UserApplication[]> => {
+
+  const userInstitute = db
+  .select({
+    user_id: applicationsTable.user_id,
+    enrollYear: applicationsTable.enroll_year,
+    institute: applicationsTable.institute,
+    userEnglishName: applicationsTable.englishname,
+    document_url: applicationsTable.document_url,
+    verification: applicationsTable.verification
+  })
+  .from(applicationsTable)
+  .groupBy(applicationsTable.user_id, applicationsTable.enroll_year, applicationsTable.institute, applicationsTable.englishname, applicationsTable.document_url, applicationsTable.verification)
+  .where(eq(applicationsTable.verification, target_status))
+  .orderBy(desc(max(applicationsTable.time_stamp)))
+  .as('userInstitute');
+
     const targetUser = await db
       .select({
-        user_id: applicationsTable.user_id,
-        enroll_year: applicationsTable.enroll_year,
-        institute: applicationsTable.institute,
-        userEnglishName: applicationsTable.englishname,
-        documnet_url: applicationsTable.document_url,
+        user_id: usersTable.user_id,
+        institute: userInstitute.institute,
+        userEnglishName: userInstitute.userEnglishName,
+        document_url: userInstitute.document_url,
+        username: usersTable.username,
+        sex: usersTable.sex,
+        age: usersTable.age,
+        email: usersTable.email,
+        role: usersTable.role,
+        suspended: usersTable.suspended,
+        avatar: usersTable.avatar,
+        enrollYear: userInstitute.enrollYear,
       })
-      .from(applicationsTable)
-      .where(eq(applicationsTable.verification, target_status));
-    console.log('find applications success!');
+      .from(userInstitute)
+      .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
+      .where(eq(userInstitute.verification, target_status))
+      .limit(applicationPerPage)
+      .offset(applicationPerPage * (page - 1));
+
     return targetUser;
-  } catch (error) {
-    console.error('Error finding application that match the status:', error);
-    throw error;
-  }
 };
 
 //新增使用者
@@ -524,4 +547,12 @@ export const getUsersbySubstring = async (
 
   //console.log(mergedCards);
   return mergedUsers;
+};
+
+
+//getDefaultApplications
+export const getDefaultApplications = async (page: number,
+  ApplicationPerPage: number,): Promise<UserApplication[]> => {
+  const passApplication = await queryApplications('pass', ApplicationPerPage, page);
+    return passApplication;
 };

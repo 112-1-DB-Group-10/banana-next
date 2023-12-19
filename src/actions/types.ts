@@ -50,3 +50,18 @@ export interface UserProfile {
   avatar: string;
   institute: string | null;
 }
+
+export interface UserApplication {
+  username: string;
+  sex: string;
+  age: number;
+  email: string;
+  role: string;
+  suspended: boolean;
+  user_id: string;
+  avatar: string;
+  institute: string | null;
+  enrollYear: number,
+  userEnglishName: string,
+  document_url: string,
+}
