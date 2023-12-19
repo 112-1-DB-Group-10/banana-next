@@ -171,7 +171,7 @@ export const findInstitute = async (user_id: any) => {
           eq(applicationsTable.verification, 'pass'),
         ),
       )
-      .orderBy(applicationsTable.enroll_year);
+      .orderBy(applicationsTable.time_stamp);
     console.log('Find Institute successfully!');
     return userInstitute;
   } catch (error) {
