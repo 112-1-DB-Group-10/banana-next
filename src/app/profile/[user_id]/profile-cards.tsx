@@ -3,7 +3,7 @@
 import {
   getCardsLikedOrCommentedByUser,
   getCardsPostedByUser,
-} from '@/actions/cardActionsV2';
+} from '@/actions/cardActions';
 import SkillCard from '@/components/skill-card';
 import { getUserSession } from '@/lib/session';
 
