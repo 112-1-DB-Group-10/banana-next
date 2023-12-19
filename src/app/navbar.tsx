@@ -14,6 +14,7 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 function NavBar({ user_id }: { user_id: UUID }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -38,7 +39,9 @@ function NavBar({ user_id }: { user_id: UUID }) {
     <NavigationMenu className="fixed top-0 h-16 w-screen bg-[#FFBE00] text-black">
       <NavigationMenuList className="flex w-screen items-center justify-between px-4">
         <NavigationMenuItem>
-          <Link href="/">相教</Link>
+          <Link href="/">
+          <Image width={65} height={65} alt="a" src='https://media.discordapp.net/attachments/893439505988743178/1184767785734246450/DALL.png?ex=658d2bfc&is=657ab6fc&hm=017c325753aa52816173c79985aff3e77b8cf2a3e25d4f695d1035acdb726893&=&format=webp&quality=lossless&width=1202&height=1202' />
+          </Link>
         </NavigationMenuItem>
         <div className="flex gap-4">
           <NavigationMenuItem className="self-end">

@@ -1,18 +1,31 @@
 'use client';
 
+import { MessageCircle, MessagesSquare, ThumbsUp } from 'lucide-react';
 import Avatar from '../avatar';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '../ui/card';
 import { CardData } from '@/actions/types';
 import { getTimeSinceByDate } from '@/lib/utils';
+import { useEffect, useState } from 'react';
+
+
 
 const SkillCard = ({ card }: { card: CardData }) => {
+
+  const [lnum, setlnum] = useState(false);
+  const handleLike = () => {
+    setlnum(!lnum);
+  }
+  
   return (
     <Card className="space-around h-fit w-[40rem] flex-col">
       <CardHeader className="flex-row items-center justify-between">
@@ -52,6 +65,22 @@ const SkillCard = ({ card }: { card: CardData }) => {
           </div>
         </form>
       </CardContent>
+      <CardFooter>
+      <Button variant="outline" className="mx-2" onClick={handleLike}>
+          <ThumbsUp /> {lnum ? Number(card.num_likes) + 1 : card.num_likes}
+        </Button>
+        <Button variant="outline" className="mx-2">
+          <MessageCircle /> {card.num_comments}
+        </Button>
+        <Link href={`/chat/${card.user_id}`}>
+        <Button variant="outline" className="mx-2">
+          <MessagesSquare />
+        </Button>
+        </Link>
+        {/* <Button variant="outline" className="mx-2">
+          <MessagesSquare />
+        </Button> */}
+      </CardFooter>
     </Card>
   );
 };
