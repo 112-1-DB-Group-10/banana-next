@@ -63,7 +63,8 @@ export const getUserByEmail = async (
           eq(applicationsTable.user_id, userId.userId),
           eq(applicationsTable.verification, 'pass'),
         ),
-      );
+      )
+      .innerJoin(userId, eq(userId.userId, applicationsTable.user_id));
 
     if (user.length > 0) {
       return {
