@@ -1,6 +1,5 @@
 'use server';
 
-import { use } from 'react';
 import {
   applicationsTable,
   belongsToTable,
@@ -14,7 +13,6 @@ import {
 import { UUID } from 'crypto';
 import { and, desc, eq, like, max } from 'drizzle-orm';
 import { db } from '@/db';
-import { User } from '@/db/types';
 import { UserApplication, UserProfile } from './types';
 
 export type NewApplications = typeof applicationsTable.$inferInsert;
@@ -23,8 +21,8 @@ export type NewCards = typeof cardsTable.$inferInsert;
 export type NewLabels = typeof labelsTable.$inferInsert;
 export type NewUsers = typeof usersTable.$inferInsert;
 
-//新增一筆 Applications
-//user_id, englishname, enroll_year, verification, institute, document_url
+// 新增一筆 Applications
+// user_id, englishname, enroll_year, verification, institute, document_url
 export const insertApplication = async (application: NewApplications) => {
   try {
     const insertApplicationResult = await db
@@ -38,7 +36,7 @@ export const insertApplication = async (application: NewApplications) => {
   }
 };
 
-//刪除一筆 applications
+// 刪除一筆 applications
 export const deleteApplication = async (application: NewApplications) => {
   try {
     const deleteApplicationResult = await db
@@ -59,7 +57,7 @@ export const deleteApplication = async (application: NewApplications) => {
     throw error;
   }
 };
-//新增一個 topic
+// 新增一個 topic
 export const insertTopic = async (topic: NewTopics) => {
   try {
     const insertTopicResult = await db.insert(topicsTable).values(topic);
@@ -71,7 +69,7 @@ export const insertTopic = async (topic: NewTopics) => {
   }
 };
 
-//刪除一個 topic 但在這邊要先手動新增一個 topic 叫做'其他'不然會報錯 因為我們的 db 裡面沒有'其他'
+// 刪除一個 topic 但在這邊要先手動新增一個 topic 叫做'其他'不然會報錯 因為我們的 db 裡面沒有'其他'
 export const deleteTopic = async (topic: NewTopics) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
@@ -91,7 +89,7 @@ export const deleteTopic = async (topic: NewTopics) => {
   }
 };
 
-//新增一個新的 lable 到你想要的 topic 下面
+// 新增一個新的 lable 到你想要的 topic 下面
 export const insertBelongsTo = async (
   topic_name: string,
   label_name: string,
@@ -114,7 +112,7 @@ export const insertBelongsTo = async (
   }
 };
 
-//將某個 label 移到新的 topic 下面
+// 將某個 label 移到新的 topic 下面
 export const updateBelongsTo = async (
   new_topic: NewTopics,
   label: NewLabels,
@@ -134,7 +132,7 @@ export const updateBelongsTo = async (
   }
 };
 
-//更改某個 application 的狀態
+// 更改某個 application 的狀態
 export const updateApplication = async (
   application: UserApplication,
   status: 'pending' | 'pass' | 'fail',
@@ -149,7 +147,7 @@ export const updateApplication = async (
             eq(applicationsTable.user_id, application.user_id),
             eq(applicationsTable.englishname, application.userEnglishName),
             eq(applicationsTable.enroll_year, application.enrollYear),
-            // eq(applicationsTable.institute, application.institute),
+            //  eq(applicationsTable.institute, application.institute),
             eq(applicationsTable.document_url, application.document_url),
           ),
         );
@@ -163,7 +161,7 @@ export const updateApplication = async (
   }
 };
 
-// 找出使用者的 institute
+//  找出使用者的 institute
 export const findInstitute = async (user_id: string) => {
   try {
     const userInstitute = await db
@@ -186,7 +184,7 @@ export const findInstitute = async (user_id: string) => {
   }
 };
 
-//新增地點
+// 新增地點
 export const insertLocation = async (location_name: string) => {
   try {
     const insertedLocation = await db
@@ -200,7 +198,7 @@ export const insertLocation = async (location_name: string) => {
   }
 };
 
-//刪除地點
+// 刪除地點
 export const deleteLocation = async (location_name: string) => {
   try {
     const deletedLocation = await db
@@ -214,7 +212,7 @@ export const deleteLocation = async (location_name: string) => {
   }
 };
 
-//更新地點名稱
+// 更新地點名稱
 export const updateLocation = async (
   location_name: string,
   new_location_name: string,
@@ -235,7 +233,7 @@ export const updateLocation = async (
   }
 };
 
-//新增 located_at 資料
+// 新增 located_at 資料
 export const insertLocatedAt = async (
   location_name: string,
   card_id: string,
@@ -252,7 +250,7 @@ export const insertLocatedAt = async (
   }
 };
 
-//更新 located_at 資料
+// 更新 located_at 資料
 export const updateLocatedAt = async (
   new_location_name: string,
   card_id: string,
@@ -273,7 +271,7 @@ export const updateLocatedAt = async (
   }
 };
 
-//新增某個 label 資料之後要記得在新增 belongs to
+// 新增某個 label 資料之後要記得在新增 belongs to
 export const insertLabel = async (new_label: NewLabels) => {
   try {
     await db.insert(labelsTable).values({
@@ -290,7 +288,7 @@ export const insertLabel = async (new_label: NewLabels) => {
   }
 };
 
-//刪除某個 label
+// 刪除某個 label
 export const deleteLabel = async (target_label: string) => {
   try {
     await db
@@ -305,7 +303,7 @@ export const deleteLabel = async (target_label: string) => {
   }
 };
 
-//查找所有 pass/pending/fail 的 application 紀錄
+// 查找所有 pass/pending/fail 的 application 紀錄
 export const queryApplications = async (
   target_status: 'pending' | 'fail' | 'pass',
   applicationPerPage: number,
@@ -357,13 +355,13 @@ export const queryApplications = async (
   return targetUser;
 };
 
-//新增使用者
+// 新增使用者
 export const insertUser = async (new_user: NewUsers) => {
   const users = await db.insert(usersTable).values(new_user);
   return users;
 };
 
-//停權某使用者
+// 停權某使用者
 export const suspendUser = async (user_id: UUID) => {
   const transactionResult = await db.transaction(async (tx) => {
     const suspendedUser = tx
@@ -375,7 +373,7 @@ export const suspendUser = async (user_id: UUID) => {
   return transactionResult;
 };
 
-//更改用戶資料
+// 更改用戶資料
 export const updateUser = async (updateUser: NewUsers) => {
   const transactionResult = await db.transaction(async (tx) => {
     const updatedUser = tx
@@ -393,7 +391,7 @@ export const updateUser = async (updateUser: NewUsers) => {
   return transactionResult;
 };
 
-// 回傳停權的用戶
+//  回傳停權的用戶
 export const getSuspendedUsers = async (
   page: number,
   userPerPage: number,
@@ -431,7 +429,7 @@ export const getSuspendedUsers = async (
     )
     .limit(userPerPage)
     .offset(userPerPage * (page - 1));
-  // return suspendedUserInstitute;
+  //  return suspendedUserInstitute;
   const mergeUsers = suspendedUserInstitute.map((user, index) => {
     return {
       ...user,
@@ -449,7 +447,7 @@ export const getSuspendedUsers = async (
   return mergeUsers;
 };
 
-// 回傳一般的用戶
+//  回傳一般的用戶
 export const getDefaultUsers = async (
   page: number,
   userPerPage: number,
@@ -487,7 +485,7 @@ export const getDefaultUsers = async (
     )
     .limit(userPerPage)
     .offset(userPerPage * (page - 1));
-  // return suspendedUserInstitute;
+  //  return suspendedUserInstitute;
   const mergeUsers = defaultUserInstitute.map((user, index) => {
     return {
       ...user,
@@ -511,14 +509,14 @@ export const getUsersbySubstring = async (
   cardPerPage: number,
   page: number,
 ): Promise<UserProfile[]> => {
-  // Subquery for institute
+  //  Subquery for institute
   const instituteForUsers = db
     .select({
       user_id: applicationsTable.user_id,
       institute: applicationsTable.institute,
     })
     .from(applicationsTable)
-    // .where(eq(applicationsTable.verification, 'pass'))
+    //  .where(eq(applicationsTable.verification, 'pass'))
     .groupBy(applicationsTable.user_id, applicationsTable.institute)
     .orderBy(desc(max(applicationsTable.time_stamp)))
     .as('instituteForUsers');
@@ -548,7 +546,7 @@ export const getUsersbySubstring = async (
       ),
     )
     .limit(cardPerPage)
-    .offset(cardPerPage * (page - 1)); // indexing: page 1, page 2, page 3, ...
+    .offset(cardPerPage * (page - 1)); //  indexing: page 1, page 2, page 3, ...
 
   const mergedUsers = users.map((user, index) => {
     return {
@@ -565,11 +563,11 @@ export const getUsersbySubstring = async (
     };
   });
 
-  //console.log(mergedCards);
+  // console.log(mergedCards);
   return mergedUsers;
 };
 
-//getDefaultApplications
+// getDefaultApplications
 export const getDefaultApplications = async (
   page: number,
   ApplicationPerPage: number,

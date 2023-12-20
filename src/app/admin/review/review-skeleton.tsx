@@ -1,22 +1,18 @@
 'use client';
 
+import { Skeleton } from '@/components/ui/skeleton';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const ReviewSkeleton = ({ loadMore }: { loadMore: () => Promise<void> }) => {
   const { ref, inView } = useInView();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   useEffect(() => {
     if (inView) {
       (async () => {
         await loadMore();
       })();
     }
-  }, [inView]);
+  }, [inView, loadMore]);
 
   return (
     <div

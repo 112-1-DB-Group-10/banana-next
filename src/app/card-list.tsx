@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   getCardsByLabel,
   getCardsByTopic,
@@ -9,6 +7,8 @@ import {
 } from '@/actions/cardActions';
 import { CardData } from '@/actions/types';
 import SkillCard from '@/components/skill-card/skill-card';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import CardSkeleton from './card-skeleton';
 
 const CardList = ({ isVerified }: { isVerified: boolean }) => {
@@ -23,7 +23,7 @@ const CardList = ({ isVerified }: { isVerified: boolean }) => {
   const loadMore = async () => {
     let newCards: CardData[];
     console.log(
-      `Search for | topic=${topic} | label=${label} | page=${page} |`,
+      `Search for | topic=${topic} | label=${label} | page=${page} | location=${location} |`,
     );
     if (label !== '') {
       newCards = await getCardsByLabel(
@@ -80,7 +80,7 @@ const CardList = ({ isVerified }: { isVerified: boolean }) => {
       setLabel('');
     }
     if (searchParams.get('location')) {
-      if (searchParams.get('location') === location) {
+      if (searchParams.get('location') !== location) {
         setLocation(searchParams.get('location') as string);
         setCards([]);
         setPage(1);

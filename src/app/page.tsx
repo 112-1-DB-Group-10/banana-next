@@ -1,6 +1,5 @@
 'use server';
 
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getUserSession } from '@/lib/session';
 import CardList from './card-list';
@@ -15,20 +14,13 @@ export default async function MainPage({
     location: string;
   };
 }) {
-  // const cards: CardData[] = cardData.map((card) => ({
-  //   ...card,
-  //   visibility: card.visibility as 'public' | 'verified',
-  //   created_time: new Date(card.created_time),
-  //   updated_time: new Date(card.updated_time),
-  //   num_comments: card.num_comments,
-  // }));
   const session = await getUserSession();
   if (!session) return <>請先登入！</>;
   return (
     <div className="flex h-full w-full flex-1 items-end justify-between overflow-hidden pl-4 pr-4">
       <div className="flex h-full w-full justify-center overflow-hidden">
         <div>
-          <Input />
+          {/* <Input /> */}
           <Sidebar />
         </div>
         <Tabs defaultValue="popular" className="w-[42rem] px-4">

@@ -1,6 +1,5 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Topic } from '@/actions/types';
 import {
   AccordionContent,
@@ -8,6 +7,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const TopicItem = ({ topic }: { topic: Topic }) => {
   const searchParams = useSearchParams();
@@ -29,9 +30,9 @@ const TopicItem = ({ topic }: { topic: Topic }) => {
   return (
     <AccordionItem value={`item-${topic.topic_name}`}>
       <AccordionTrigger
-        className={`text-l ${
-          searchParams.get('topic') === topic.topic_name ? 'text-blue-500' : ''
-        }`}
+        className={cn('text-l', 
+          searchParams.get('topic') === topic.topic_name && 'text-blue-500'
+  )}
         onClick={() => handleTopicSelect(topic.topic_name)}
       >
         {topic.topic_name}

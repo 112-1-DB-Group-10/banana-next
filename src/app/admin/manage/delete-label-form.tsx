@@ -1,10 +1,6 @@
 'use client';
 
-import { UUID } from 'crypto';
-import { suspendUser } from '@/actions/adminActions';
 import { deleteLabel } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
-import Avatar from '@/components/avatar';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,9 +16,6 @@ import { Button } from '@/components/ui/button';
 
 const DeleteLableItem = ({ label }: { label: string }) => {
   const handleDeleteLabel = async () => {
-    // const s = await suspendUser(user.user_id as UUID);
-    // console.log(`Suspended user ${user.user_id}`);
-    // console.log(s);
     await deleteLabel(label);
   };
   return (

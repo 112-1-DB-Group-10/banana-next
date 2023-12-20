@@ -1,55 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UUID } from 'crypto';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import * as z from 'zod';
-import {
-  NewApplications,
-  NewCards,
-  insertApplication,
-} from '@/actions/adminActions';
-import { NewCard } from '@/actions/cardActions';
 import { handleNewCard } from '@/actions/cardActions';
 import { CardData, UserProfile } from '@/actions/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 // create a new card, type: CardData
-import { getUserById } from '@/actions/userActions';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  Card
 } from '@/components/ui/card';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from '@/components/ui/command';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -59,10 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ToastAction } from '@/components/ui/toast';
-import { toast, useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
-import { ProgressBar } from './progress';
+import { useToast } from '@/components/ui/use-toast';
 
 const locations = [
   '線上',
@@ -202,7 +170,6 @@ const CreateForm = ({
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // console.log('fuck');
     router.push('/profile/' + user_id, { scroll: false });
 
     const submission: CardData = {
@@ -224,11 +191,6 @@ const CreateForm = ({
       num_comments: 0,
     };
     console.log(submission);
-    // async function asyncInsert() {
-    //   let fuck = await insertApplication(submission)
-    // }
-    // asyncInsert()
-    // async () => {await insertApplication(submission)}
     await handleNewCard(submission);
 
     toast({

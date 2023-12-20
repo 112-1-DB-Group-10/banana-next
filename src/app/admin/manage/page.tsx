@@ -1,15 +1,6 @@
 'use server';
 
 import { getAllLabelsWithTopics } from '@/actions/cardActions';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { getUserSession } from '@/lib/session';
 import DeleteLableItem from './delete-label-form';
 import DeleteTopicItem from './delete-topic-form';
@@ -35,11 +26,11 @@ const ManagePage = async () => {
   return (
     <div className="flex flex-col justify-start overflow-y-scroll">
       {topics_labels.map((topic_labels, index) => (
-        <div className="flex p-3">
+        <div key={`topic-${index}`} className="flex p-3">
           {/* <div className="font-bold text-2xl pr-4" key={index}>{topic_labels.topic_name}</div> */}
           <DeleteTopicItem topic={topic_labels.topic_name}></DeleteTopicItem>
           {topic_labels.labels.map((label) => (
-            <div className="px-2">
+            <div key={`label-${index}`} className="px-2">
               {/* <Button>{label}</Button> */}
               <DeleteLableItem label={label} />
             </div>

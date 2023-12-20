@@ -1,4 +1,3 @@
-
 # 相教 - 技能交換平台
 
 ## 目錄
@@ -15,6 +14,7 @@
     - [技術棧](#技術棧)
     - [數據庫設計](#數據庫設計)
     - [正規化分析](#正規化分析)
+  - [檔案架構](#檔案架構)
   - [系統實作](#系統實作)
     - [資料庫建置](#資料庫建置)
     - [重要功能及 SQL 指令](#重要功能及-sql-指令)
@@ -75,6 +75,138 @@
 
 - **1NF 到 4NF**：所有關聯均滿足從第一正規化到第四正規化的要求。
 
+## 檔案架構
+
+```
+banana-next/
+├── .env.example
+├── .eslintrc.json
+├── README.md
+├── components.json
+├── docker-compose.yml
+├── drizzle.config.ts
+├── next.config.js
+├── nextauth.d.ts
+├── package.json
+├── postcss.config.js
+├── prettier.config.js
+├── public/
+│   ├── (skipped)
+├── src/
+│   ├── actions.ts
+│   ├── actions/
+│   │   ├── adminActions.ts
+│   │   ├── cardActions.ts
+│   │   ├── cards.json
+│   │   ├── chatActions.ts
+│   │   ├── comment.json
+│   │   ├── locations.json
+│   │   ├── topics.json
+│   │   ├── types.ts
+│   │   ├── user.json
+│   │   ├── userActions.ts
+│   │   └── users.json
+│   ├── app/
+│   │   ├── admin/
+│   │   │   ├── layout.tsx
+│   │   │   ├── manage/
+│   │   │   │   ├── delete-label-form.tsx
+│   │   │   │   ├── delete-topic-form.tsx
+│   │   │   │   ├── insert-label-form.tsx
+│   │   │   │   ├── insert-topic-form.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── review/
+│   │   │   │   ├── page.tsx
+│   │   │   │   ├── review-item.tsx
+│   │   │   │   ├── review-list.tsx
+│   │   │   │   ├── review-skeleton.tsx
+│   │   │   │   ├── review-tab-list.tsx
+│   │   │   │   └── search.tsx
+│   │   │   └── users/
+│   │   │       ├── page.tsx
+│   │   │       ├── search.tsx
+│   │   │       ├── user-item.tsx
+│   │   │       ├── user-list.tsx
+│   │   │       ├── user-skeleton.tsx
+│   │   │       └── user-tab-list.tsx
+│   │   ├── api/
+│   │   │   └── auth/
+│   │   │       └── [...nextauth]/
+│   │   │           └── route.ts
+│   │   ├── application/
+│   │   │   ├── application-form.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── progress.tsx
+│   │   ├── card-list.tsx
+│   │   ├── card-skeleton.tsx
+│   │   ├── chat/
+│   │   │   ├── [user_id]/
+│   │   │   │   ├── chat-box.tsx
+│   │   │   │   ├── message-form.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── chat-nav-pane.tsx
+│   │   │   ├── conversation-item.tsx
+│   │   │   ├── conversation-list.tsx
+│   │   │   ├── conversation-skeleton.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── messages.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── search.tsx
+│   │   ├── create/
+│   │   │   ├── create-form.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── page_old.tsx
+│   │   │   └── progress.tsx
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── location-item.tsx
+│   │   ├── locations-accordion.tsx
+│   │   ├── navbar.tsx
+│   │   ├── page.tsx
+│   │   ├── profile/
+│   │   │   ├── [user_id]/
+│   │   │   │   ├── page.tsx
+│   │   │   │   ├── profile-cards.tsx
+│   │   │   │   ├── profile-edit.tsx
+│   │   │   │   ├── profile-info.tsx
+│   │   │   │   └── profileClient.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── sidebar.tsx
+│   │   ├── topic-item.tsx
+│   │   └── topics-accordion.tsx
+│   ├── components/
+│   │   ├── avatar.tsx
+│   │   ├── skill-card/
+│   │   │   ├── comment-section.tsx
+│   │   │   ├── control.tsx
+│   │   │   ├── footer.tsx
+│   │   │   └── skill-card.tsx
+│   │   └── ui/ (imported from shadcn)
+│   │       └── (skipped)
+│   ├── db/
+│   │   ├── exampledata_card.json
+│   │   ├── exampledata_chat.json
+│   │   ├── index.ts
+│   │   ├── messages.json
+│   │   ├── schema.ts
+│   │   ├── types.ts
+│   │   └── users.json
+│   ├── lib/
+│   │   ├── session.ts
+│   │   └── utils.ts
+│   └── validators/
+│       └── auth.ts
+├── tailwind.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── yarn.lock
+```
+
 ## 系統實作
 
 ### 資料庫建置
@@ -99,7 +231,7 @@
 
 ### 安裝 Dependencies
 
- 1. 安裝專案所需的 Dependencies。在專案根目錄下打開終端機，執行以下命令：
+1.  安裝專案所需的 Dependencies。在專案根目錄下打開終端機，執行以下命令：
 
 ```bash
 yarn
@@ -112,6 +244,7 @@ yarn
 ### 數據庫配置
 
 3. 啟動數據庫：
+
    - 使用 Docker 啟動 Postgres 資料庫：
      ```bash
      docker compose up -d
@@ -143,8 +276,9 @@ yarn
 18. 在「已授權的重定向 URI」中填寫 `http://localhost:3000/api/auth/callback/google`。
 19. 點擊「創建」，系統將生成您的用戶端 ID 和用戶端密鑰。
 20. 更新 .env.local 文件
-    
+
 根據 `.env.example` 文件的格式，將您的用戶端 ID 和用戶端密鑰添加到 `.env.local` 文件中。
+
 ```
 GOOGLE_CLIENT_ID=您的用戶端ID
 GOOGLE_CLIENT_SECRET=您的用戶端密鑰
@@ -152,10 +286,11 @@ GOOGLE_CLIENT_SECRET=您的用戶端密鑰
 
 ### 啟動服務器
 
-21.  最後，啟動開發服務器：
-   ```bash
-   yarn dev
-   ```
+21. 最後，啟動開發服務器：
+
+```bash
+yarn dev
+```
 
 完成以上步驟後，您的專案應該已經成功運行在本地開發服務器上。
 

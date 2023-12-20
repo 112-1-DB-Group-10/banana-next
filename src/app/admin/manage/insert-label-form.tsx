@@ -1,29 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { UUID } from 'crypto';
 import * as z from 'zod';
-import { suspendUser } from '@/actions/adminActions';
-import { deleteLabel } from '@/actions/adminActions';
-import { insertLabel } from '@/actions/adminActions';
-import { insertBelongsTo } from '@/actions/adminActions';
-import { NewLabels } from '@/actions/adminActions';
-import { NewUsers, insertUser } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
-import Avatar from '@/components/avatar';
+import { NewLabels, insertBelongsTo } from '@/actions/adminActions';
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';

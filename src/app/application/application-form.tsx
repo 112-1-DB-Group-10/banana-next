@@ -1,23 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UUID } from 'crypto';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import * as z from 'zod';
 import { NewApplications, insertApplication } from '@/actions/adminActions';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import {
   Command,
   CommandEmpty,
@@ -35,26 +26,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { ToastAction } from '@/components/ui/toast';
-import { toast, useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { ProgressBar } from './progress';
 
 const colleges = [
   {
@@ -381,14 +360,6 @@ const FormSchema = z.object({
     message: '請輸入認證照片的網址',
   }),
   time_stamp: z.string({}),
-  // profilePicture: z
-  // .any()
-  // .refine((files) => files?.length == 1, "Image is required.")
-  // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-  // .refine(
-  //   (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-  //   ".jpg, .jpeg, .png and .webp files are accepted."
-  // ),
 });
 
 const frameworks = [
@@ -417,17 +388,9 @@ const frameworks = [
 const ApplicationForm = ({ user_id }: { user_id: string }) => {
   const router = useRouter();
   const { toast } = useToast();
-  // const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  // const [verificationProgress, setVerificationProgress] = useState(0);
 
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
-  // const handlePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files && e.target.files[0];
-  //   if (file) {
-  //     setProfilePicture(file);
-  //   }
-  // };
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -437,12 +400,10 @@ const ApplicationForm = ({ user_id }: { user_id: string }) => {
       enrollYear: '',
       document_url: '',
       time_stamp: '',
-      // profilePicture,
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // console.log('fuck');
     router.push('/profile/' + user_id, { scroll: false });
 
     const submission: NewApplications = {
@@ -455,11 +416,6 @@ const ApplicationForm = ({ user_id }: { user_id: string }) => {
       verification: 'pending',
     };
     console.log(submission);
-    // async function asyncInsert() {
-    //   let fuck = await insertApplication(submission)
-    // }
-    // asyncInsert()
-    // async () => {await insertApplication(submission)}
     await insertApplication(submission);
 
     toast({

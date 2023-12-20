@@ -1,24 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
-import { UUID } from 'crypto';
-import * as z from 'zod';
-import { NewUsers, insertUser } from '@/actions/adminActions';
-import { updateUser } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
+import { NewUsers, updateUser } from '@/actions/adminActions';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -37,9 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ToastAction } from '@/components/ui/toast';
-import { toast, useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { User } from '@/db/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { DialogTrigger } from '@radix-ui/react-dialog';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 const FormSchema = z.object({
   user_id: z.string({}),
@@ -77,7 +64,6 @@ const ProfileEdit = ({ user }: { user: User }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log('fuck');
     const submission: NewUsers = {
       user_id: user.user_id,
       username: data.username,

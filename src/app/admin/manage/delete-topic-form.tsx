@@ -1,11 +1,6 @@
 'use client';
 
-import { UUID } from 'crypto';
-import { suspendUser } from '@/actions/adminActions';
-import { deleteTopic } from '@/actions/adminActions';
-import { NewTopics } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
-import Avatar from '@/components/avatar';
+import { NewTopics, deleteTopic } from '@/actions/adminActions';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,9 +16,6 @@ import { Button } from '@/components/ui/button';
 
 const DeleteTopicItem = ({ topic }: { topic: string }) => {
   const handleDeleteTopic = async () => {
-    // const s = await suspendUser(user.user_id as UUID);
-    // console.log(`Suspended user ${user.user_id}`);
-    // console.log(s);
     const submission: NewTopics = {
       topic_name: topic,
     };
