@@ -143,7 +143,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
       </CardContent>
       <CardFooter className="flex">
         <Button variant="outline" className="mx-2">
-          <ThumbsUp /> {cardData.likes}
+          <ThumbsUp /> {cardData.num_likes}
         </Button>
         <Button variant="outline" className="mx-2" onClick={toggleComments}>
           <MessageCircle />
@@ -153,7 +153,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
         </Button>
       </CardFooter>
       <CardContent>
-        {showComments && (
+        {/* {showComments && (
           <div>
             {cardData.comments.map((comment, index) => (
               <div
@@ -185,7 +185,7 @@ const SkillCard = ({ cardData }: { cardData: CardData }) => {
               </Button>
             </div>
           </div>
-        )}
+        )} */}
       </CardContent>
     </Card>
   );

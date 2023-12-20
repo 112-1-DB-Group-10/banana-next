@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { FaPen } from 'react-icons/fa';
 import { IoChatbubbleSharp, IoPerson } from 'react-icons/io5';
 import Image from 'next/image';
 import Link from 'next/link';
-import { UUID } from 'crypto';
-// import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -17,25 +15,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 
-function NavBar({ user_id }: { user_id: UUID | null }) {
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setShowMenu(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // const user_id = 'bbb';
-
+function NavBar({ userId }: { userId: string | null }) {
   return (
     <NavigationMenu className="fixed top-0 h-16 w-screen bg-[#FFBE00] text-black">
       <NavigationMenuList className="flex w-screen items-center justify-between px-4">
@@ -49,7 +29,7 @@ function NavBar({ user_id }: { user_id: UUID | null }) {
             />
           </Link>
         </NavigationMenuItem>
-        {user_id === null ? (
+        {userId ? (
           <div className="flex gap-4">
             <NavigationMenuItem className="self-end">
               <Link href="/create" legacyBehavior passHref>
@@ -68,12 +48,15 @@ function NavBar({ user_id }: { user_id: UUID | null }) {
             </NavigationMenuItem>
 
             <NavigationMenuItem className="self-end">
-              <Link href={`/profile/${user_id}`} legacyBehavior passHref>
+              <Link href={`/profile/${userId}`} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   <IoPerson />
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+            <Link href="/api/auth/signout">
+              <Button variant="link">登出</Button>
+            </Link>
           </div>
         ) : (
           <Link href="/api/auth/signin">

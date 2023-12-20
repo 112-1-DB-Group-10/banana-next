@@ -18,14 +18,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getUserSession();
-  console.log(
-    `Session of user '${session.username}' (${session.user_id}) is obtained.`,
-  );
+  if (session) {
+    console.log(
+      `Session of user '${session.username}' (${session.user_id}) is obtained.`,
+    );
+  }
   return (
     <html lang="en">
       <body className={inter.className}>
         <main className="flex h-screen w-screen flex-col items-center justify-around">
-          <NavBar user_id={session.user_id} />
+          <NavBar userId={session ? session.user_id : null} />
           <div className="flex w-screen flex-1 justify-around overflow-hidden pt-24">
             {children}
           </div>

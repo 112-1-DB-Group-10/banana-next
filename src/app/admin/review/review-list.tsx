@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getDefaultApplications, getDefaultUsers, queryApplications } from '@/actions/adminActions';
-import { UserApplication, UserProfile } from '@/actions/types';
-import UserSkeleton from './review-skeleton';
+import { getDefaultApplications } from '@/actions/adminActions';
+import { UserApplication } from '@/actions/types';
 import ApplicationItem from './review-item';
+import UserSkeleton from './review-skeleton';
 
 const ReviewList = () => {
   const searchParams = useSearchParams();
@@ -23,19 +23,12 @@ const ReviewList = () => {
     setReviews([...reviews, ...newReviews]);
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const newUsers = await getDefaultUsers(page, 15);
-  //     console.log(newUsers);
-  //     setUsers([...users, ...newUsers]);
-  //     console.log(newUsers);
-  //   })();
-  // }, [page]);
-
   return (
     <div className="flex w-full flex-col gap-1 p-6">
       {reviews.map((review, index) => {
-        return <ApplicationItem key={`review-item-${index}`} application={review} />;
+        return (
+          <ApplicationItem key={`review-item-${index}`} application={review} />
+        );
       })}
       <UserSkeleton loadMore={loadMore} />
     </div>

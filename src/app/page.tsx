@@ -23,7 +23,7 @@ export default async function MainPage({
   //   num_comments: card.num_comments,
   // }));
   const session = await getUserSession();
-
+  if (!session) return <>請先登入！</>;
   return (
     <div className="flex h-full w-full flex-1 items-end justify-between overflow-hidden pl-4 pr-4">
       <div className="flex h-full w-full justify-center overflow-hidden">
