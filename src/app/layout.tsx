@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import { getUserSession } from '@/lib/session';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import NavBar from './navbar';
 
@@ -18,11 +18,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getUserSession();
-  if (session) {
-    console.log(
-      `Session of user '${session.username}' (${session.user_id}) is obtained.`,
-    );
-  }
   return (
     <html lang="en">
       <body className={inter.className}>

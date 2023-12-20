@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getDefaultUsers, getUsersbySubstring } from '@/actions/adminActions';
+import { getUsersbySubstring } from '@/actions/adminActions';
 import { UserProfile } from '@/actions/types';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import UserItem from './user-item';
 import UserSkeleton from './user-skeleton';
 

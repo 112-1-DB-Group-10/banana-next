@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { updateApplication } from '@/actions/adminActions';
 import { UserApplication } from '@/actions/types';
 import Avatar from '@/components/avatar';
@@ -15,17 +14,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const ApplicationItem = ({ application }: { application: UserApplication }) => {
   const passApplication = async () => {
-    const s = await updateApplication(application, 'pass');
-    // console.log(`Suspended user ${user.user_id}`);
-    console.log(s);
+    await updateApplication(application, 'pass');
   };
   const failApplication = async () => {
-    const s = await updateApplication(application, 'fail');
-    // console.log(`Suspended user ${user.user_id}`);
-    console.log(s);
+    await updateApplication(application, 'fail');
   };
   return (
     <div className="flex h-[4.5rem] w-full flex-row items-center">
@@ -51,7 +47,6 @@ const ApplicationItem = ({ application }: { application: UserApplication }) => {
             <AlertDialogDescription>想清楚啦想清楚啦</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            {/* <AlertDialogCancel>好吧那算了</AlertDialogCancel> */}
             <form onSubmit={passApplication}>
               <AlertDialogAction type="submit">
                 一定是大拇指的啦

@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
-import { MdClear } from 'react-icons/md';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Input } from '@/components/ui/input';
+import React, { useState } from 'react';
+import { MdClear } from 'react-icons/md';
 
 const Search: React.FC = () => {
   const router = useRouter();

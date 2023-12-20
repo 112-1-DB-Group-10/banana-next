@@ -1,9 +1,5 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UUID } from 'crypto';
-import * as z from 'zod';
 import { NewLabels, insertBelongsTo } from '@/actions/adminActions';
 import {
   AlertDialog,
@@ -20,6 +16,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { UUID } from 'crypto';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 const FormSchema = z.object({
   label: z.string({}),
@@ -44,22 +44,10 @@ const InsertLableItem = ({
       label_name: data.label,
       created_user: user_id,
     };
-    // const submission_belongs_to = {
-    //   topic_name: topic,
-    //   label_name: data.label
-    // }
     await insertBelongsTo(topic, data.label, user_id);
-    // await insertLabel(submission);
   };
 
   const handleInsertLabel = async () => {
-    // await deleteLabel(label);
-    // const submission: NewLabels = {
-    //   label_name: label,
-    //   created_user: user_id
-    // }
-    // console.log(submission)
-    // await insertLabel(submission);
   };
   return (
     <div className="flex h-[2rem] w-full flex-row items-center">
@@ -67,20 +55,6 @@ const InsertLableItem = ({
         <AlertDialogTrigger asChild>
           <Button variant="outline">+</Button>
         </AlertDialogTrigger>
-        {/* <AlertDialogTrigger asChild>
-          <Button variant="outline">+</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>新增主題</AlertDialogTitle>
-          </AlertDialogHeader>
-          <Input></Input>
-          <AlertDialogFooter>
-            <form onSubmit={handleInsertLabel}>
-              <AlertDialogAction type="submit">確定新增主題</AlertDialogAction>
-            </form>
-          </AlertDialogFooter>
-        </AlertDialogContent> */}
         <AlertDialogContent>
           <Form {...form}>
             <form

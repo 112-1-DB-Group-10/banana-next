@@ -70,7 +70,6 @@ export const getConversations = async (
     )
     .innerJoin(usersTable, eq(usersTable.user_id, last_time.partner_id))
     .groupBy(last_time.partner_id, usersTable.avatar, usersTable.username);
-  // console.log(conversations);
   return conversations.map((conversation) => ({
     ...conversation,
     last_time_stamp: new Date(conversation.last_time_stamp as string),

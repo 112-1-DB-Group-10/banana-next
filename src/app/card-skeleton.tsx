@@ -1,9 +1,9 @@
 'use client';
 
+import { Skeleton } from '@/components/ui/skeleton';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const CardSkeleton = ({ loadMore }: { loadMore: () => Promise<void> }) => {
   const { ref, inView } = useInView();

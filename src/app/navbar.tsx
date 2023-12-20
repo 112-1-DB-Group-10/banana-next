@@ -1,10 +1,6 @@
 'use client';
 
-import React from 'react';
-import { FaPen } from 'react-icons/fa';
-import { IoChatbubbleSharp, IoPerson } from 'react-icons/io5';
-import Image from 'next/image';
-import Link from 'next/link';
+import Avatar from '@/components/avatar';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -14,6 +10,10 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import React from 'react';
+import { FaPen } from 'react-icons/fa';
+import { IoChatbubbleSharp, IoPerson } from 'react-icons/io5';
 
 function NavBar({ userId }: { userId: string | null }) {
   return (
@@ -21,11 +21,8 @@ function NavBar({ userId }: { userId: string | null }) {
       <NavigationMenuList className="flex w-screen items-center justify-between px-4">
         <NavigationMenuItem>
           <Link href="/">
-            <Image
-              width={65}
-              height={65}
-              alt="a"
-              src="https://media.discordapp.net/attachments/893439505988743178/1184767785734246450/DALL.png?ex=658d2bfc&is=657ab6fc&hm=017c325753aa52816173c79985aff3e77b8cf2a3e25d4f695d1035acdb726893&=&format=webp&quality=lossless&width=1202&height=1202"
+            <Avatar
+              image="https://media.discordapp.net/attachments/893439505988743178/1184767785734246450/DALL.png?ex=658d2bfc&is=657ab6fc&hm=017c325753aa52816173c79985aff3e77b8cf2a3e25d4f695d1035acdb726893&=&format=webp&quality=lossless&width=1202&height=1202"
             />
           </Link>
         </NavigationMenuItem>

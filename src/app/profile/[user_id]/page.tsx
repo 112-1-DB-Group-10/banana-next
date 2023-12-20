@@ -1,10 +1,9 @@
 'use server';
 
-import { UUID } from 'crypto';
 import { getUserById } from '@/actions/userActions';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { UUID } from 'crypto';
 import ProfileCards from './profile-cards';
 import ProfileInfo from './profile-info';
 
@@ -15,7 +14,6 @@ const Profile = async ({
     user_id: UUID;
   };
 }) => {
-  // const session = await getUserSession();
   const user_data = await getUserById(params.user_id);
 
   return (

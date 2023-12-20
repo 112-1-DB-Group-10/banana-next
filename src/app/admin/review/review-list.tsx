@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getDefaultApplications } from '@/actions/adminActions';
 import { UserApplication } from '@/actions/types';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import ApplicationItem from './review-item';
 import UserSkeleton from './review-skeleton';
 

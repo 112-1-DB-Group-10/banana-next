@@ -12,7 +12,7 @@ const ReviewSkeleton = ({ loadMore }: { loadMore: () => Promise<void> }) => {
         await loadMore();
       })();
     }
-  }, [inView, loadMore]);
+  }, [inView]);
 
   return (
     <div

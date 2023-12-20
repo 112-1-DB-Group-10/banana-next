@@ -1,6 +1,5 @@
 'use server';
 
-import Link from 'next/link';
 import { UserProfile } from '@/actions/types';
 import Avatar from '@/components/avatar';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { getUserSession } from '@/lib/session';
+import Link from 'next/link';
 import ProfileEdit from './profile-edit';
 
 const ProfileInfo = async ({ user }: { user: UserProfile }) => {

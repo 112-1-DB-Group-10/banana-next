@@ -8,7 +8,7 @@ import {
 import { CardData } from '@/actions/types';
 import SkillCard from '@/components/skill-card/skill-card';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import CardSkeleton from './card-skeleton';
 
 const CardList = ({ isVerified }: { isVerified: boolean }) => {
@@ -20,7 +20,42 @@ const CardList = ({ isVerified }: { isVerified: boolean }) => {
   const [topic, setTopic] = useState<string>('');
   const [label, setLabel] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const loadMore = async () => {
+  // const loadMore = async () => {
+  //   let newCards: CardData[];
+  //   console.log(
+  //     `Search for | topic=${topic} | label=${label} | page=${page} | location=${location} |`,
+  //   );
+  //   if (label !== '') {
+  //     newCards = await getCardsByLabel(
+  //       isVerified,
+  //       label,
+  //       location ? [location] : [],
+  //       15,
+  //       page,
+  //     );
+  //   } else if (topic !== '') {
+  //     newCards = await getCardsByTopic(
+  //       isVerified,
+  //       topic,
+  //       location ? [location] : [],
+  //       15,
+  //       page,
+  //     );
+  //     console.log(page);
+  //     console.log(topic);
+  //     console.log(page, newCards);
+  //   } else {
+  //     newCards = await getPopularCards(
+  //       isVerified,
+  //       location ? [location] : [],
+  //       15,
+  //       page,
+  //     );
+  //   }
+  //   setPage(page + 1);
+  //   setCards([...cards, ...newCards]);
+  // };
+  const loadMore = useCallback(async () => {
     let newCards: CardData[];
     console.log(
       `Search for | topic=${topic} | label=${label} | page=${page} | location=${location} |`,
@@ -54,12 +89,8 @@ const CardList = ({ isVerified }: { isVerified: boolean }) => {
     }
     setPage(page + 1);
     setCards([...cards, ...newCards]);
-  };
+  }, [isVerified, label, location, page, cards, topic]);
   useEffect(() => {
-    console.log(page);
-    console.log(searchParams.get('topic'));
-    console.log(searchParams.get('label'));
-    console.log('change of search params.');
     setCards([]);
     setPage(Number(searchParams.get('page') || 1));
     if (searchParams.get('topic')) {

@@ -1,11 +1,11 @@
-import { NextAuthOptions, Profile } from 'next-auth';
-import NextAuth from 'next-auth/next';
-import GoogleProvider from 'next-auth/providers/google';
-import { v4 as uuid } from 'uuid';
 import { getUserByEmail } from '@/actions/userActions';
 import { db } from '@/db';
 import { usersTable } from '@/db/schema';
 import { session } from '@/lib/session';
+import { NextAuthOptions, Profile } from 'next-auth';
+import NextAuth from 'next-auth/next';
+import GoogleProvider from 'next-auth/providers/google';
+import { v4 as uuid } from 'uuid';
 
 interface OAuthProfile extends Profile {
   picture?: string;

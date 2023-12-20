@@ -3,6 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getUserSession } from '@/lib/session';
 import CardList from './card-list';
+import PleaseLogin from './please-login';
 import Sidebar from './sidebar';
 
 export default async function MainPage({
@@ -15,7 +16,7 @@ export default async function MainPage({
   };
 }) {
   const session = await getUserSession();
-  if (!session) return <>請先登入！</>;
+  if (!session) return <PleaseLogin />
   return (
     <div className="flex h-full w-full flex-1 items-end justify-between overflow-hidden pl-4 pr-4">
       <div className="flex h-full w-full justify-center overflow-hidden">
