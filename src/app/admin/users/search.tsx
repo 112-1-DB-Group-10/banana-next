@@ -1,10 +1,10 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
 import React, { useState } from 'react';
 import { MdClear } from 'react-icons/md';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Input } from '@/components/ui/input';
 
 const Search: React.FC = () => {
   const router = useRouter();
@@ -38,6 +38,5 @@ const Search: React.FC = () => {
     </div>
   );
 };
-
 
 export default Search;

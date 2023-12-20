@@ -70,7 +70,7 @@ const SkillCard = ({ card }: { card: CardData }) => {
           <MessageCircle /> {card.num_comments}
         </Button>
         <Link href={`/chat/${card.user_id}`}>
-          <Button variant="outline" className="mx-2 gap-2">
+          <Button variant="outline" className="mx-2">
             <MessagesSquare />
           </Button>
         </Link>

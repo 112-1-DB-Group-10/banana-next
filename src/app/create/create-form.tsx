@@ -8,7 +8,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { UUID } from 'crypto';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import * as z from 'zod';
-import { NewApplications, NewCards, insertApplication } from '@/actions/adminActions';
+import {
+  NewApplications,
+  NewCards,
+  insertApplication,
+} from '@/actions/adminActions';
+import { NewCard } from '@/actions/cardActions';
+import { handleNewCard } from '@/actions/cardActions';
+import { CardData, UserProfile } from '@/actions/types';
+// create a new card, type: CardData
+import { getUserById } from '@/actions/userActions';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -54,12 +63,29 @@ import { ToastAction } from '@/components/ui/toast';
 import { toast, useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { ProgressBar } from './progress';
-import { NewCard } from '@/actions/cardActions';
-import { handleNewCard } from '@/actions/cardActions'; // create a new card, type: CardData
-import { getUserById } from '@/actions/userActions';
-import { CardData, UserProfile } from '@/actions/types';
 
-const locations = ["線上", "基隆", "台北", "新北", "桃園", "新竹", "苗栗", "台中", "彰化", "雲林", "嘉義", "台南", "高雄", "屏東", "宜蘭", "花蓮", "台東", "澎湖", "金門", "馬祖"]
+const locations = [
+  '線上',
+  '基隆',
+  '台北',
+  '新北',
+  '桃園',
+  '新竹',
+  '苗栗',
+  '台中',
+  '彰化',
+  '雲林',
+  '嘉義',
+  '台南',
+  '高雄',
+  '屏東',
+  '宜蘭',
+  '花蓮',
+  '台東',
+  '澎湖',
+  '金門',
+  '馬祖',
+];
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -72,48 +98,48 @@ const ACCEPTED_IMAGE_TYPES = [
 const visibility_options = ['public', 'verified'];
 
 const FormSchema = z.object({
-    //   username: z.string().min(2, {
-    //     message: 'Username must be at least 2 characters.',
-    //   }),
-    //   school: z.string({
-    //     required_error: 'Please select an email to display.',
-    //   }),
-    //   enrollYear: z.string().min(2, {
-    //     message: '請輸入入學年份',
-    //   }),
-    location: z.string().min(1, {
-      message: '請選擇地點',
-      }),
-      want_to_learn: z.string().min(1, {
-      message: '請輸入想學的技能名稱',
-      }),
-      good_at: z.string().min(1, {
-      message: '請輸入擅長的技能名稱',
-    }),
-    contents: z.string({}),
-    visibility: z.string({
-      required_error: '請選擇是否公開卡片',
-    }),
-    card_id: z.string({}),
-    user_id: z.string({}),
-    username: z.string({}),
-    avatar: z.string({}),
-    institute: z.string({}),
-    created_time: z.date({}),
-    updated_time: z.date({}),
-    suspended: z.boolean({}),
-    deleted: z.boolean({}),
-    likes: z.number({}),
-    comments: z.string({}),
-    // profilePicture: z
-    // .any()
-    // .refine((files) => files?.length == 1, "Image is required.")
-    // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-    // .refine(
-    //   (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-    //   ".jpg, .jpeg, .png and .webp files are accepted."
-    // ),
-  });
+  //   username: z.string().min(2, {
+  //     message: 'Username must be at least 2 characters.',
+  //   }),
+  //   school: z.string({
+  //     required_error: 'Please select an email to display.',
+  //   }),
+  //   enrollYear: z.string().min(2, {
+  //     message: '請輸入入學年份',
+  //   }),
+  location: z.string().min(1, {
+    message: '請選擇地點',
+  }),
+  want_to_learn: z.string().min(1, {
+    message: '請輸入想學的技能名稱',
+  }),
+  good_at: z.string().min(1, {
+    message: '請輸入擅長的技能名稱',
+  }),
+  contents: z.string({}),
+  visibility: z.string({
+    required_error: '請選擇是否公開卡片',
+  }),
+  card_id: z.string({}),
+  user_id: z.string({}),
+  username: z.string({}),
+  avatar: z.string({}),
+  institute: z.string({}),
+  created_time: z.date({}),
+  updated_time: z.date({}),
+  suspended: z.boolean({}),
+  deleted: z.boolean({}),
+  likes: z.number({}),
+  comments: z.string({}),
+  // profilePicture: z
+  // .any()
+  // .refine((files) => files?.length == 1, "Image is required.")
+  // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+  // .refine(
+  //   (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+  //   ".jpg, .jpeg, .png and .webp files are accepted."
+  // ),
+});
 
 const frameworks = [
   {
@@ -138,7 +164,13 @@ const frameworks = [
   },
 ];
 
-const CreateForm = ({ user_id, user_data }: { user_id: string, user_data: UserProfile }) => {
+const CreateForm = ({
+  user_id,
+  user_data,
+}: {
+  user_id: string;
+  user_data: UserProfile;
+}) => {
   const router = useRouter();
   const { toast } = useToast();
   // const [profilePicture, setProfilePicture] = useState<File | null>(null);
@@ -174,22 +206,22 @@ const CreateForm = ({ user_id, user_data }: { user_id: string, user_data: UserPr
     router.push('/profile/' + user_id, { scroll: false });
 
     const submission: CardData = {
-        card_id: crypto.randomUUID(),
-        user_id: user_id,
-        username: user_data.username,
-        avatar: user_data.avatar,
-        contents: data.contents,
-        locations: [data.location],
-        institute: user_data.institute as string,
-        created_time: new Date(),
-        updated_time: new Date(),
-        visibility: data.visibility as "public" | "verified",
-        suspended: user_data.suspended,
-        deleted: false,
-        want_to_learn: [data.want_to_learn],
-        good_at: [data.good_at],
-        num_likes: 0,
-        num_comments: 0
+      card_id: crypto.randomUUID(),
+      user_id: user_id,
+      username: user_data.username,
+      avatar: user_data.avatar,
+      contents: data.contents,
+      locations: [data.location],
+      institute: user_data.institute as string,
+      created_time: new Date(),
+      updated_time: new Date(),
+      visibility: data.visibility as 'public' | 'verified',
+      suspended: user_data.suspended,
+      deleted: false,
+      want_to_learn: [data.want_to_learn],
+      good_at: [data.good_at],
+      num_likes: 0,
+      num_comments: 0,
     };
     console.log(submission);
     // async function asyncInsert() {
@@ -239,7 +271,7 @@ const CreateForm = ({ user_id, user_data }: { user_id: string, user_data: UserPr
     //         render={({ field }) => (
     //           <FormItem className='flex flex-col items-start justify-center'>
     //             <FormLabel>學校</FormLabel>
-    //             <Popover> 
+    //             <Popover>
     //               <PopoverTrigger asChild>
     //                 <FormControl>
     //                   <Button
@@ -323,7 +355,7 @@ const CreateForm = ({ user_id, user_data }: { user_id: string, user_data: UserPr
     //     </form>
     //   </Card>
     // </Form>
-    
+
     <Form {...form}>
       <Card className="bg-blueGray-50 mx-auto h-fit w-[50rem] flex-row justify-between gap-10 p-4 pt-8">
         <h1 className="mb-4 text-3xl font-bold">創建卡片</h1>
@@ -512,8 +544,6 @@ const CreateForm = ({ user_id, user_data }: { user_id: string, user_data: UserPr
         </div> */}
       </Card>
     </Form>
-
-
   );
 };
 

@@ -2,8 +2,8 @@
 
 import { UUID } from 'crypto';
 import { suspendUser } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
 import { deleteLabel } from '@/actions/adminActions';
+import { UserProfile } from '@/actions/types';
 import Avatar from '@/components/avatar';
 import {
   AlertDialog,
@@ -28,8 +28,7 @@ const DeleteLableItem = ({ label }: { label: string }) => {
   return (
     <div className="flex h-[2rem] w-full flex-row items-center">
       <AlertDialog>
-        <div className="flex flex-row items-center">
-        </div>
+        <div className="flex flex-row items-center"></div>
         <AlertDialogTrigger asChild>
           <Button variant="outline">{label}</Button>
         </AlertDialogTrigger>

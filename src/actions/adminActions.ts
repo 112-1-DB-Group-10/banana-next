@@ -1,5 +1,6 @@
 'use server';
 
+import { use } from 'react';
 import {
   applicationsTable,
   belongsToTable,
@@ -13,9 +14,8 @@ import {
 import { UUID } from 'crypto';
 import { and, desc, eq, like, max } from 'drizzle-orm';
 import { db } from '@/db';
-import { UserApplication, UserProfile } from './types';
 import { User } from '@/db/types';
-import { use } from 'react';
+import { UserApplication, UserProfile } from './types';
 
 export type NewApplications = typeof applicationsTable.$inferInsert;
 export type NewTopics = typeof topicsTable.$inferInsert;
@@ -236,7 +236,10 @@ export const updateLocation = async (
 };
 
 //新增 located_at 資料
-export const insertLocatedAt = async (location_name: string, card_id: string) => {
+export const insertLocatedAt = async (
+  location_name: string,
+  card_id: string,
+) => {
   try {
     const insertedLocation = await db
       .insert(locatedAtTable)
@@ -250,7 +253,10 @@ export const insertLocatedAt = async (location_name: string, card_id: string) =>
 };
 
 //更新 located_at 資料
-export const updateLocatedAt = async (new_location_name: string, card_id: string) => {
+export const updateLocatedAt = async (
+  new_location_name: string,
+  card_id: string,
+) => {
   try {
     const transactionResult = await db.transaction(async (tx) => {
       const updatedLocatedAt = await tx
@@ -300,45 +306,55 @@ export const deleteLabel = async (target_label: string) => {
 };
 
 //查找所有 pass/pending/fail 的 application 紀錄
-export const queryApplications = async (target_status: 'pending' | 'fail' | 'pass', applicationPerPage: number, page: number):Promise<UserApplication[]> => {
-
+export const queryApplications = async (
+  target_status: 'pending' | 'fail' | 'pass',
+  applicationPerPage: number,
+  page: number,
+): Promise<UserApplication[]> => {
   const userInstitute = db
-  .select({
-    user_id: applicationsTable.user_id,
-    enrollYear: applicationsTable.enroll_year,
-    institute: applicationsTable.institute,
-    userEnglishName: applicationsTable.englishname,
-    document_url: applicationsTable.document_url,
-    verification: applicationsTable.verification
-  })
-  .from(applicationsTable)
-  .groupBy(applicationsTable.user_id, applicationsTable.enroll_year, applicationsTable.institute, applicationsTable.englishname, applicationsTable.document_url, applicationsTable.verification)
-  .where(eq(applicationsTable.verification, target_status))
-  .orderBy(desc(max(applicationsTable.time_stamp)))
-  .as('userInstitute');
+    .select({
+      user_id: applicationsTable.user_id,
+      enrollYear: applicationsTable.enroll_year,
+      institute: applicationsTable.institute,
+      userEnglishName: applicationsTable.englishname,
+      document_url: applicationsTable.document_url,
+      verification: applicationsTable.verification,
+    })
+    .from(applicationsTable)
+    .groupBy(
+      applicationsTable.user_id,
+      applicationsTable.enroll_year,
+      applicationsTable.institute,
+      applicationsTable.englishname,
+      applicationsTable.document_url,
+      applicationsTable.verification,
+    )
+    .where(eq(applicationsTable.verification, target_status))
+    .orderBy(desc(max(applicationsTable.time_stamp)))
+    .as('userInstitute');
 
-    const targetUser = await db
-      .select({
-        user_id: usersTable.user_id,
-        institute: userInstitute.institute,
-        userEnglishName: userInstitute.userEnglishName,
-        document_url: userInstitute.document_url,
-        username: usersTable.username,
-        sex: usersTable.sex,
-        age: usersTable.age,
-        email: usersTable.email,
-        role: usersTable.role,
-        suspended: usersTable.suspended,
-        avatar: usersTable.avatar,
-        enrollYear: userInstitute.enrollYear,
-      })
-      .from(userInstitute)
-      .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
-      .where(eq(userInstitute.verification, target_status))
-      .limit(applicationPerPage)
-      .offset(applicationPerPage * (page - 1));
+  const targetUser = await db
+    .select({
+      user_id: usersTable.user_id,
+      institute: userInstitute.institute,
+      userEnglishName: userInstitute.userEnglishName,
+      document_url: userInstitute.document_url,
+      username: usersTable.username,
+      sex: usersTable.sex,
+      age: usersTable.age,
+      email: usersTable.email,
+      role: usersTable.role,
+      suspended: usersTable.suspended,
+      avatar: usersTable.avatar,
+      enrollYear: userInstitute.enrollYear,
+    })
+    .from(userInstitute)
+    .innerJoin(usersTable, eq(userInstitute.user_id, usersTable.user_id))
+    .where(eq(userInstitute.verification, target_status))
+    .limit(applicationPerPage)
+    .offset(applicationPerPage * (page - 1));
 
-    return targetUser;
+  return targetUser;
 };
 
 //新增使用者
@@ -553,10 +569,15 @@ export const getUsersbySubstring = async (
   return mergedUsers;
 };
 
-
 //getDefaultApplications
-export const getDefaultApplications = async (page: number,
-  ApplicationPerPage: number,): Promise<UserApplication[]> => {
-  const passApplication = await queryApplications('pass', ApplicationPerPage, page);
-    return passApplication;
+export const getDefaultApplications = async (
+  page: number,
+  ApplicationPerPage: number,
+): Promise<UserApplication[]> => {
+  const passApplication = await queryApplications(
+    'pass',
+    ApplicationPerPage,
+    page,
+  );
+  return passApplication;
 };

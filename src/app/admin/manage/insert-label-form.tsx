@@ -1,9 +1,19 @@
 'use client';
 
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { UUID } from 'crypto';
+import * as z from 'zod';
 import { suspendUser } from '@/actions/adminActions';
-import { UserProfile } from '@/actions/types';
 import { deleteLabel } from '@/actions/adminActions';
+import { insertLabel } from '@/actions/adminActions';
+import { insertBelongsTo } from '@/actions/adminActions';
+import { NewLabels } from '@/actions/adminActions';
+import { NewUsers, insertUser } from '@/actions/adminActions';
+import { UserProfile } from '@/actions/types';
 import Avatar from '@/components/avatar';
 import {
   AlertDialog,
@@ -17,20 +27,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { insertLabel } from '@/actions/adminActions';
-import { insertBelongsTo } from '@/actions/adminActions';
-import { Input } from '@/components/ui/input';
-
-import { NewLabels } from '@/actions/adminActions';
-
-import { useState } from 'react';
-
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
-import * as z from 'zod';
-import { NewUsers, insertUser } from '@/actions/adminActions';
 import {
   Form,
   FormControl,
@@ -39,25 +35,31 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 const FormSchema = z.object({
-  label: z.string({})
+  label: z.string({}),
 });
 
-const InsertLableItem = ({ topic, user_id }: { topic: string, user_id: UUID }) => {
-
+const InsertLableItem = ({
+  topic,
+  user_id,
+}: {
+  topic: string;
+  user_id: UUID;
+}) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      label: ''
+      label: '',
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const submission: NewLabels = {
       label_name: data.label,
-      created_user: user_id
-    }
+      created_user: user_id,
+    };
     // const submission_belongs_to = {
     //   topic_name: topic,
     //   label_name: data.label
@@ -67,7 +69,6 @@ const InsertLableItem = ({ topic, user_id }: { topic: string, user_id: UUID }) =
   };
 
   const handleInsertLabel = async () => {
-
     // await deleteLabel(label);
     // const submission: NewLabels = {
     //   label_name: label,
@@ -79,7 +80,7 @@ const InsertLableItem = ({ topic, user_id }: { topic: string, user_id: UUID }) =
   return (
     <div className="flex h-[2rem] w-full flex-row items-center">
       <AlertDialog>
-      <AlertDialogTrigger asChild>
+        <AlertDialogTrigger asChild>
           <Button variant="outline">+</Button>
         </AlertDialogTrigger>
         {/* <AlertDialogTrigger asChild>
@@ -97,30 +98,31 @@ const InsertLableItem = ({ topic, user_id }: { topic: string, user_id: UUID }) =
           </AlertDialogFooter>
         </AlertDialogContent> */}
         <AlertDialogContent>
-        <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="label"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>請輸入標籤</FormLabel>
-              <FormControl>
-                <Input placeholder="請輸入標籤" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <AlertDialogTrigger asChild>
-          <Button type="submit">儲存變更</Button>
-        </AlertDialogTrigger>
-      </form>
-    </Form>
-    </AlertDialogContent>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-2/3 space-y-6"
+            >
+              <FormField
+                control={form.control}
+                name="label"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>請輸入標籤</FormLabel>
+                    <FormControl>
+                      <Input placeholder="請輸入標籤" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <AlertDialogTrigger asChild>
+                <Button type="submit">儲存變更</Button>
+              </AlertDialogTrigger>
+            </form>
+          </Form>
+        </AlertDialogContent>
       </AlertDialog>
-
-      
     </div>
   );
 };

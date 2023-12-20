@@ -123,15 +123,16 @@ export const locationsTable = pgTable('locations', {
   location_name: text('location_name').notNull().primaryKey(),
 });
 
-export const locatedAtTable = pgTable('located_at', {
-  card_id: uuid('card_id')
-    .notNull()
-    .references(() => cardsTable.card_id),
-  location_name: text('location_name')
-    .notNull()
-    .references(() => locationsTable.location_name),
-    
-},
+export const locatedAtTable = pgTable(
+  'located_at',
+  {
+    card_id: uuid('card_id')
+      .notNull()
+      .references(() => cardsTable.card_id),
+    location_name: text('location_name')
+      .notNull()
+      .references(() => locationsTable.location_name),
+  },
   (table) => {
     return {
       located_at_pk: primaryKey({

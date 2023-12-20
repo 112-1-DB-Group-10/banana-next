@@ -61,7 +61,7 @@ export interface UserApplication {
   user_id: string;
   avatar: string;
   institute: string | null;
-  enrollYear: number,
-  userEnglishName: string,
-  document_url: string,
+  enrollYear: number;
+  userEnglishName: string;
+  document_url: string;
 }
